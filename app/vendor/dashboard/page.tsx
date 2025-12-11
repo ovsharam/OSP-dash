@@ -1107,301 +1107,295 @@ export default function VendorDashboardPage() {
               )}
             </div>
 
-            {/* Right Panel - Recent Orders - Only show when message is selected */}
+            {/* Right Panel - Recent Orders / Customer Details - Only show when message is selected */}
             {selectedMessage !== null && (() => {
-              const selectedCustomerOrders = mockMessages.find((m) => m.id === selectedMessage)?.orders || [];
+              const message = mockMessages.find((m) => m.id === selectedMessage);
+              if (!message) return null;
+
+              const selectedCustomerOrders = message.orders || [];
+              
+              // Find or create customer
+              let customer = mockCustomers.find((c) => c.businessName === message.customer);
+              if (!customer) {
+                customer = {
+                  id: `TEMP-${message.customer.replace(/\s+/g, '-')}`,
+                  businessName: message.customer,
+                  contactName: message.lastSender || "Unknown",
+                  email: `${message.customer.toLowerCase().replace(/\s+/g, '')}@example.com`,
+                  phone: "+1 (555) 000-0000",
+                  address: {
+                    street: "",
+                    city: "",
+                    state: "",
+                    zipCode: "",
+                    country: "United States",
+                  },
+                  businessType: "Business",
+                  taxId: "",
+                  contractSigned: false,
+                  totalOrders: message.orders?.length || 0,
+                  totalSpent: message.orders?.reduce((sum, o) => sum + o.total, 0) || 0,
+                  status: "active" as const,
+                  tags: [],
+                  notes: [],
+                  orders: [],
+                };
+              }
+
+              const selectedOrder = selectedCustomerOrders.find((o) => o.id === selectedOrderForDetail);
+
+              // Show customer detail view if order is selected, otherwise show orders list
               return selectedCustomerOrders.length > 0 ? (
-                <div className="w-80 border-l border-gray-200 flex flex-col">
-                  <div className="p-4 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-black">Recent orders</h3>
-                  </div>
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {selectedCustomerOrders.map((order) => (
-                      <div
-                        key={order.id}
-                        onClick={() => {
-                          setSelectedOrderForDetail(order.id);
-                          setShowCustomerDetailPanel(true);
-                        }}
-                        className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-black">Order #{order.id}</span>
-                          <span className="text-xs text-gray-500">{order.date}</span>
+                <div className={`border-l border-gray-200 flex flex-col transition-all duration-300 ${
+                  selectedOrderForDetail ? "w-[500px]" : "w-80"
+                }`}>
+                  {selectedOrderForDetail ? (
+                    // Customer Detail View
+                    <>
+                      <div className="p-4 border-b border-gray-200 flex items-center gap-3">
+                        <button
+                          onClick={() => {
+                            setSelectedOrderForDetail(null);
+                            setShowCustomerDetailPanel(false);
+                          }}
+                          className="text-gray-600 hover:text-black transition-colors p-1"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-black">{customer.businessName}</h3>
+                          <p className="text-xs text-gray-600">{customer.businessType}</p>
                         </div>
-                        <div className="flex gap-1 mb-2">
-                          {order.products.slice(0, 4).map((img, i) => (
-                            <div
-                              key={i}
-                              className="w-12 h-12 rounded overflow-hidden flex-shrink-0 bg-gray-200 relative"
-                            >
-                              <img
-                                src={img}
-                                alt={`Product ${i + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          ))}
-                          {order.products.length > 4 && (
-                            <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
-                              <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
-                            </div>
-                          )}
-                        </div>
-                        {(order as any).isNew ? (
-                          <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
-                            New
-                          </span>
-                        ) : (
-                          <p className="text-xs text-gray-600">
-                            {order.status} • {(order as any).estDelivery || ""}
-                          </p>
-                        )}
+                        <button
+                          onClick={() => {
+                            setSelectedCustomerId(customer.id);
+                            setCustomerDetailTab("orders");
+                            setSelectedOrderId(selectedOrderForDetail);
+                            setActiveTab("customers");
+                          }}
+                          className="text-xs text-black hover:underline"
+                        >
+                          View Full
+                        </button>
                       </div>
-                    ))}
-                  </div>
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {/* Customer Info */}
+                        <div>
+                          <h4 className="text-sm font-semibold text-black mb-3">Customer Information</h4>
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="text-gray-600">Contact: </span>
+                              <span className="text-black">{customer.contactName}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Email: </span>
+                              <span className="text-black">{customer.email}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Phone: </span>
+                              <span className="text-black">{customer.phone}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-600">Status: </span>
+                              <span
+                                className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
+                                  customer.status === "active"
+                                    ? "bg-green-100 text-green-800"
+                                    : customer.status === "prospect"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
+                                {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Total Orders: </span>
+                              <span className="text-black">{customer.totalOrders}</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Total Spent: </span>
+                              <span className="text-black font-semibold">${customer.totalSpent.toFixed(2)}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Selected Order Details */}
+                        {selectedOrder && (
+                          <div className="border-t border-gray-200 pt-4">
+                            <h4 className="text-sm font-semibold text-black mb-3">Order: {selectedOrder.id}</h4>
+                            <div className="border border-gray-200 rounded-lg p-3 space-y-3">
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div>
+                                  <span className="text-gray-600">Date: </span>
+                                  <span className="text-black">{selectedOrder.date}</span>
+                                </div>
+                                <div>
+                                  <span className="text-gray-600">Status: </span>
+                                  <span
+                                    className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
+                                      selectedOrder.status === "Delivered"
+                                        ? "bg-green-100 text-green-800"
+                                        : selectedOrder.status === "Shipped"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : "bg-yellow-100 text-yellow-800"
+                                    }`}
+                                  >
+                                    {selectedOrder.status}
+                                  </span>
+                                </div>
+                                {(selectedOrder as any).estDelivery && (
+                                  <div>
+                                    <span className="text-gray-600">Est. Delivery: </span>
+                                    <span className="text-black">{(selectedOrder as any).estDelivery}</span>
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="text-gray-600">Total: </span>
+                                  <span className="text-black font-semibold">${selectedOrder.total.toFixed(2)}</span>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-xs text-gray-600 mb-2">Products:</p>
+                                <div className="flex gap-2 flex-wrap">
+                                  {selectedOrder.products.map((img, i) => (
+                                    <div
+                                      key={i}
+                                      className="w-14 h-14 rounded overflow-hidden bg-gray-200"
+                                    >
+                                      <img
+                                        src={img}
+                                        alt={`Product ${i + 1}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* All Orders List */}
+                        <div className="border-t border-gray-200 pt-4">
+                          <h4 className="text-sm font-semibold text-black mb-3">All Orders ({selectedCustomerOrders.length})</h4>
+                          <div className="space-y-2">
+                            {selectedCustomerOrders.map((order, idx) => (
+                              <div
+                                key={`${order.id}-${idx}`}
+                                onClick={() => setSelectedOrderForDetail(order.id)}
+                                className={`border rounded-lg p-2 cursor-pointer transition-colors text-sm ${
+                                  selectedOrderForDetail === order.id
+                                    ? "border-black bg-gray-50"
+                                    : "border-gray-200 hover:bg-gray-50"
+                                }`}
+                              >
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="font-semibold text-black">#{order.id}</span>
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={`inline-block px-1.5 py-0.5 text-xs font-semibold rounded ${
+                                        order.status === "Delivered"
+                                          ? "bg-green-100 text-green-800"
+                                          : order.status === "Shipped"
+                                          ? "bg-blue-100 text-blue-800"
+                                          : "bg-yellow-100 text-yellow-800"
+                                      }`}
+                                    >
+                                      {order.status}
+                                    </span>
+                                    <span className="text-xs font-semibold text-black">${order.total.toFixed(2)}</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-gray-500">{order.date}</span>
+                                  <div className="flex gap-1">
+                                    {order.products.slice(0, 3).map((img, i) => (
+                                      <div
+                                        key={i}
+                                        className="w-8 h-8 rounded overflow-hidden bg-gray-200"
+                                      >
+                                        <img
+                                          src={img}
+                                          alt={`Product ${i + 1}`}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                    ))}
+                                    {order.products.length > 3 && (
+                                      <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+                                        <span className="text-xs text-gray-500">+{order.products.length - 3}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    // Orders List View
+                    <>
+                      <div className="p-4 border-b border-gray-200">
+                        <h3 className="text-lg font-semibold text-black">Recent orders</h3>
+                      </div>
+                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        {selectedCustomerOrders.map((order) => (
+                          <div
+                            key={order.id}
+                            onClick={() => {
+                              setSelectedOrderForDetail(order.id);
+                              setShowCustomerDetailPanel(true);
+                            }}
+                            className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm font-semibold text-black">Order #{order.id}</span>
+                              <span className="text-xs text-gray-500">{order.date}</span>
+                            </div>
+                            <div className="flex gap-1 mb-2">
+                              {order.products.slice(0, 4).map((img, i) => (
+                                <div
+                                  key={i}
+                                  className="w-12 h-12 rounded overflow-hidden flex-shrink-0 bg-gray-200 relative"
+                                >
+                                  <img
+                                    src={img}
+                                    alt={`Product ${i + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ))}
+                              {order.products.length > 4 && (
+                                <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
+                                  <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
+                                </div>
+                              )}
+                            </div>
+                            {(order as any).isNew ? (
+                              <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
+                                New
+                              </span>
+                            ) : (
+                              <p className="text-xs text-gray-600">
+                                {order.status} • {(order as any).estDelivery || ""}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : null;
-            })(            )}
+            })()}
           </div>
         )}
 
-        {/* Customer Detail Panel - Slides in from right when order is clicked */}
-        {showCustomerDetailPanel && selectedMessage && (() => {
-          const message = mockMessages.find((m) => m.id === selectedMessage);
-          if (!message) return null;
-
-          // Find or create customer
-          let customer = mockCustomers.find((c) => c.businessName === message.customer);
-          if (!customer) {
-            customer = {
-              id: `TEMP-${message.customer.replace(/\s+/g, '-')}`,
-              businessName: message.customer,
-              contactName: message.lastSender || "Unknown",
-              email: `${message.customer.toLowerCase().replace(/\s+/g, '')}@example.com`,
-              phone: "+1 (555) 000-0000",
-              address: {
-                street: "",
-                city: "",
-                state: "",
-                zipCode: "",
-                country: "United States",
-              },
-              businessType: "Business",
-              taxId: "",
-              contractSigned: false,
-              totalOrders: message.orders?.length || 0,
-              totalSpent: message.orders?.reduce((sum, o) => sum + o.total, 0) || 0,
-              status: "active" as const,
-              tags: [],
-              notes: [],
-              orders: [],
-            };
-          }
-
-          const customerOrders = message.orders || [];
-          const selectedOrder = customerOrders.find((o) => o.id === selectedOrderForDetail);
-
-          return (
-            <>
-              {/* Backdrop */}
-              <div
-                className="fixed inset-0 bg-black bg-opacity-30 z-40"
-                onClick={() => setShowCustomerDetailPanel(false)}
-              />
-              {/* Panel */}
-              <div className="fixed right-0 top-0 h-full w-[600px] bg-white shadow-2xl z-50 flex flex-col overflow-hidden">
-                {/* Header */}
-                <div className="p-6 border-b border-gray-200 flex items-center justify-between bg-white">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setShowCustomerDetailPanel(false)}
-                      className="text-gray-600 hover:text-black transition-colors p-1"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                    <div>
-                      <h2 className="text-xl font-bold text-black">{customer.businessName}</h2>
-                      <p className="text-sm text-gray-600">{customer.businessType}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setSelectedCustomerId(customer.id);
-                      setCustomerDetailTab("orders");
-                      setSelectedOrderId(selectedOrderForDetail);
-                      setShowCustomerDetailPanel(false);
-                      setActiveTab("customers");
-                    }}
-                    className="text-sm text-black hover:underline"
-                  >
-                    View Full Profile
-                  </button>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                  {/* Customer Info Section */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-black mb-4">Customer Information</h3>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-gray-600 mb-1">Contact Name</p>
-                        <p className="text-sm text-black">{customer.contactName}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-600 mb-1">Email</p>
-                        <p className="text-sm text-black">{customer.email}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-600 mb-1">Phone</p>
-                        <p className="text-sm text-black">{customer.phone}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-600 mb-1">Status</p>
-                        <span
-                          className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                            customer.status === "active"
-                              ? "bg-green-100 text-green-800"
-                              : customer.status === "prospect"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
-                          }`}
-                        >
-                          {customer.status.charAt(0).toUpperCase() + customer.status.slice(1)}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-600 mb-1">Total Orders</p>
-                        <p className="text-sm text-black">{customer.totalOrders}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-600 mb-1">Total Spent</p>
-                        <p className="text-sm font-semibold text-black">${customer.totalSpent.toFixed(2)}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Selected Order Details */}
-                  {selectedOrder && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-black mb-4">Order Details: {selectedOrder.id}</h3>
-                      <div className="border border-gray-200 rounded-lg p-4">
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-xs text-gray-600 mb-1">Order Date</p>
-                            <p className="text-sm text-black">{selectedOrder.date}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-600 mb-1">Status</p>
-                            <span
-                              className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                                selectedOrder.status === "Delivered"
-                                  ? "bg-green-100 text-green-800"
-                                  : selectedOrder.status === "Shipped"
-                                  ? "bg-blue-100 text-blue-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              }`}
-                            >
-                              {selectedOrder.status}
-                            </span>
-                          </div>
-                          {(selectedOrder as any).estDelivery && (
-                            <div>
-                              <p className="text-xs text-gray-600 mb-1">Estimated Delivery</p>
-                              <p className="text-sm text-black">{(selectedOrder as any).estDelivery}</p>
-                            </div>
-                          )}
-                          <div>
-                            <p className="text-xs text-gray-600 mb-1">Total</p>
-                            <p className="text-sm font-semibold text-black">${selectedOrder.total.toFixed(2)}</p>
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-600 mb-2">Products</p>
-                          <div className="flex gap-2 flex-wrap">
-                            {selectedOrder.products.map((img, i) => (
-                              <div
-                                key={i}
-                                className="w-16 h-16 rounded overflow-hidden bg-gray-200"
-                              >
-                                <img
-                                  src={img}
-                                  alt={`Product ${i + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* All Customer Orders */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-black mb-4">All Orders ({customerOrders.length})</h3>
-                    <div className="space-y-3">
-                      {customerOrders.map((order, idx) => (
-                        <div
-                          key={`${order.id}-${idx}`}
-                          onClick={() => setSelectedOrderForDetail(order.id)}
-                          className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                            selectedOrderForDetail === order.id
-                              ? "border-black bg-gray-50"
-                              : "border-gray-200 hover:bg-gray-50"
-                          }`}
-                        >
-                          <div className="flex justify-between items-center mb-2">
-                            <div>
-                              <p className="text-sm font-semibold text-black">Order #{order.id}</p>
-                              <p className="text-xs text-gray-500">{order.date}</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span
-                                className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                                  order.status === "Delivered"
-                                    ? "bg-green-100 text-green-800"
-                                    : order.status === "Shipped"
-                                    ? "bg-blue-100 text-blue-800"
-                                    : "bg-yellow-100 text-yellow-800"
-                                }`}
-                              >
-                                {order.status}
-                              </span>
-                              <span className="text-sm font-semibold text-black">${order.total.toFixed(2)}</span>
-                            </div>
-                          </div>
-                          <div className="flex gap-2">
-                            {order.products.slice(0, 4).map((img, i) => (
-                              <div
-                                key={i}
-                                className="w-12 h-12 rounded overflow-hidden bg-gray-200"
-                              >
-                                <img
-                                  src={img}
-                                  alt={`Product ${i + 1}`}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ))}
-                            {order.products.length > 4 && (
-                              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
-                                <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          );
-        })()}
 
         {/* Profile Tab */}
         {activeTab === "profile" && (
