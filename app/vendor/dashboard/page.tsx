@@ -251,7 +251,7 @@ function MessageThread({ messageId, onBack, replyText, setReplyText }: MessageTh
                     <span className={msg.isCustomer ? "text-gray-500" : "text-gray-400"}>
                       {msg.time || msg.timestamp}
                     </span>
-                    {!msg.isCustomer && msg.read && (
+                    {!msg.isCustomer && 'read' in msg && (msg as any).read && (
                       <span className="text-gray-400">Read</span>
                     )}
                   </div>
