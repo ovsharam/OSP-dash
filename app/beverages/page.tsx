@@ -3,7 +3,6 @@
 import { useState, useMemo, Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import SidebarFilters from "@/components/SidebarFilters";
-import QuickViewModal from "@/components/QuickViewModal";
 import ProductComparison from "@/components/ProductComparison";
 import { useComparison } from "@/contexts/ComparisonContext";
 import { mockProducts, getVendors } from "@/lib/mockData";
@@ -14,7 +13,6 @@ import Link from "next/link";
 function BeveragesContent() {
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [showSidebarFilters, setShowSidebarFilters] = useState(false);
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [showComparison, setShowComparison] = useState(false);
   const { items: comparisonItems, removeFromComparison } = useComparison();
   const vendors = getVendors();
@@ -180,7 +178,6 @@ function BeveragesContent() {
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onQuickView={() => setQuickViewProduct(product)}
                 />
               ))}
             </div>
@@ -191,14 +188,6 @@ function BeveragesContent() {
           )}
         </div>
       </div>
-
-      {/* Quick View Modal */}
-      {quickViewProduct && (
-        <QuickViewModal
-          product={quickViewProduct}
-          onClose={() => setQuickViewProduct(null)}
-        />
-      )}
 
       {/* Product Comparison */}
       {showComparison && (
