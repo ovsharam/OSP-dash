@@ -67,7 +67,7 @@ function EquipmentContent() {
       filtered = filtered.filter((product) => (product.minOrderQuantity || 0) <= 24);
     }
     if (activeFilters.includes("top-shop")) {
-      filtered = filtered.filter((product) => product.vendor.rating >= 4.8);
+      filtered = filtered.filter((product) => (product.vendor.rating ?? 0) >= 4.8);
     }
 
     return filtered;
