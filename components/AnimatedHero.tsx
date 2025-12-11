@@ -13,7 +13,13 @@ const animatedWords = [
 
 // Using four video files hosted on Dropbox (direct download links)
 // Order: 11760024, 6792650, 11760007, 13960987
-// Use local public assets to avoid CORS issues
+// Prefer Dropbox sources; fall back to local public assets if a video fails (CORS/404/etc.)
+const remoteVideoSources = [
+  "https://www.dropbox.com/scl/fi/bghb84f82ul6h35ma5e07/11760024-uhd_4096_2160_30fps.mp4?dl=1",
+  "https://www.dropbox.com/scl/fi/e2yocnkycud2eikoqrswq/6792650-hd_1920_1080_24fps.mp4?dl=1",
+  "https://www.dropbox.com/scl/fi/g0gy4u38k6i6y33wolecy/11760007-uhd_4096_2160_30fps.mp4?dl=1",
+  "https://www.dropbox.com/scl/fi/4bixveyv85niwvb3tovac/13960987_3840_2160_30fps.mp4?dl=1",
+];
 const localFallbackSources = ["/hero-video-1.mp4", "/hero-video-2.mp4", "/hero-video-3.mp4", "/hero-video-4.mp4"];
 
 export default function AnimatedHero() {
@@ -23,7 +29,7 @@ export default function AnimatedHero() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [resolvedSources, setResolvedSources] = useState<string[]>(localFallbackSources);
+  const [resolvedSources, setResolvedSources] = useState<string[]>(remoteVideoSources);
   // Keep a reference name to avoid stale references in hot-reload
   const videoSources = resolvedSources;
   const videoRefs = [
@@ -170,8 +176,12 @@ export default function AnimatedHero() {
   const handleVideoError = (e: any, index: number) => {
     console.error("Video error:", e, "index:", index, "src:", resolvedSources[index]);
     // fallback to local asset for this index
-    // Already local; just ensure we stay on a valid source
-    setResolvedSources((prev) => [...prev]);
+    // fallback to local asset for this index
+    setResolvedSources((prev) => {
+      const next = [...prev];
+      next[index] = localFallbackSources[index] || prev[index];
+      return next;
+    });
     // Keep rendering videos to allow fallback to load
     setVideoError(false);
   };
@@ -199,6 +209,7 @@ export default function AnimatedHero() {
               <video
                 key={`${index}-${src}`}
                 ref={videoRefs[index]}
+                crossOrigin="anonymous"
                 muted
                 autoPlay
                 controls={false}
