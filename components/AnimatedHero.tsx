@@ -13,8 +13,8 @@ const animatedWords = [
 
 // Using four video files hosted on Dropbox (direct download links)
 // Order: 11760024, 6792650, 11760007, 13960987
-// Prefer Dropbox sources; fall back to local public assets if a video fails (CORS/404/etc.)
-const remoteVideoSources = [
+// Primary: Dropbox sources (user requested). Fallback: local public assets to avoid CORS failures.
+const primaryVideoSources = [
   "https://www.dropbox.com/scl/fi/bghb84f82ul6h35ma5e07/11760024-uhd_4096_2160_30fps.mp4?dl=1",
   "https://www.dropbox.com/scl/fi/e2yocnkycud2eikoqrswq/6792650-hd_1920_1080_24fps.mp4?dl=1",
   "https://www.dropbox.com/scl/fi/g0gy4u38k6i6y33wolecy/11760007-uhd_4096_2160_30fps.mp4?dl=1",
@@ -29,9 +29,7 @@ export default function AnimatedHero() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [resolvedSources, setResolvedSources] = useState<string[]>(remoteVideoSources);
-  // Keep a reference name to avoid stale references in hot-reload
-  const videoSources = resolvedSources;
+  const [resolvedSources, setResolvedSources] = useState<string[]>(primaryVideoSources);
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
     useRef<HTMLVideoElement>(null),
