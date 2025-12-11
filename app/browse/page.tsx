@@ -2,8 +2,7 @@
 
 import { useState, useMemo, useEffect, Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
-import AdvancedFilters from "@/components/AdvancedFilters";
-import QuickViewModal from "@/components/QuickViewModal";
+import SidebarFilters from "@/components/SidebarFilters";
 import ProductComparison from "@/components/ProductComparison";
 import AnimatedHero from "@/components/AnimatedHero";
 import { useComparison } from "@/contexts/ComparisonContext";
@@ -28,8 +27,7 @@ function BrowseContent() {
   const searchParam = searchParams?.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(searchParam);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [showSidebarFilters, setShowSidebarFilters] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const { items: comparisonItems, removeFromComparison } = useComparison();
   const categoryParam = searchParams?.get("category") || "";
@@ -250,112 +248,114 @@ function BrowseContent() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="mt-12 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 pb-8">
-        {/* Headline */}
-        <h1 className="f_t_base f_t_color f_t_displaySSerifRegular mb-6" style={{ "--f_t_color": "#333333" } as React.CSSProperties}>
-          Find the best wholesale organic sodas, equipment & sustainable tableware here
-        </h1>
+      {/* Main Content with Sidebar */}
+      <div className="mt-12 mb-0 flex">
+        {/* Left Sidebar Filters */}
+        {showSidebarFilters && (
+          <div className="w-64 lg:w-80 xl:w-96 flex-shrink-0 border-r border-gray-200 bg-white">
+            <div className="sticky top-24 max-h-[calc(100vh-96px)] overflow-y-auto">
+              <SidebarFilters onFilterChange={() => {}} vendors={vendors} />
+            </div>
+          </div>
+        )}
 
-        {/* Filter Tags */}
-        <div className="flex flex-wrap items-center gap-3 mb-8">
-          <button
-            onClick={() => setShowAdvancedFilters(true)}
-            className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors whitespace-nowrap ${
-              Object.values(filterState).some(v => v !== null && v !== "" && v !== 0 && v !== 10000)
-                ? "bg-black text-white border-black"
-                : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            All filters
-            <svg
-              className="inline-block w-4 h-4 ml-1 align-middle"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-              />
-            </svg>
-          </button>
-          {comparisonItems.length > 0 && (
+        {/* Right Content Area */}
+        <div className={`flex-1 pt-8 pb-8 transition-all duration-300 ${showSidebarFilters ? 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20' : 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20'}`}>
+          {/* Headline */}
+          <h1 className="f_t_base f_t_color f_t_displaySSerifRegular mb-6" style={{ "--f_t_color": "#333333" } as React.CSSProperties}>
+            Find the best wholesale organic sodas, equipment & sustainable tableware here
+          </h1>
+
+          {/* Filter Tags */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
             <button
-              onClick={() => setShowComparison(true)}
-              className="px-4 py-2 rounded-full text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:border-gray-400 whitespace-nowrap"
+              onClick={() => setShowSidebarFilters(!showSidebarFilters)}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors whitespace-nowrap flex items-center ${
+                showSidebarFilters
+                  ? "bg-gray-800 text-white border-gray-800"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+              }`}
             >
-              Compare ({comparisonItems.length})
+              {showSidebarFilters ? (
+                <>
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Hide filters
+                </>
+              ) : (
+                <>
+                  All filters
+                  <svg className="inline-block w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                  </svg>
+                </>
+              )}
             </button>
+            {comparisonItems.length > 0 && (
+              <button
+                onClick={() => setShowComparison(true)}
+                className="px-4 py-2 rounded-full text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:border-gray-400 whitespace-nowrap"
+              >
+                Compare ({comparisonItems.length})
+              </button>
+            )}
+            <button
+              onClick={() => toggleFilter("new")}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                activeFilters.includes("new")
+                  ? "bg-black text-white border-black"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              New this month
+            </button>
+            <button
+              onClick={() => toggleFilter("low-minimum")}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                activeFilters.includes("low-minimum")
+                  ? "bg-black text-white border-black"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              Low minimum
+            </button>
+            <button
+              onClick={() => toggleFilter("bestseller")}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors flex items-center ${
+                activeFilters.includes("bestseller")
+                  ? "bg-black text-white border-black"
+                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+              }`}
+            >
+              <span className="text-green-500 mr-1">★</span> Top Shop
+            </button>
+          </div>
+
+          {/* Products Grid */}
+          {filteredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-12">
+              {filteredProducts.map((product, index) => (
+                <div key={product.id} className="w-full h-full">
+                  <ProductCard product={product} index={index} />
+                </div>
+              ))}
+            </div>
           )}
-          <button
-            onClick={() => toggleFilter("new")}
-            className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-              activeFilters.includes("new")
-                ? "bg-black text-white border-black"
-                : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            New this month
-          </button>
-          <button
-            onClick={() => toggleFilter("low-minimum")}
-            className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-              activeFilters.includes("low-minimum")
-                ? "bg-black text-white border-black"
-                : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            Low minimum
-          </button>
-          <button
-            onClick={() => toggleFilter("bestseller")}
-            className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors flex items-center ${
-              activeFilters.includes("bestseller")
-                ? "bg-black text-white border-black"
-                : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-            }`}
-          >
-            <span className="text-green-500 mr-1">★</span> Top Shop
-          </button>
+
+          {/* Comparison Modal */}
+          {showComparison && (
+            <ProductComparison
+              products={comparisonItems}
+              onRemove={removeFromComparison}
+              onClose={() => setShowComparison(false)}
+            />
+          )}
         </div>
-
-        {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-12">
-            {filteredProducts.map((product, index) => (
-              <div key={product.id} className="w-full h-full">
-                <ProductCard product={product} index={index} />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Advanced Filters Modal */}
-        {showAdvancedFilters && (
-          <AdvancedFilters
-            categories={categoryList}
-            vendors={vendors}
-            onFilterChange={setFilterState}
-            currentFilters={filterState}
-            onClose={() => setShowAdvancedFilters(false)}
-          />
-        )}
-
-        {/* Comparison Modal */}
-        {showComparison && (
-          <ProductComparison
-            products={comparisonItems}
-            onRemove={removeFromComparison}
-            onClose={() => setShowComparison(false)}
-          />
-        )}
       </div>
 
       {/* Mid-Page Promotional Banner */}
@@ -387,7 +387,7 @@ function BrowseContent() {
       </div>
 
       {/* Second Product Grid */}
-      <div className="ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 pb-12">
+      <div className={`${showSidebarFilters ? 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20' : 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20'} mr-4 md:mr-8 lg:mr-12 2xl:mr-20 pb-12`}>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {filteredProducts.slice(0, 6).map((product) => (
             <div key={product.id} className="w-full h-full">
