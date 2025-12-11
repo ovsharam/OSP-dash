@@ -66,7 +66,6 @@ const mockMessages = [
     avatar: "F&F",
     isStarred: true,
     thread: [
-    thread: [
       {
         id: 1,
         sender: "You",
