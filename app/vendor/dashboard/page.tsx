@@ -760,14 +760,49 @@ export default function VendorDashboardPage() {
 
         {/* Customers Tab */}
         {activeTab === "customers" && (() => {
-          const selectedCustomer = selectedCustomerId
+          // First try to find customer in mockCustomers
+          let selectedCustomer = selectedCustomerId
             ? mockCustomers.find((c) => c.id === selectedCustomerId)
             : null;
+
+          // If not found, try to create from message data
+          if (!selectedCustomer && selectedCustomerId && selectedCustomerId.startsWith("TEMP-")) {
+            const message = mockMessages.find((m) => {
+              const tempId = `TEMP-${m.customer.replace(/\s+/g, '-')}`;
+              return tempId === selectedCustomerId;
+            });
+            if (message) {
+              // Create a temporary customer object from message
+              selectedCustomer = {
+                id: selectedCustomerId,
+                businessName: message.customer,
+                contactName: message.lastSender || "Unknown",
+                email: `${message.customer.toLowerCase().replace(/\s+/g, '')}@example.com`,
+                phone: "+1 (555) 000-0000",
+                address: {
+                  street: "",
+                  city: "",
+                  state: "",
+                  zipCode: "",
+                  country: "United States",
+                },
+                businessType: "Business",
+                taxId: "",
+                contractSigned: false,
+                totalOrders: message.orders?.length || 0,
+                totalSpent: message.orders?.reduce((sum, o) => sum + o.total, 0) || 0,
+                status: "active" as const,
+                tags: [],
+                notes: [],
+                orders: [],
+              };
+            }
+          }
 
           // Get orders for selected customer from messages
           const customerOrders = selectedCustomer
             ? mockMessages
-                .filter((m) => m.customer === selectedCustomer.businessName)
+                .filter((m) => m.customer === selectedCustomer!.businessName)
                 .flatMap((m) => m.orders || [])
             : [];
 
@@ -1090,6 +1125,14 @@ export default function VendorDashboardPage() {
                             const customer = mockCustomers.find((c) => c.businessName === message.customer);
                             if (customer) {
                               setSelectedCustomerId(customer.id);
+                              setCustomerDetailTab("orders");
+                              setSelectedOrderId(order.id);
+                              setActiveTab("customers");
+                            } else {
+                              // If customer not found, create a temporary customer ID based on the message customer name
+                              // This allows navigation even if customer doesn't exist in mockCustomers
+                              const tempCustomerId = `TEMP-${message.customer.replace(/\s+/g, '-')}`;
+                              setSelectedCustomerId(tempCustomerId);
                               setCustomerDetailTab("orders");
                               setSelectedOrderId(order.id);
                               setActiveTab("customers");
