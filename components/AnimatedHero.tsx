@@ -31,6 +31,8 @@ export default function AnimatedHero() {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [resolvedSources, setResolvedSources] = useState<string[]>(remoteVideoSources);
+  // Keep a reference name to avoid stale references in hot-reload
+  const videoSources = resolvedSources;
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
     useRef<HTMLVideoElement>(null),
@@ -185,7 +187,8 @@ export default function AnimatedHero() {
       next[index] = localFallbackSources[index] || prev[index];
       return next;
     });
-    setVideoError(true);
+    // Keep rendering videos to allow fallback to load
+    setVideoError(false);
   };
 
   // Ensure videos stay in sync when index changes
@@ -209,7 +212,7 @@ export default function AnimatedHero() {
           <>
             {resolvedSources.map((src, index) => (
               <video
-                key={index}
+                key={`${index}-${src}`}
                 ref={videoRefs[index]}
                 crossOrigin="anonymous"
                 muted
