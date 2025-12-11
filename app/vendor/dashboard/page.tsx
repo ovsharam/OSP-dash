@@ -919,7 +919,7 @@ export default function VendorDashboardPage() {
                             </div>
                           )}
                         </div>
-                        {order.isNew ? (
+                        {(order as any).isNew ? (
                           <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
                             New
                           </span>
