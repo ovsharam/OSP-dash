@@ -62,7 +62,7 @@ export default function VendorDashboardPage() {
 
           {/* Navigation Buttons */}
           {sidebarOpen && (
-            <div className="flex flex-col">
+            <div className="flex space-x-8">
               {[
                 { id: "overview", label: "Overview" },
                 { id: "products", label: "Products" },
