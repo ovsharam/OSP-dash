@@ -10,7 +10,7 @@ import DashboardCharts from "@/components/vendor/DashboardCharts";
 
 export default function VendorDashboardPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "customers" | "profile">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "customers" | "messages" | "profile">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Mock data
@@ -68,6 +68,7 @@ export default function VendorDashboardPage() {
                 { id: "products", label: "Products" },
                 { id: "orders", label: "Orders" },
                 { id: "customers", label: "Customers" },
+                { id: "messages", label: "Messages" },
                 { id: "profile", label: "Profile" },
               ].map((tab) => (
                 <button
@@ -291,6 +292,75 @@ export default function VendorDashboardPage() {
         {activeTab === "customers" && (
           <div>
             <CustomersContent />
+          </div>
+        )}
+
+        {/* Messages Tab */}
+        {activeTab === "messages" && (
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-black">Messages</h2>
+              <button className="bg-black text-white px-4 py-2 rounded font-semibold hover:bg-gray-800 transition-colors">
+                New Message
+              </button>
+            </div>
+            <div className="space-y-4">
+              {/* Mock messages */}
+              {[
+                {
+                  id: 1,
+                  customer: "Restaurant ABC",
+                  subject: "Order ORD-001 inquiry",
+                  preview: "Hi, I have a question about my recent order...",
+                  date: "2 hours ago",
+                  unread: true,
+                },
+                {
+                  id: 2,
+                  customer: "Cafe XYZ",
+                  subject: "Product availability",
+                  preview: "Are the bamboo straws still in stock?",
+                  date: "1 day ago",
+                  unread: true,
+                },
+                {
+                  id: 3,
+                  customer: "Hotel Grand",
+                  subject: "Bulk order request",
+                  preview: "We're interested in placing a large order...",
+                  date: "3 days ago",
+                  unread: false,
+                },
+              ].map((message) => (
+                <div
+                  key={message.id}
+                  className={`border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                    message.unread ? "bg-blue-50 border-blue-200" : ""
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-semibold text-gray-700">
+                          {message.customer.charAt(0)}
+                        </span>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-black">{message.customer}</h3>
+                        <p className="text-sm text-gray-600">{message.subject}</p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-gray-500">{message.date}</span>
+                  </div>
+                  <p className="text-sm text-gray-700 ml-13">{message.preview}</p>
+                  {message.unread && (
+                    <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
+                      New
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
