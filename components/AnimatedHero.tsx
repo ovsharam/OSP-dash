@@ -119,57 +119,9 @@ export default function AnimatedHero() {
   }, []);
 
   // Handle video end - transition to next video with smooth crossfade
-  const handleVideoEnd = async (videoIndex: number) => {
-    // Clear any pending transitions
-    if (transitionTimeoutRef.current) {
-      clearTimeout(transitionTimeoutRef.current);
-    }
-
-    const nextIndex = (videoIndex + 1) % videoSources.length;
-    const currentVideo = videoRefs[videoIndex].current;
-    const nextVideo = videoRefs[nextIndex].current;
-
-    if (!nextVideo || !currentVideo) return;
-
-    try {
-      setIsTransitioning(true);
-
-      // Ensure next video is ready and reset to start
-      if (nextVideo.readyState < 2) {
-        await new Promise<void>((resolve) => {
-          const handleCanPlay = () => {
-            nextVideo.removeEventListener("canplay", handleCanPlay);
-            resolve();
-          };
-          nextVideo.addEventListener("canplay", handleCanPlay);
-          nextVideo.load();
-        });
-      }
-
-      nextVideo.currentTime = 0;
-
-      // Start playing next video before crossfade
-      try {
-        await nextVideo.play();
-      } catch (err) {
-        console.error("Error playing next video:", err);
-      }
-
-      // Begin crossfade
-      setCurrentVideoIndex(nextIndex);
-
-      // Pause and reset current video after transition completes
-      transitionTimeoutRef.current = setTimeout(() => {
-        if (currentVideo) {
-          currentVideo.pause();
-          currentVideo.currentTime = 0;
-        }
-        setIsTransitioning(false);
-      }, 1200); // match transition duration (duration-1200)
-    } catch (err) {
-      console.error("Error transitioning video:", err);
-      setIsTransitioning(false);
-    }
+  const handleVideoEnd = async (_videoIndex: number) => {
+    // No-op because we loop each video continuously.
+    return;
   };
 
   // Handle video errors
@@ -215,7 +167,7 @@ export default function AnimatedHero() {
                 controls={false}
                 playsInline
                 preload="metadata"
-                loop={false}
+                loop
                 onEnded={() => handleVideoEnd(index)}
                 onError={(e) => handleVideoError(e, index)}
                 onLoadedData={() => {
