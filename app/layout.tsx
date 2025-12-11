@@ -5,8 +5,10 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
 import { ComparisonProvider } from "@/contexts/ComparisonContext";
 import { ToastProvider } from "@/contexts/ToastContext";
+import { SignupModalProvider } from "@/contexts/SignupModalContext";
 import Navbar from "@/components/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
+import SignupModal from "@/components/SignupModal";
 
 export const metadata: Metadata = {
   title: "OSP Marketplace - B2B Wholesale Platform",
@@ -29,10 +31,13 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <ComparisonProvider>
-                <ToastProvider />
-                <Navbar />
-                <main>{children}</main>
-                <ScrollToTop />
+                <SignupModalProvider>
+                  <ToastProvider />
+                  <Navbar />
+                  <main>{children}</main>
+                  <ScrollToTop />
+                  <SignupModal />
+                </SignupModalProvider>
               </ComparisonProvider>
             </WishlistProvider>
           </CartProvider>
