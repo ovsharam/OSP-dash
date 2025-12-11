@@ -62,7 +62,7 @@ export default function VendorDashboardPage() {
 
           {/* Navigation Buttons */}
           {sidebarOpen && (
-            <div className="flex space-x-8">
+            <div className="flex flex-col">
               {[
                 { id: "overview", label: "Overview" },
                 { id: "products", label: "Products" },
@@ -73,7 +73,7 @@ export default function VendorDashboardPage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                  className={`py-4 px-2 border-b-2 font-medium text-sm text-left ${
                     activeTab === tab.id
                       ? "border-black text-black"
                       : "border-transparent text-gray-500 hover:text-gray-700"
