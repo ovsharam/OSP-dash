@@ -163,12 +163,12 @@ function MessageThread({ messageId, onBack, replyText, setReplyText }: MessageTh
               }`}
             >
               <div className="flex items-center gap-2 mb-2">
-                <span className="font-semibold text-sm">{msg.sender}</span>
+                <span className={`font-semibold text-sm ${msg.isCustomer ? "text-black" : "text-white"}`}>{msg.sender}</span>
                 <span className={`text-xs ${msg.isCustomer ? "text-gray-500" : "text-gray-300"}`}>
                   {msg.timestamp}
                 </span>
               </div>
-              <p className="text-sm leading-relaxed">{msg.message}</p>
+              <p className={`text-sm leading-relaxed ${msg.isCustomer ? "text-black" : "text-white"}`}>{msg.message}</p>
             </div>
           </div>
         ))}
