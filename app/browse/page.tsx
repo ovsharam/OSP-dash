@@ -219,7 +219,7 @@ function BrowseContent() {
                               width="100%"
                               height="100%"
                               src={vendor.image}
-                              style={{ objectFit: "cover", width: "100%", height: "100%", borderRadius: "var(--radius-fs-component-default)", opacity: 0.7 } as React.CSSProperties}
+                              style={{ objectFit: "cover", width: "100%", height: "100%", borderRadius: "var(--radius-fs-component-default)" } as React.CSSProperties}
                               loading="lazy"
                             />
                           </picture>
