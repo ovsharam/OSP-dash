@@ -37,16 +37,16 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-5"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 md:p-4"
       onClick={onClose}
     >
       <div
         className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 p-5 lg:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 p-4 lg:p-5">
           {/* Image */}
-          <div className="relative aspect-square bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-xl overflow-hidden border border-gray-200">
+          <div className="relative aspect-[4/3] bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200">
             <Image
               src={product.images[0] || "/placeholder-product.jpg"}
               alt={product.name}
@@ -93,11 +93,11 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </button>
             </div>
 
-            <p className="text-sm text-gray-700 mb-4 leading-relaxed line-clamp-4">
+            <p className="text-sm text-gray-700 mb-3 leading-relaxed line-clamp-3">
               {product.description}
             </p>
 
-            <div className="flex items-center flex-wrap gap-3 mb-4">
+            <div className="flex items-center flex-wrap gap-2 mb-3">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-semibold text-gray-900">
                   {isAuthenticated && product.showWholesalePrice !== false
@@ -126,7 +126,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               )}
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-2 mb-4">
               <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(product.minOrderQuantity || 1, quantity - 1))}
@@ -173,9 +173,9 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
             </div>
 
             {product.shippingOptions?.length ? (
-              <div className="mb-6 space-y-2">
+              <div className="mb-4 space-y-2">
                 <p className="text-sm font-semibold text-gray-900">Shipping options</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   {product.shippingOptions.slice(0, 2).map((option) => (
                     <div
                       key={option.id}
@@ -189,7 +189,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </div>
             ) : null}
 
-            <div className="space-y-3 mt-auto">
+            <div className="space-y-3 mt-auto pb-1">
               <button
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
