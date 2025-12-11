@@ -34,3 +34,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Large video files (exceed GitHub 100MB limit - kept locally)
+13960987_3840_2160_30fps.mp4
+public/hero-video-4.mp4
+
