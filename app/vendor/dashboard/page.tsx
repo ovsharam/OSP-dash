@@ -12,73 +12,132 @@ import DashboardCharts from "@/components/vendor/DashboardCharts";
 const mockMessages = [
   {
     id: 1,
-    customer: "Restaurant ABC",
-    subject: "Order ORD-001 inquiry",
-    preview: "Hi, I have a question about my recent order...",
-    date: "2 hours ago",
+    customer: "Artisan Pantry",
+    subject: "Order inquiry",
+    preview: "Sarah: There's an issue w...",
+    date: "5 mins ago",
     unread: true,
+    needsReply: true,
+    lastSender: "Sarah",
+    avatar: "AP",
     thread: [
       {
         id: 1,
-        sender: "Restaurant ABC",
-        message: "Hi, I have a question about my recent order ORD-001. When will it be shipped?",
-        timestamp: "2 hours ago",
+        sender: "Sarah",
+        message: "There's an issue with our recent order. Can you help?",
+        timestamp: "5 mins ago",
+        time: "3:45 PM",
+        date: "August 21, 2025",
         isCustomer: true,
       },
     ],
   },
   {
     id: 2,
-    customer: "Cafe XYZ",
-    subject: "Product availability",
-    preview: "Are the bamboo straws still in stock?",
-    date: "1 day ago",
+    customer: "Heart & Home",
+    subject: "Shipping question",
+    preview: "Marc: Before you ship m...",
+    date: "1 hour ago",
     unread: true,
+    needsReply: true,
+    lastSender: "Marc",
+    avatar: "H&H",
     thread: [
       {
         id: 1,
-        sender: "Cafe XYZ",
-        message: "Are the bamboo straws still in stock? We need 500 units.",
-        timestamp: "1 day ago",
-        isCustomer: true,
-      },
-      {
-        id: 2,
-        sender: "You",
-        message: "Yes, we have them in stock! I can process your order right away.",
-        timestamp: "20 hours ago",
-        isCustomer: false,
-      },
-      {
-        id: 3,
-        sender: "Cafe XYZ",
-        message: "Great! Can you provide a quote for 500 units?",
-        timestamp: "18 hours ago",
+        sender: "Marc",
+        message: "Before you ship my order, can you add 10 more units?",
+        timestamp: "1 hour ago",
+        time: "2:30 PM",
+        date: "August 21, 2025",
         isCustomer: true,
       },
     ],
   },
   {
     id: 3,
-    customer: "Hotel Grand",
-    subject: "Bulk order request",
-    preview: "We're interested in placing a large order...",
-    date: "3 days ago",
+    customer: "Fern and Fable",
+    subject: "Order update",
+    preview: "You: Sounds good, thank...",
+    date: "Yesterday",
     unread: false,
+    needsReply: false,
+    lastSender: "You",
+    avatar: "F&F",
+    isStarred: true,
+    thread: [
     thread: [
       {
         id: 1,
-        sender: "Hotel Grand",
-        message: "We're interested in placing a large order for sustainable tableware. Can you provide bulk pricing?",
-        timestamp: "3 days ago",
-        isCustomer: true,
+        sender: "You",
+        message: "Hi Sarah, your order will ship tomorrow!",
+        timestamp: "Yesterday",
+        time: "2:40 PM",
+        date: "August 21, 2025",
+        isCustomer: false,
+        read: true,
       },
       {
         id: 2,
+        sender: "Sarah",
+        message: "Thank you! Appreciate you expediting. We'll be submitting another order soon.",
+        timestamp: "Yesterday",
+        time: "3:32 PM",
+        date: "August 21, 2025",
+        isCustomer: true,
+      },
+      {
+        id: 3,
         sender: "You",
-        message: "Absolutely! For orders over 1000 units, we offer a 15% discount. I'll send you a detailed quote.",
-        timestamp: "2 days ago",
+        message: "Sounds good, thank you! We appreciate you.",
+        timestamp: "Yesterday",
+        time: "8:24 AM",
+        date: "August 21, 2025",
         isCustomer: false,
+      },
+    ],
+  },
+  {
+    id: 4,
+    customer: "The Woven Willow",
+    subject: "New products",
+    preview: "You: Check out our latest...",
+    date: "Jul 24",
+    unread: false,
+    needsReply: false,
+    lastSender: "You",
+    avatar: "WW",
+    thread: [
+      {
+        id: 1,
+        sender: "You",
+        message: "Check out our latest sustainable tableware collection!",
+        timestamp: "Jul 24",
+        time: "10:15 AM",
+        date: "July 24, 2025",
+        isCustomer: false,
+      },
+    ],
+  },
+  {
+    id: 5,
+    customer: "Legions",
+    subject: "Thank you",
+    preview: "Jeff: Thanks so much, let...",
+    date: "Jun 01",
+    unread: false,
+    needsReply: false,
+    lastSender: "Jeff",
+    avatar: "L",
+    thread: [
+      {
+        id: 1,
+        sender: "Jeff",
+        message: "Thanks so much, let me know when the next shipment arrives!",
+        timestamp: "Jun 01",
+        time: "4:20 PM",
+        date: "June 1, 2025",
+        isCustomer: true,
       },
     ],
   },
@@ -98,12 +157,19 @@ function MessageThread({ messageId, onBack, replyText, setReplyText }: MessageTh
   const handleSendReply = () => {
     if (!replyText.trim()) return;
 
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    const dateStr = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
     const newMessage = {
       id: thread.length + 1,
       sender: "You",
       message: replyText,
       timestamp: "Just now",
+      time: timeStr,
+      date: dateStr,
       isCustomer: false,
+      read: false,
     };
 
     setThread([...thread, newMessage]);
@@ -112,77 +178,100 @@ function MessageThread({ messageId, onBack, replyText, setReplyText }: MessageTh
 
   if (!message) {
     return (
-      <div>
-        <button onClick={onBack} className="mb-4 text-gray-600 hover:text-black">
-          ← Back to Messages
-        </button>
-        <p>Message not found</p>
+      <div className="flex-1 flex items-center justify-center">
+        <p className="text-gray-500">Message not found</p>
       </div>
     );
   }
 
+  // Group messages by date
+  const groupedMessages: { [key: string]: typeof thread } = {};
+  thread.forEach((msg) => {
+    const date = msg.date || "Today";
+    if (!groupedMessages[date]) {
+      groupedMessages[date] = [];
+    }
+    groupedMessages[date].push(msg);
+  });
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-black transition-colors"
+            className="text-gray-600 hover:text-black transition-colors p-1"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-              <span className="text-sm font-semibold text-gray-700">
-                {message.customer.charAt(0)}
-              </span>
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-black">{message.customer}</h2>
-              <p className="text-sm text-gray-600">{message.subject}</p>
-            </div>
-          </div>
+          <h2 className="text-lg font-semibold text-black">{message.customer}</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <button className="p-2 text-gray-600 hover:text-black transition-colors">
+            <svg className="w-5 h-5" fill={message.isStarred ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+          </button>
+          <button className="p-2 text-gray-600 hover:text-black transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+            </svg>
+          </button>
         </div>
       </div>
 
       {/* Message Thread */}
-      <div className="flex-1 overflow-y-auto space-y-4 mb-6 min-h-[400px] max-h-[500px]">
-        {thread.map((msg) => (
-          <div
-            key={msg.id}
-            className={`flex ${msg.isCustomer ? "justify-start" : "justify-end"}`}
-          >
-            <div
-              className={`max-w-[70%] rounded-lg p-4 ${
-                msg.isCustomer
-                  ? "bg-gray-100 text-black"
-                  : "bg-black text-white"
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <span className={`font-semibold text-sm ${msg.isCustomer ? "text-black" : "text-white"}`}>{msg.sender}</span>
-                <span className={`text-xs ${msg.isCustomer ? "text-gray-500" : "text-gray-300"}`}>
-                  {msg.timestamp}
-                </span>
-              </div>
-              <p className={`text-sm leading-relaxed ${msg.isCustomer ? "text-black" : "text-white"}`}>{msg.message}</p>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {Object.entries(groupedMessages).map(([date, messages]) => (
+          <div key={date}>
+            {/* Date Separator */}
+            <div className="flex items-center justify-center my-4">
+              <div className="flex-1 border-t border-gray-200"></div>
+              <span className="px-3 text-xs text-gray-500">{date}</span>
+              <div className="flex-1 border-t border-gray-200"></div>
             </div>
+            {/* Messages for this date */}
+            {messages.map((msg, idx) => (
+              <div
+                key={msg.id}
+                className={`flex ${msg.isCustomer ? "justify-start" : "justify-end"} mb-4`}
+              >
+                <div className={`max-w-[70%] rounded-lg p-3 ${
+                  msg.isCustomer
+                    ? "bg-gray-100 text-black"
+                    : "bg-amber-50 text-black"
+                }`}>
+                  <p className="text-sm leading-relaxed mb-1">{msg.message}</p>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className={msg.isCustomer ? "text-gray-600" : "text-gray-500"}>
+                      {msg.sender}
+                    </span>
+                    <span className={msg.isCustomer ? "text-gray-500" : "text-gray-400"}>
+                      {msg.time || msg.timestamp}
+                    </span>
+                    {!msg.isCustomer && msg.read && (
+                      <span className="text-gray-400">Read</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ))}
       </div>
 
       {/* Reply Input */}
-      <div className="border-t border-gray-200 pt-4">
+      <div className="border-t border-gray-200 p-4">
         <div className="flex gap-3">
           <textarea
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
             placeholder="Type your message..."
-            rows={3}
-            className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black resize-none"
+            rows={2}
+            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black resize-none"
             onKeyDown={(e) => {
               if (e.key === "Enter" && e.ctrlKey) {
                 handleSendReply();
@@ -192,12 +281,11 @@ function MessageThread({ messageId, onBack, replyText, setReplyText }: MessageTh
           <button
             onClick={handleSendReply}
             disabled={!replyText.trim()}
-            className="bg-black text-white px-6 py-2 rounded font-semibold hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed self-end"
+            className="bg-black text-white px-6 py-2 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed self-end"
           >
             Send
           </button>
         </div>
-        <p className="text-xs text-gray-500 mt-2">Press Ctrl+Enter to send</p>
       </div>
     </div>
   );
@@ -494,56 +582,181 @@ export default function VendorDashboardPage() {
 
         {/* Messages Tab */}
         {activeTab === "messages" && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            {selectedMessage === null ? (
-              <>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-black">Messages</h2>
-                  <button className="bg-black text-white px-4 py-2 rounded font-semibold hover:bg-gray-800 transition-colors">
-                    New Message
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  {mockMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      onClick={() => setSelectedMessage(message.id)}
-                      className={`border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
-                        message.unread ? "bg-blue-50 border-blue-200" : ""
-                      }`}
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-semibold text-gray-700">
-                              {message.customer.charAt(0)}
-                            </span>
+          <div className="flex h-[calc(100vh-200px)] bg-white border border-gray-200 rounded-lg overflow-hidden">
+            {/* Left Panel - Message List */}
+            <div className="w-80 border-r border-gray-200 flex flex-col">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-black">Messages</h2>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                {/* Needs reply section */}
+                {mockMessages.filter((m) => m.needsReply).length > 0 && (
+                  <div className="p-4">
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">Needs reply</h3>
+                    <div className="space-y-2">
+                      {mockMessages
+                        .filter((m) => m.needsReply)
+                        .map((message) => (
+                          <div
+                            key={message.id}
+                            onClick={() => setSelectedMessage(message.id)}
+                            className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                              selectedMessage === message.id ? "bg-gray-100" : "hover:bg-gray-50"
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="relative">
+                                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs font-semibold text-gray-700">
+                                    {message.avatar}
+                                  </span>
+                                </div>
+                                {message.unread && (
+                                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between mb-1">
+                                  <h4 className="text-sm font-semibold text-black truncate">
+                                    {message.customer}
+                                  </h4>
+                                  <span className="text-xs text-gray-500 flex-shrink-0 ml-2">
+                                    {message.date}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-gray-600 truncate">{message.preview}</p>
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-black">{message.customer}</h3>
-                            <p className="text-sm text-gray-600">{message.subject}</p>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Other conversations section */}
+                <div className="p-4 border-t border-gray-200">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase mb-3">
+                    Other conversations
+                  </h3>
+                  <div className="space-y-2">
+                    {mockMessages
+                      .filter((m) => !m.needsReply)
+                      .map((message) => (
+                        <div
+                          key={message.id}
+                          onClick={() => setSelectedMessage(message.id)}
+                          className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                            selectedMessage === message.id ? "bg-gray-100" : "hover:bg-gray-50"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-semibold text-gray-700">
+                                {message.avatar}
+                              </span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-1">
+                                <h4 className="text-sm font-semibold text-black truncate">
+                                  {message.customer}
+                                </h4>
+                                <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                                  {message.isStarred && (
+                                    <svg className="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                  )}
+                                  <span className="text-xs text-gray-500">{message.date}</span>
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-600 truncate">{message.preview}</p>
+                            </div>
                           </div>
                         </div>
-                        <span className="text-xs text-gray-500">{message.date}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 ml-13">{message.preview}</p>
-                      {message.unread && (
-                        <span className="inline-block mt-2 px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded">
-                          New
-                        </span>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Center Panel - Chat */}
+            <div className="flex-1 flex flex-col">
+              {selectedMessage === null ? (
+                <div className="flex-1 flex items-center justify-center text-gray-500">
+                  <p>Select a conversation to start messaging</p>
+                </div>
+              ) : (
+                <MessageThread
+                  messageId={selectedMessage}
+                  onBack={() => setSelectedMessage(null)}
+                  replyText={replyText}
+                  setReplyText={setReplyText}
+                />
+              )}
+            </div>
+
+            {/* Right Panel - Recent Orders */}
+            <div className="w-80 border-l border-gray-200 flex flex-col">
+              <div className="p-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-black">Recent orders</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {[
+                  {
+                    id: "HGIODKSLE",
+                    date: "Jun 20",
+                    products: Array(8).fill(null),
+                    status: "New",
+                    isNew: true,
+                  },
+                  {
+                    id: "OIERULKDS",
+                    date: "Jun 18",
+                    products: Array(4).fill(null),
+                    status: "Shipped",
+                    estDelivery: "Est. Jul 01-03",
+                  },
+                  {
+                    id: "OIERULKDS",
+                    date: "Jun 18",
+                    products: Array(8).fill(null),
+                    status: "Shipped",
+                    estDelivery: "Est. Jul 01-03",
+                  },
+                ].map((order, idx) => (
+                  <div key={`${order.id}-${idx}`} className="border border-gray-200 rounded-lg p-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-semibold text-black">Order #{order.id}</span>
+                      <span className="text-xs text-gray-500">{order.date}</span>
+                    </div>
+                    <div className="flex gap-1 mb-2">
+                      {order.products.slice(0, 4).map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0"
+                        >
+                          <span className="text-xs text-gray-500">Img</span>
+                        </div>
+                      ))}
+                      {order.products.length > 4 && (
+                        <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
+                          <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
+                        </div>
                       )}
                     </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <MessageThread
-                messageId={selectedMessage}
-                onBack={() => setSelectedMessage(null)}
-                replyText={replyText}
-                setReplyText={setReplyText}
-              />
-            )}
+                    {order.isNew ? (
+                      <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
+                        New
+                      </span>
+                    ) : (
+                      <p className="text-xs text-gray-600">
+                        {order.status} • {order.estDelivery}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
