@@ -1,0 +1,630 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth page transitions */
+@layer utilities {
+  .page-transition {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button ripple effect */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  
+  /* Faire Typography Variables */
+  --f_t_font_family_serif: nantes, georgia, serif;
+  --f_t_font_family_sans: graphik, helvetica, sans-serif;
+  --f_t_font_weight_200: 200;
+  --f_t_font_weight_400: 400;
+  --f_t_font_weight_500: 500;
+  --f_t_font_weight_700: 700;
+  --f_t_font_size_12: 12px;
+  --f_t_font_size_14: 14px;
+  --f_t_font_size_18: 18px;
+  --f_t_font_size_22: 22px;
+  --f_t_font_size_30: 30px;
+  --f_t_font_size_38: 38px;
+  --f_t_font_size_52: 52px;
+  --f_t_font_size_72: 72px;
+  --f_t_line_height_16: 16px;
+  --f_t_line_height_20: 20px;
+  --f_t_line_height_26: 26px;
+  --f_t_line_height_32: 32px;
+  --f_t_line_height_38: 38px;
+  --f_t_line_height_50: 50px;
+  --f_t_line_height_64: 64px;
+  --f_t_line_height_86: 86px;
+  --f_t_letter_spacing_0: 0;
+  --f_t_letter_spacing_0_15: 0.15px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Faire Typography Base Classes */
+.f_t_base {
+  margin: 0;
+  padding: 0;
+  font-variant-numeric: normal;
+}
+
+.f_t_color {
+  color: var(--f_t_color);
+}
+
+.f_t_inheritColor {
+  color: inherit;
+}
+
+.f_t_maxLines {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: var(--f_t_maxLines);
+  -webkit-line-clamp: var(--f_t_maxLines);
+  max-height: var(--f_t_maxHeight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.f_t_truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.f_t_strikethrough {
+  text-decoration: line-through;
+}
+
+.f_t_underline {
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}
+
+.f_t_dottedUnderline {
+  text-underline-offset: 0.25rem;
+  text-decoration-line: underline;
+  -webkit-text-decoration-line: underline;
+  text-decoration-color: var(--f_t_decorationColor);
+  -webkit-text-decoration-color: var(--f_t_decorationColor);
+  text-decoration-style: dotted;
+  -webkit-text-decoration-style: dotted;
+}
+
+/* Display Serif Styles */
+.f_t_displayXLSerifRegular {
+  font-family: var(--f_t_font_family_serif);
+  font-weight: var(--f_t_font_weight_400);
+  font-size: var(--f_t_font_size_72);
+  line-height: var(--f_t_line_height_86);
+  letter-spacing: var(--f_t_letter_spacing_0);
+}
+
+.f_t_displayLSerifRegular {
+  font-family: var(--f_t_font_family_serif);
+  font-weight: var(--f_t_font_weight_400);
+  font-size: var(--f_t_font_size_52);
+  line-height: var(--f_t_line_height_64);
+  letter-spacing: var(--f_t_letter_spacing_0);
+}
+
+.f_t_displayMSerifRegular {
+  font-family: var(--f_t_font_family_serif);
+  font-weight: var(--f_t_font_weight_400);
+  font-size: var(--f_t_font_size_38);
+  line-height: var(--f_t_line_height_50);
+  letter-spacing: var(--f_t_letter_spacing_0);
+}
+
+.f_t_displaySSerifRegular {
+  font-family: var(--f_t_font_family_serif);
+  font-weight: var(--f_t_font_weight_400);
+  font-size: var(--f_t_font_size_30);
+  line-height: var(--f_t_line_height_38);
+  letter-spacing: var(--f_t_letter_spacing_0);
+}
+
+/* Display Sans Styles */
+.f_t_displaySSansRegular {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_200);
+  font-size: var(--f_t_font_size_30);
+  line-height: var(--f_t_line_height_38);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+.f_t_displaySSansSemiBold {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_700);
+  font-size: var(--f_t_font_size_30);
+  line-height: var(--f_t_line_height_38);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+/* Header Styles */
+.f_t_pageHeaderSerifRegular {
+  font-family: var(--f_t_font_family_serif);
+  font-weight: var(--f_t_font_weight_400);
+  font-size: var(--f_t_font_size_22);
+  line-height: var(--f_t_line_height_32);
+  letter-spacing: var(--f_t_letter_spacing_0);
+}
+
+.f_t_sectionHeaderSansMedium {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_400);
+  font-size: var(--f_t_font_size_22);
+  line-height: var(--f_t_line_height_32);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+/* Subheading Styles */
+.f_t_subheadingSansMedium {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_500);
+  font-size: var(--f_t_font_size_18);
+  line-height: var(--f_t_line_height_26);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+.f_t_subheadingSansRegular {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_200);
+  font-size: var(--f_t_font_size_18);
+  line-height: var(--f_t_line_height_26);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+/* Paragraph Styles */
+.f_t_paragraphSansMedium {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_500);
+  font-size: var(--f_t_font_size_14);
+  line-height: var(--f_t_line_height_20);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+.f_t_paragraphSansRegular {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_200);
+  font-size: var(--f_t_font_size_14);
+  line-height: var(--f_t_line_height_20);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+/* Label Styles */
+.f_t_labelSansRegular {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_200);
+  font-size: var(--f_t_font_size_12);
+  line-height: var(--f_t_line_height_16);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+.f_t_labelSansMedium {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_500);
+  font-size: var(--f_t_font_size_12);
+  line-height: var(--f_t_line_height_16);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+}
+
+/* Default body text style - matches Faire paragraph style */
+body, p {
+  font-family: var(--f_t_font_family_sans);
+  font-weight: var(--f_t_font_weight_500);
+  font-size: var(--f_t_font_size_14);
+  line-height: var(--f_t_line_height_20);
+  letter-spacing: var(--f_t_letter_spacing_0_15);
+  color: #333333;
+}
+
+/* Override Tailwind defaults for headings to use Faire typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--f_t_font_family_serif) !important;
+  font-weight: var(--f_t_font_weight_400) !important;
+  color: #333333 !important;
+  letter-spacing: var(--f_t_letter_spacing_0) !important;
+}
+
+h1 {
+  font-size: var(--f_t_font_size_30) !important;
+  line-height: var(--f_t_line_height_38) !important;
+}
+
+h2 {
+  font-size: var(--f_t_font_size_22) !important;
+  line-height: var(--f_t_line_height_32) !important;
+}
+
+h3 {
+  font-size: var(--f_t_font_size_18) !important;
+  line-height: var(--f_t_line_height_26) !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Ensure all input and textarea text is black */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="url"],
+textarea,
+select {
+  color: #000000 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Hide scrollbar for category scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Faire Spacing System */
+.f_spacer_base {
+  display: block;
+}
+
+.f_spacer_single_value_fb {
+  flex-basis: var(--f_spacer_size_mobile);
+}
+
+.f_spacer_single_value_min_width {
+  min-width: var(--f_spacer_size_mobile);
+}
+
+.f_spacer_single_value_min_height {
+  min-height: var(--f_spacer_size_mobile);
+}
+
+.f_spacer_variable_fb {
+  flex-basis: var(--f_spacer_size_mobile);
+}
+
+.f_spacer_variable_min_width {
+  min-width: var(--f_spacer_size_mobile);
+}
+
+.f_spacer_variable_min_height {
+  min-height: var(--f_spacer_size_mobile);
+}
+
+@media (min-width: 768px) {
+  .f_spacer_variable_fb {
+    flex-basis: var(--f_spacer_size_tablet);
+  }
+  .f_spacer_variable_min_width {
+    min-width: var(--f_spacer_size_tablet);
+  }
+  .f_spacer_variable_min_height {
+    min-height: var(--f_spacer_size_tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .f_spacer_variable_fb {
+    flex-basis: var(--f_spacer_size_desktop);
+  }
+  .f_spacer_variable_min_width {
+    min-width: var(--f_spacer_size_desktop);
+  }
+  .f_spacer_variable_min_height {
+    min-height: var(--f_spacer_size_desktop);
+  }
+}
+
+@media (min-width: 1440px) {
+  .f_spacer_variable_fb {
+    flex-basis: var(--f_spacer_size_xlarge);
+  }
+  .f_spacer_variable_min_width {
+    min-width: var(--f_spacer_size_xlarge);
+  }
+  .f_spacer_variable_min_height {
+    min-height: var(--f_spacer_size_xlarge);
+  }
+}
+
+@media (min-width: 1920px) {
+  .f_spacer_variable_fb {
+    flex-basis: var(--f_spacer_size_xxlarge);
+  }
+  .f_spacer_variable_min_width {
+    min-width: var(--f_spacer_size_xxlarge);
+  }
+  .f_spacer_variable_min_height {
+    min-height: var(--f_spacer_size_xxlarge);
+  }
+}
+
+/* Faire Flex System */
+.f_flex_base {
+  display: flex;
+}
+
+.f_flex_single_value_direction {
+  flex-direction: var(--f_flex_direction_mobile);
+}
+
+.f_flex_single_value_justify {
+  justify-content: var(--f_flex_justify_mobile);
+}
+
+.f_flex_single_value_align {
+  align-items: var(--f_flex_align_mobile);
+}
+
+.f_flex_single_value_gap {
+  gap: var(--f_flex_gap_mobile);
+}
+
+.f_flex_variable_direction {
+  flex-direction: var(--f_flex_direction_mobile);
+}
+
+.f_flex_variable_justify {
+  justify-content: var(--f_flex_justify_mobile);
+}
+
+.f_flex_variable_align {
+  align-items: var(--f_flex_align_mobile);
+}
+
+.f_flex_variable_gap {
+  gap: var(--f_flex_gap_mobile);
+}
+
+@media (min-width: 768px) {
+  .f_flex_variable_direction {
+    flex-direction: var(--f_flex_direction_tablet);
+  }
+  .f_flex_variable_justify {
+    justify-content: var(--f_flex_justify_tablet);
+  }
+  .f_flex_variable_align {
+    align-items: var(--f_flex_align_tablet);
+  }
+  .f_flex_variable_gap {
+    gap: var(--f_flex_gap_tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .f_flex_variable_direction {
+    flex-direction: var(--f_flex_direction_desktop);
+  }
+  .f_flex_variable_justify {
+    justify-content: var(--f_flex_justify_desktop);
+  }
+  .f_flex_variable_align {
+    align-items: var(--f_flex_align_desktop);
+  }
+  .f_flex_variable_gap {
+    gap: var(--f_flex_gap_desktop);
+  }
+}
+
+@media (min-width: 1440px) {
+  .f_flex_variable_direction {
+    flex-direction: var(--f_flex_direction_xlarge);
+  }
+  .f_flex_variable_justify {
+    justify-content: var(--f_flex_justify_xlarge);
+  }
+  .f_flex_variable_align {
+    align-items: var(--f_flex_align_xlarge);
+  }
+  .f_flex_variable_gap {
+    gap: var(--f_flex_gap_xlarge);
+  }
+}
+
+@media (min-width: 1920px) {
+  .f_flex_variable_direction {
+    flex-direction: var(--f_flex_direction_xxlarge);
+  }
+  .f_flex_variable_justify {
+    justify-content: var(--f_flex_justify_xxlarge);
+  }
+  .f_flex_variable_align {
+    align-items: var(--f_flex_align_xxlarge);
+  }
+  .f_flex_variable_gap {
+    gap: var(--f_flex_gap_xxlarge);
+  }
+}
+
+/* Faire Component Default Radius */
+:root {
+  --radius-fs-component-default: 0.5rem;
+}
+
+.rounded-fs-component-default {
+  border-radius: var(--radius-fs-component-default);
+}
+
+/* Faire Carousel Classes */
+.f_c_carousel_wrapper_base {
+  position: relative;
+}
+
+.f_c_carousel_wrapper_mobile {
+  overflow: hidden;
+}
+
+.f_c_outer_container {
+  overflow: hidden;
+}
+
+.f_c_inner_container {
+  display: flex;
+  transition: transform 0.3s ease;
+}
+
+.f_c_slide_width_free_flow {
+  flex-shrink: 0;
+}
+
+.f_c_slide_gap {
+  margin-right: var(--f-c-item-gap-mobile, 8px);
+}
+
+@media (min-width: 768px) {
+  .f_c_slide_gap {
+    margin-right: var(--f-c-item-gap-tablet, 8px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .f_c_slide_gap {
+    margin-right: var(--f-c-item-gap-desktop, 8px);
+  }
+}
+
+@media (min-width: 1440px) {
+  .f_c_slide_gap {
+    margin-right: var(--f-c-item-gap-xlarge, 8px);
+  }
+}
+
+@media (min-width: 1920px) {
+  .f_c_slide_gap {
+    margin-right: var(--f-c-item-gap-xxlarge, 8px);
+  }
+}
+
+/* Faire Border Colors */
+:root {
+  --fs-border-muted: #e0e0e0;
+  --fs-action-border-default: #000000;
+  --fs-surface-primary-inverse: #000000;
+}
+
+/* Fix for p-4! class - padding with important */
+.p-4\!,
+[class*="p-4!"] {
+  padding: 1rem !important;
+}
+
+/* Ensure consistent card sizing */
+.grid > * {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.grid > * > * {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Ensure brand card images are square */
+.rounded-fs-component-default {
+  position: relative;
+}
+
+.rounded-fs-component-default.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+.rounded-fs-component-default picture {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+}
+
+.rounded-fs-component-default picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Ensure product cards are consistent */
+.group.block.relative {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.group.block.relative > a {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure all images maintain aspect ratio */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+}
+
