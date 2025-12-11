@@ -20,6 +20,37 @@ const mockMessages = [
     needsReply: true,
     lastSender: "Sarah",
     avatar: "AP",
+    orders: [
+      {
+        id: "AP-ORD-001",
+        date: "Jun 20",
+        products: [
+          "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+          "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+          "/images/orders/pexels-micheile-10045929.jpg",
+          "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+          "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+          "/images/orders/pexels-oskelaq-1009158.jpg",
+        ],
+        status: "New",
+        isNew: true,
+        total: 1250.00,
+        customerName: "Artisan Pantry",
+      },
+      {
+        id: "AP-ORD-002",
+        date: "Jun 15",
+        products: [
+          "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+          "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+          "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+        ],
+        status: "Shipped",
+        estDelivery: "Est. Jun 25-27",
+        total: 890.50,
+        customerName: "Artisan Pantry",
+      },
+    ],
     thread: [
       {
         id: 1,
@@ -42,6 +73,34 @@ const mockMessages = [
     needsReply: true,
     lastSender: "Marc",
     avatar: "H&H",
+    orders: [
+      {
+        id: "HH-ORD-001",
+        date: "Jun 18",
+        products: [
+          "/images/orders/pexels-oskelaq-1009158.jpg",
+          "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+          "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+          "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+        ],
+        status: "Shipped",
+        estDelivery: "Est. Jul 01-03",
+        total: 1450.00,
+        customerName: "Heart & Home",
+      },
+      {
+        id: "HH-ORD-002",
+        date: "Jun 10",
+        products: [
+          "/images/orders/pexels-micheile-10045929.jpg",
+          "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+          "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+        ],
+        status: "Delivered",
+        total: 675.00,
+        customerName: "Heart & Home",
+      },
+    ],
     thread: [
       {
         id: 1,
@@ -65,6 +124,26 @@ const mockMessages = [
     lastSender: "You",
     avatar: "F&F",
     isStarred: true,
+    orders: [
+      {
+        id: "FF-ORD-001",
+        date: "Jun 20",
+        products: [
+          "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+          "/images/orders/pexels-oskelaq-1009158.jpg",
+          "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+          "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+          "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+          "/images/orders/pexels-micheile-10045929.jpg",
+          "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+          "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+        ],
+        status: "New",
+        isNew: true,
+        total: 2340.00,
+        customerName: "Fern and Fable",
+      },
+    ],
     thread: [
       {
         id: 1,
@@ -106,6 +185,21 @@ const mockMessages = [
     needsReply: false,
     lastSender: "You",
     avatar: "WW",
+    orders: [
+      {
+        id: "WW-ORD-001",
+        date: "Jul 20",
+        products: [
+          "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+          "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+          "/images/orders/pexels-oskelaq-1009158.jpg",
+        ],
+        status: "Shipped",
+        estDelivery: "Est. Jul 28-30",
+        total: 980.00,
+        customerName: "The Woven Willow",
+      },
+    ],
     thread: [
       {
         id: 1,
@@ -128,6 +222,21 @@ const mockMessages = [
     needsReply: false,
     lastSender: "Jeff",
     avatar: "L",
+    orders: [
+      {
+        id: "L-ORD-001",
+        date: "May 28",
+        products: [
+          "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+          "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+          "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+          "/images/orders/pexels-micheile-10045929.jpg",
+        ],
+        status: "Delivered",
+        total: 1120.00,
+        customerName: "Legions",
+      },
+    ],
     thread: [
       {
         id: 1,
@@ -296,6 +405,7 @@ export default function VendorDashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<number | null>(null);
   const [replyText, setReplyText] = useState("");
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   // Mock data
   const stats = {
@@ -514,63 +624,137 @@ export default function VendorDashboardPage() {
         )}
 
         {/* Orders Tab */}
-        {activeTab === "orders" && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-black mb-6">All Orders</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                      Order ID
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                      Customer
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Date</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Total</th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                      Status
-                    </th>
-                    <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.recentOrders.map((order) => (
-                    <tr key={order.id} className="border-b border-gray-100">
-                      <td className="py-3 px-4 text-sm text-gray-900">{order.id}</td>
-                      <td className="py-3 px-4 text-sm text-gray-700">{order.customerName}</td>
-                      <td className="py-3 px-4 text-sm text-gray-700">
-                        {order.orderDate.toLocaleDateString()}
-                      </td>
-                      <td className="py-3 px-4 text-sm font-semibold text-black">
-                        ${order.total.toFixed(2)}
-                      </td>
-                      <td className="py-3 px-4">
+        {activeTab === "orders" && (() => {
+          // Combine all orders from all messages
+          const allOrders = mockMessages.flatMap((message) => message.orders || []);
+          const selectedOrder = allOrders.find((o) => o.id === selectedOrderId);
+
+          return (
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h2 className="text-xl font-bold text-black mb-6">All Orders</h2>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                        Order ID
+                      </th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                        Customer
+                      </th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Date</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Total</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                        Status
+                      </th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allOrders.map((order, idx) => (
+                      <tr
+                        key={`${order.id}-${idx}`}
+                        className={`border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
+                          selectedOrderId === order.id ? "bg-blue-50" : ""
+                        }`}
+                        onClick={() => setSelectedOrderId(selectedOrderId === order.id ? null : order.id)}
+                      >
+                        <td className="py-3 px-4 text-sm text-gray-900">{order.id}</td>
+                        <td className="py-3 px-4 text-sm text-gray-700">{order.customerName}</td>
+                        <td className="py-3 px-4 text-sm text-gray-700">{order.date}</td>
+                        <td className="py-3 px-4 text-sm font-semibold text-black">
+                          ${order.total.toFixed(2)}
+                        </td>
+                        <td className="py-3 px-4">
+                          <span
+                            className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
+                              order.status === "Delivered"
+                                ? "bg-green-100 text-green-800"
+                                : order.status === "Shipped"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4">
+                          <button className="text-sm text-gray-600 hover:text-black">View</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Order Details Section - Show when an order is selected */}
+              {selectedOrder && (
+                <div className="mt-6 border-t border-gray-200 pt-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-black mb-4">
+                      Order Details: {selectedOrder.id}
+                    </h3>
+                    <div className="grid grid-cols-2 gap-6 mb-6">
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Customer</h4>
+                        <p className="text-sm text-black">{selectedOrder.customerName}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Order Date</h4>
+                        <p className="text-sm text-black">{selectedOrder.date}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Status</h4>
                         <span
                           className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
-                            order.status === "delivered"
+                            selectedOrder.status === "Delivered"
                               ? "bg-green-100 text-green-800"
-                              : order.status === "shipped"
+                              : selectedOrder.status === "Shipped"
                               ? "bg-blue-100 text-blue-800"
                               : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
-                          {order.status}
+                          {selectedOrder.status}
                         </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <button className="text-sm text-gray-600 hover:text-black">View</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Total</h4>
+                        <p className="text-sm font-semibold text-black">
+                          ${selectedOrder.total.toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-3">Products</h4>
+                      <div className="flex gap-2 flex-wrap">
+                        {selectedOrder.products.map((img, i) => (
+                          <div
+                            key={i}
+                            className="w-20 h-20 rounded overflow-hidden bg-gray-200"
+                          >
+                            <img
+                              src={img}
+                              alt={`Product ${i + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {selectedOrder.estDelivery && (
+                      <div className="mt-4">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-2">Estimated Delivery</h4>
+                        <p className="text-sm text-black">{selectedOrder.estDelivery}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Customers Tab */}
         {activeTab === "customers" && (
@@ -695,96 +879,61 @@ export default function VendorDashboardPage() {
             </div>
 
             {/* Right Panel - Recent Orders - Only show when message is selected */}
-            {selectedMessage !== null && (
-              <div className="w-80 border-l border-gray-200 flex flex-col">
-                <div className="p-4 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-black">Recent orders</h3>
-                </div>
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {[
-                    {
-                      id: "HGIODKSLE",
-                      date: "Jun 20",
-                      products: [
-                        "/images/orders/pexels-introspectivedsgn-30652943.jpg",
-                        "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
-                        "/images/orders/pexels-micheile-10045929.jpg",
-                        "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
-                        "/images/orders/pexels-olenkabohovyk-12851541.jpg",
-                        "/images/orders/pexels-oskelaq-1009158.jpg",
-                        "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
-                        "/images/orders/pexels-introspectivedsgn-30652943.jpg",
-                      ],
-                      status: "New",
-                      isNew: true,
-                    },
-                    {
-                      id: "OIERULKDS",
-                      date: "Jun 18",
-                      products: [
-                        "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
-                        "/images/orders/pexels-micheile-10045929.jpg",
-                        "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
-                        "/images/orders/pexels-olenkabohovyk-12851541.jpg",
-                      ],
-                      status: "Shipped",
-                      estDelivery: "Est. Jul 01-03",
-                    },
-                    {
-                      id: "OIERULKDS",
-                      date: "Jun 18",
-                      products: [
-                        "/images/orders/pexels-oskelaq-1009158.jpg",
-                        "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
-                        "/images/orders/pexels-introspectivedsgn-30652943.jpg",
-                        "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
-                        "/images/orders/pexels-micheile-10045929.jpg",
-                        "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
-                        "/images/orders/pexels-olenkabohovyk-12851541.jpg",
-                        "/images/orders/pexels-oskelaq-1009158.jpg",
-                      ],
-                      status: "Shipped",
-                      estDelivery: "Est. Jul 01-03",
-                    },
-                  ].map((order, idx) => (
-                    <div key={`${order.id}-${idx}`} className="border border-gray-200 rounded-lg p-3">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-semibold text-black">Order #{order.id}</span>
-                        <span className="text-xs text-gray-500">{order.date}</span>
-                      </div>
-                      <div className="flex gap-1 mb-2">
-                        {order.products.slice(0, 4).map((img, i) => (
-                          <div
-                            key={i}
-                            className="w-12 h-12 rounded overflow-hidden flex-shrink-0 bg-gray-200 relative"
-                          >
-                            <img
-                              src={img}
-                              alt={`Product ${i + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ))}
-                        {order.products.length > 4 && (
-                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
-                            <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
-                          </div>
+            {selectedMessage !== null && (() => {
+              const selectedCustomerOrders = mockMessages.find((m) => m.id === selectedMessage)?.orders || [];
+              return selectedCustomerOrders.length > 0 ? (
+                <div className="w-80 border-l border-gray-200 flex flex-col">
+                  <div className="p-4 border-b border-gray-200">
+                    <h3 className="text-lg font-semibold text-black">Recent orders</h3>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {selectedCustomerOrders.map((order) => (
+                      <div
+                        key={order.id}
+                        onClick={() => {
+                          setSelectedOrderId(order.id);
+                          setActiveTab("orders");
+                        }}
+                        className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-semibold text-black">Order #{order.id}</span>
+                          <span className="text-xs text-gray-500">{order.date}</span>
+                        </div>
+                        <div className="flex gap-1 mb-2">
+                          {order.products.slice(0, 4).map((img, i) => (
+                            <div
+                              key={i}
+                              className="w-12 h-12 rounded overflow-hidden flex-shrink-0 bg-gray-200 relative"
+                            >
+                              <img
+                                src={img}
+                                alt={`Product ${i + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ))}
+                          {order.products.length > 4 && (
+                            <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
+                              <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
+                            </div>
+                          )}
+                        </div>
+                        {order.isNew ? (
+                          <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
+                            New
+                          </span>
+                        ) : (
+                          <p className="text-xs text-gray-600">
+                            {order.status} • {order.estDelivery || ""}
+                          </p>
                         )}
                       </div>
-                      {order.isNew ? (
-                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
-                          New
-                        </span>
-                      ) : (
-                        <p className="text-xs text-gray-600">
-                          {order.status} • {order.estDelivery}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : null;
+            })()}
           </div>
         )}
 
