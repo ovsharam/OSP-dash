@@ -172,11 +172,11 @@ function BrowseContent() {
                             }}
                             className={`f_t_base f_t_color hover:border-fs-action-border-default focus-visible:border-fs-action-border-default flex h-10 cursor-pointer items-center justify-center rounded-[40px] border p-4! f_t_paragraphSansRegular ${
                               isActive
-                                ? "border-fs-action-border-default bg-fs-surface-primary-inverse"
+                                ? "border-fs-action-border-default bg-white"
                                 : "border-fs-border-muted"
                             }`}
                             style={{
-                              "--f_t_color": isActive ? "#ffffff" : "#333333",
+                              "--f_t_color": "#333333",
                               "--f_t_decorationColor": "#757575"
                             } as React.CSSProperties}
                           >
