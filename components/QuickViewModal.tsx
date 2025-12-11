@@ -41,12 +41,12 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-3xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 p-4 lg:p-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4 p-4">
           {/* Image */}
-          <div className="relative aspect-[4/3] bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200">
+          <div className="relative aspect-[3/2] bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200">
             <Image
               src={product.images[0] || "/placeholder-product.jpg"}
               alt={product.name}
@@ -59,12 +59,12 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
 
           {/* Details */}
           <div className="flex flex-col h-full">
-            <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-start justify-between gap-3 mb-3">
               <div className="space-y-1">
                 <p className="text-xs uppercase tracking-wide text-gray-500">
                   {product.vendor.name || "Featured vendor"}
                 </p>
-                <h2 className="text-2xl font-semibold text-gray-900 leading-snug">{product.name}</h2>
+                <h2 className="text-xl font-semibold text-gray-900 leading-snug">{product.name}</h2>
                 {product.vendor.rating && (
                   <div className="flex items-center text-sm text-gray-800 space-x-2">
                     <span className="inline-flex items-center gap-1">
@@ -93,18 +93,18 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </button>
             </div>
 
-            <p className="text-sm text-gray-700 mb-3 leading-relaxed line-clamp-3">
+            <p className="text-sm text-gray-700 mb-2 leading-relaxed line-clamp-2">
               {product.description}
             </p>
 
             <div className="flex items-center flex-wrap gap-2 mb-3">
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-semibold text-gray-900">
+                <span className="text-xl font-semibold text-gray-900">
                   {isAuthenticated && product.showWholesalePrice !== false
                     ? `$${product.price.toFixed(2)}`
                     : "Unlock wholesale price"}
                 </span>
-                {product.compareAtPrice && (
+                {isAuthenticated && product.showWholesalePrice !== false && product.compareAtPrice && (
                   <span className="text-sm text-gray-500 line-through">
                     ${product.compareAtPrice.toFixed(2)}
                   </span>
@@ -126,11 +126,11 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               )}
             </div>
 
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(product.minOrderQuantity || 1, quantity - 1))}
-                  className="px-3 py-2 hover:bg-gray-50 text-gray-700"
+                  className="px-3 py-2 hover:bg-gray-50 text-gray-700 text-sm"
                   aria-label="Decrease quantity"
                 >
                   -
@@ -142,11 +142,11 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                   onChange={(e) =>
                     setQuantity(Math.max(product.minOrderQuantity || 1, Number(e.target.value)))
                   }
-                  className="w-16 text-center border-0 focus:outline-none text-black"
+                  className="w-14 text-center border-0 focus:outline-none text-black text-sm"
                 />
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-3 py-2 hover:bg-gray-50 text-gray-700"
+                  className="px-3 py-2 hover:bg-gray-50 text-gray-700 text-sm"
                   aria-label="Increase quantity"
                 >
                   +
@@ -154,7 +154,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </div>
               <button
                 onClick={handleWishlistToggle}
-                className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+                className={`inline-flex items-center gap-2 px-3 py-2 rounded-md border transition-colors ${
                   inWishlist
                     ? "border-red-500 text-red-500 bg-red-50"
                     : "border-gray-300 text-gray-500 hover:border-gray-400"
@@ -173,7 +173,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
             </div>
 
             {product.shippingOptions?.length ? (
-              <div className="mb-4 space-y-2">
+              <div className="mb-3 space-y-2">
                 <p className="text-sm font-semibold text-gray-900">Shipping options</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   {product.shippingOptions.slice(0, 2).map((option) => (
@@ -189,18 +189,18 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </div>
             ) : null}
 
-            <div className="space-y-3 mt-auto pb-1">
+            <div className="space-y-2.5 mt-auto pb-1">
               <button
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
-                className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-black text-white py-2.5 rounded-md font-semibold hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors text-sm"
               >
                 {product.inStock ? "Add to Cart" : "Out of Stock"}
               </button>
               <Link
                 href={`/products/${product.id}`}
                 onClick={onClose}
-                className="block w-full text-center border-2 border-black text-black py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                className="block w-full text-center border-2 border-black text-black py-2.5 rounded-md font-semibold hover:bg-gray-50 transition-colors text-sm"
               >
                 View full details
               </Link>
