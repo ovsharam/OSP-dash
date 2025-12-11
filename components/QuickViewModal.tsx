@@ -41,12 +41,12 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[53vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[53vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4 p-4">
+        <div className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] auto-rows-[minmax(0,1fr)] gap-3 lg:gap-4 p-4 h-full">
           {/* Image */}
-          <div className="relative aspect-[4/5] bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200">
+          <div className="relative aspect-[4/5] md:h-full bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200 min-h-0">
             <Image
               src={product.images[0] || "/placeholder-product.jpg"}
               alt={product.name}
@@ -58,13 +58,15 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
           </div>
 
           {/* Details */}
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full min-h-0 overflow-y-auto">
             <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="space-y-1">
-                <p className="text-xs uppercase tracking-wide text-gray-500">
+              <div className="space-y-1 min-w-0">
+                <p className="text-xs uppercase tracking-wide text-gray-500 break-words">
                   {product.vendor.name || "Featured vendor"}
                 </p>
-                <h2 className="text-lg font-semibold text-gray-900 leading-snug">{product.name}</h2>
+                <h2 className="text-lg font-semibold text-gray-900 leading-snug break-words">
+                  {product.name}
+                </h2>
                 {product.vendor.rating && (
                   <div className="flex items-center text-sm text-gray-800 space-x-2">
                     <span className="inline-flex items-center gap-1">
