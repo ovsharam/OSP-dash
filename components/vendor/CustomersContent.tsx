@@ -5,7 +5,11 @@ import Link from "next/link";
 import { mockCustomers } from "@/lib/mockCustomerData";
 import { Customer } from "@/types";
 
-export default function CustomersContent() {
+interface CustomersContentProps {
+  onCustomerSelect?: (customerId: string) => void;
+}
+
+export default function CustomersContent({ onCustomerSelect }: CustomersContentProps = {}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | Customer["status"]>("all");
   const [tagFilter, setTagFilter] = useState<string>("all");
@@ -131,12 +135,21 @@ export default function CustomersContent() {
                 <tr key={customer.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-4">
                     <div>
-                      <Link
-                        href={`/vendor/customers/${customer.id}`}
-                        className="font-semibold text-black hover:underline"
-                      >
-                        {customer.businessName}
-                      </Link>
+                      {onCustomerSelect ? (
+                        <button
+                          onClick={() => onCustomerSelect(customer.id)}
+                          className="font-semibold text-black hover:underline text-left"
+                        >
+                          {customer.businessName}
+                        </button>
+                      ) : (
+                        <Link
+                          href={`/vendor/customers/${customer.id}`}
+                          className="font-semibold text-black hover:underline"
+                        >
+                          {customer.businessName}
+                        </Link>
+                      )}
                       <p className="text-xs text-gray-500">{customer.businessType}</p>
                     </div>
                   </td>
@@ -171,12 +184,21 @@ export default function CustomersContent() {
                     )}
                   </td>
                   <td className="py-3 px-4">
-                    <Link
-                      href={`/vendor/customers/${customer.id}`}
-                      className="text-sm text-black hover:underline"
-                    >
-                      View Details
-                    </Link>
+                    {onCustomerSelect ? (
+                      <button
+                        onClick={() => onCustomerSelect(customer.id)}
+                        className="text-sm text-black hover:underline"
+                      >
+                        View Details
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/vendor/customers/${customer.id}`}
+                        className="text-sm text-black hover:underline"
+                      >
+                        View Details
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}

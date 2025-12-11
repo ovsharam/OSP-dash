@@ -406,6 +406,8 @@ export default function VendorDashboardPage() {
   const [selectedMessage, setSelectedMessage] = useState<number | null>(null);
   const [replyText, setReplyText] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [customerDetailTab, setCustomerDetailTab] = useState<"overview" | "orders">("overview");
 
   // Mock data
   const stats = {
@@ -757,11 +759,201 @@ export default function VendorDashboardPage() {
         })()}
 
         {/* Customers Tab */}
-        {activeTab === "customers" && (
-          <div>
-            <CustomersContent />
-          </div>
-        )}
+        {activeTab === "customers" && (() => {
+          const selectedCustomer = selectedCustomerId
+            ? mockCustomers.find((c) => c.id === selectedCustomerId)
+            : null;
+
+          // Get orders for selected customer from messages
+          const customerOrders = selectedCustomer
+            ? mockMessages
+                .filter((m) => m.customer === selectedCustomer.businessName)
+                .flatMap((m) => m.orders || [])
+            : [];
+
+          return selectedCustomer ? (
+            <div className="bg-white border border-gray-200 rounded-lg">
+              {/* Customer Header */}
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => setSelectedCustomerId(null)}
+                      className="text-gray-600 hover:text-black transition-colors p-1"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <div>
+                      <h2 className="text-2xl font-bold text-black">{selectedCustomer.businessName}</h2>
+                      <p className="text-sm text-gray-600">{selectedCustomer.businessType}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Customer Tabs */}
+              <div className="border-b border-gray-200">
+                <div className="flex gap-4 px-6">
+                  <button
+                    onClick={() => setCustomerDetailTab("overview")}
+                    className={`py-4 px-2 border-b-2 transition-colors ${
+                      customerDetailTab === "overview"
+                        ? "border-black text-black font-semibold"
+                        : "border-transparent text-gray-600 hover:text-black"
+                    }`}
+                  >
+                    Overview
+                  </button>
+                  <button
+                    onClick={() => setCustomerDetailTab("orders")}
+                    className={`py-4 px-2 border-b-2 transition-colors ${
+                      customerDetailTab === "orders"
+                        ? "border-black text-black font-semibold"
+                        : "border-transparent text-gray-600 hover:text-black"
+                    }`}
+                  >
+                    Orders
+                  </button>
+                </div>
+              </div>
+
+              {/* Customer Content */}
+              <div className="p-6">
+                {customerDetailTab === "overview" && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Contact Information</h3>
+                        <p className="text-sm text-black">{selectedCustomer.contactName}</p>
+                        <p className="text-sm text-gray-600">{selectedCustomer.email}</p>
+                        <p className="text-sm text-gray-600">{selectedCustomer.phone}</p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-700 mb-2">Business Details</h3>
+                        <p className="text-sm text-black">Status: {selectedCustomer.status}</p>
+                        <p className="text-sm text-gray-600">Total Orders: {selectedCustomer.totalOrders}</p>
+                        <p className="text-sm text-gray-600">Total Spent: ${selectedCustomer.totalSpent.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {customerDetailTab === "orders" && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-black mb-4">Orders</h3>
+                    {customerOrders.length > 0 ? (
+                      <div className="space-y-4">
+                        {customerOrders.map((order, idx) => (
+                          <div
+                            key={`${order.id}-${idx}`}
+                            onClick={() => setSelectedOrderId(selectedOrderId === order.id ? null : order.id)}
+                            className={`border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                              selectedOrderId === order.id ? "bg-blue-50 border-blue-300" : ""
+                            }`}
+                          >
+                            <div className="flex justify-between items-center mb-3">
+                              <div>
+                                <h4 className="text-sm font-semibold text-black">Order #{order.id}</h4>
+                                <p className="text-xs text-gray-500">{order.date}</p>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className={`inline-block px-2 py-1 text-xs font-semibold rounded ${
+                                    order.status === "Delivered"
+                                      ? "bg-green-100 text-green-800"
+                                      : order.status === "Shipped"
+                                      ? "bg-blue-100 text-blue-800"
+                                      : "bg-yellow-100 text-yellow-800"
+                                  }`}
+                                >
+                                  {order.status}
+                                </span>
+                                <span className="text-sm font-semibold text-black">${order.total.toFixed(2)}</span>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 mb-3">
+                              {order.products.slice(0, 4).map((img, i) => (
+                                <div
+                                  key={i}
+                                  className="w-16 h-16 rounded overflow-hidden bg-gray-200"
+                                >
+                                  <img
+                                    src={img}
+                                    alt={`Product ${i + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ))}
+                              {order.products.length > 4 && (
+                                <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                                  <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
+                                </div>
+                              )}
+                            </div>
+                            {selectedOrderId === order.id && (
+                              <div className="mt-4 pt-4 border-t border-gray-200">
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                  <div>
+                                    <h5 className="text-xs font-semibold text-gray-700 mb-1">Order Date</h5>
+                                    <p className="text-sm text-black">{order.date}</p>
+                                  </div>
+                                  <div>
+                                    <h5 className="text-xs font-semibold text-gray-700 mb-1">Status</h5>
+                                    <p className="text-sm text-black">{order.status}</p>
+                                  </div>
+                                  {(order as any).estDelivery && (
+                                    <div>
+                                      <h5 className="text-xs font-semibold text-gray-700 mb-1">Estimated Delivery</h5>
+                                      <p className="text-sm text-black">{(order as any).estDelivery}</p>
+                                    </div>
+                                  )}
+                                  <div>
+                                    <h5 className="text-xs font-semibold text-gray-700 mb-1">Total</h5>
+                                    <p className="text-sm font-semibold text-black">${order.total.toFixed(2)}</p>
+                                  </div>
+                                </div>
+                                <div>
+                                  <h5 className="text-xs font-semibold text-gray-700 mb-2">Products</h5>
+                                  <div className="flex gap-2 flex-wrap">
+                                    {order.products.map((img, i) => (
+                                      <div
+                                        key={i}
+                                        className="w-20 h-20 rounded overflow-hidden bg-gray-200"
+                                      >
+                                        <img
+                                          src={img}
+                                          alt={`Product ${i + 1}`}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 text-center py-8">No orders found for this customer.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <CustomersContent
+                onCustomerSelect={(customerId) => {
+                  setSelectedCustomerId(customerId);
+                  setCustomerDetailTab("overview");
+                }}
+              />
+            </div>
+          );
+        })()}
 
         {/* Messages Tab */}
         {activeTab === "messages" && (
@@ -891,8 +1083,18 @@ export default function VendorDashboardPage() {
                       <div
                         key={order.id}
                         onClick={() => {
-                          setSelectedOrderId(order.id);
-                          setActiveTab("orders");
+                          // Find the customer name from the message
+                          const message = mockMessages.find((m) => m.id === selectedMessage);
+                          if (message) {
+                            // Find customer by name in mockCustomers
+                            const customer = mockCustomers.find((c) => c.businessName === message.customer);
+                            if (customer) {
+                              setSelectedCustomerId(customer.id);
+                              setCustomerDetailTab("orders");
+                              setSelectedOrderId(order.id);
+                              setActiveTab("customers");
+                            }
+                          }
                         }}
                         className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
                       >
