@@ -53,55 +53,59 @@ export default function DashboardCharts() {
       {/* Sales Trend Chart */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-black mb-4">Sales Trend (Last 6 Months)</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={salesData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-            <XAxis dataKey="month" stroke="#6B7280" />
-            <YAxis stroke="#6B7280" />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #E5E7EB",
-                borderRadius: "8px",
-              }}
-            />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="sales"
-              stroke="#000000"
-              strokeWidth={2}
-              name="Total Sales"
-            />
-            <Line
-              type="monotone"
-              dataKey="revenue"
-              stroke="#4B5563"
-              strokeWidth={2}
-              name="Revenue"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <div className="w-full" style={{ height: "300px" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={salesData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+              <XAxis dataKey="month" stroke="#6B7280" />
+              <YAxis stroke="#6B7280" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: "8px",
+                }}
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="sales"
+                stroke="#000000"
+                strokeWidth={2}
+                name="Total Sales"
+              />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                stroke="#4B5563"
+                strokeWidth={2}
+                name="Revenue"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* Revenue by Month */}
       <div className="bg-white border border-gray-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-black mb-4">Revenue by Month</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={salesData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-            <XAxis dataKey="month" stroke="#6B7280" />
-            <YAxis stroke="#6B7280" />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #E5E7EB",
-                borderRadius: "8px",
-              }}
-            />
-            <Bar dataKey="revenue" fill="#000000" name="Revenue ($)" />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="w-full" style={{ height: "300px" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={salesData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+              <XAxis dataKey="month" stroke="#6B7280" />
+              <YAxis stroke="#6B7280" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: "8px",
+                }}
+              />
+              <Bar dataKey="revenue" fill="#000000" name="Revenue ($)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
