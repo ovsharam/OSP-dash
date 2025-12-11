@@ -41,7 +41,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[88vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[53vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4 p-4">
@@ -189,7 +189,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </div>
             ) : null}
 
-            <div className="space-y-2.5 mt-auto pb-1">
+            <div className="space-y-2.5 mt-6 pb-1">
               <button
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
