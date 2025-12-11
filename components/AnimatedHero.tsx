@@ -230,11 +230,11 @@ export default function AnimatedHero() {
                     setVideoLoaded(true);
                   }
                 }}
-                className={`absolute inset-0 w-full h-full object-cover ${
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1200 ease-in-out ${
                   currentVideoIndex === index 
                     ? 'opacity-100 z-10' 
                     : 'opacity-0 z-0 pointer-events-none'
-                } ${isTransitioning ? 'transition-opacity duration-1000 ease-in-out' : ''}`}
+                }`}
                 style={{
                   filter: "brightness(0.7) contrast(1.1)",
                   willChange: currentVideoIndex === index || isTransitioning ? 'opacity' : 'auto',
