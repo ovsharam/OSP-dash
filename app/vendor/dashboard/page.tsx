@@ -2,13 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { mockOrders } from "@/lib/mockBuyerData";
 import { mockCustomers } from "@/lib/mockCustomerData";
 import CustomersContent from "@/components/vendor/CustomersContent";
 import DashboardCharts from "@/components/vendor/DashboardCharts";
 
 export default function VendorDashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "customers" | "profile">("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Mock data
   const stats = {
@@ -42,37 +45,55 @@ export default function VendorDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">Vendor Dashboard</h1>
-          <p className="text-gray-600">Manage your products, orders, and customers</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Left Sidebar */}
+      <div className={`${sidebarOpen ? "w-64" : "w-16"} transition-all duration-300 bg-white border-r border-gray-200 overflow-hidden flex-shrink-0`}>
+        <div className="p-4">
+          {/* Hamburger Menu Button */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="mb-4 p-2 hover:bg-gray-100 rounded transition-colors"
+            aria-label="Toggle sidebar"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
 
-        {/* Tabs */}
-        <div className="bg-white border-b border-gray-200 mb-6">
-          <div className="flex space-x-8">
-            {[
-              { id: "overview", label: "Overview" },
-              { id: "products", label: "Products" },
-              { id: "orders", label: "Orders" },
-              { id: "customers", label: "Customers" },
-              { id: "profile", label: "Profile" },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-2 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id
-                    ? "border-black text-black"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          {/* Navigation Buttons */}
+          {sidebarOpen && (
+            <div className="flex flex-col">
+              {[
+                { id: "overview", label: "Overview" },
+                { id: "products", label: "Products" },
+                { id: "orders", label: "Orders" },
+                { id: "customers", label: "Customers" },
+                { id: "profile", label: "Profile" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`py-4 px-2 border-b-2 font-medium text-sm ${
+                    activeTab === tab.id
+                      ? "border-black text-black"
+                      : "border-transparent text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-black mb-2">Vendor Dashboard</h1>
+            <p className="text-gray-600">Manage your products, orders, and customers</p>
+          </div>
 
         {/* Overview Tab */}
         {activeTab === "overview" && (
@@ -304,6 +325,7 @@ export default function VendorDashboardPage() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

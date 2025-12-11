@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -13,6 +13,7 @@ export default function Navbar() {
   const { getItemCount } = useCart();
   const { items: wishlistItems } = useWishlist();
   const router = useRouter();
+  const pathname = usePathname();
   const itemCount = getItemCount();
   const wishlistCount = wishlistItems.length;
   const [searchQuery, setSearchQuery] = useState("");
@@ -357,7 +358,7 @@ export default function Navbar() {
         </div>
 
         {/* Category Navigation Bar - Centered */}
-        <CategoryNav />
+        {!pathname?.startsWith("/vendor") && <CategoryNav />}
       </header>
     </>
   );
