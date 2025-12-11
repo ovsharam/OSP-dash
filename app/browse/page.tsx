@@ -263,7 +263,7 @@ function BrowseContent() {
         <div className={`flex-1 pt-8 pb-8 transition-all duration-300 ${showSidebarFilters ? 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20' : 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20'}`}>
           {/* Headline */}
           <h1 className="f_t_base f_t_color f_t_displaySSerifRegular mb-6" style={{ "--f_t_color": "#333333" } as React.CSSProperties}>
-            Find the best wholesale organic sodas, equipment & sustainable tableware here
+            Find the best wholesale organic sodas, equipment & sustainable tableware
           </h1>
 
           {/* Filter Tags */}
