@@ -150,46 +150,49 @@ function BrowseContent() {
       <AnimatedHero />
 
       {/* Featured Brands Section */}
-      <div className="mt-12 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
+      <div data-test-id="best-brands-banner-v2" className="mt-12 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
         <div className="items-start f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
-          <h3 className="f_t_base f_t_color f_t_displayMSerifRegular" style={{ "--f_t_color": "#333333", "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
+          <h4 className="f_t_base f_t_color f_t_displaySSerifRegular" style={{ "--f_t_color": "#333333", "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
             Featured brands
-          </h3>
+          </h4>
           <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "24px", "--f_spacer_size_tablet": "16px", "--f_spacer_size_desktop": "24px", "--f_spacer_size_xlarge": "24px", "--f_spacer_size_xxlarge": "24px", width: "0px" } as React.CSSProperties}></div>
           <div className="w-full f_flex_base f_flex_single_value_justify f_flex_single_value_direction" style={{ "--f_flex_justify_mobile": "space-between", "--f_flex_direction_mobile": "row" } as React.CSSProperties}>
-            <div className="overflow-auto flex-1 min-w-0">
-              <div className="w-full flex overflow-x-auto pb-4 scrollbar-hide" style={{ gap: "8px" } as React.CSSProperties}>
-                {categoryList.map((category, index) => {
-                  const isActive = categoryParam === category || (categoryParam === "" && index === 0);
-                  return (
-                    <div key={category} className="flex-shrink-0">
-                      <p
-                        tabIndex={0}
-                        onClick={() => {
-                          window.location.href = `/browse?category=${encodeURIComponent(category)}`;
-                        }}
-                        className={`f_t_base f_t_color hover:border-fs-action-border-default focus-visible:border-fs-action-default flex h-10 cursor-pointer items-center justify-center rounded-[40px] border !p-4 f_t_paragraphSansRegular ${
-                          isActive
-                            ? "border-fs-action-border-default bg-fs-surface-primary-inverse"
-                            : "border-fs-border-muted bg-transparent"
-                        }`}
-                        style={{
-                          "--f_t_color": isActive ? "#ffffff" : "#333333",
-                          "--f_t_decorationColor": "#757575",
-                          borderColor: isActive ? "var(--fs-action-border-default)" : "var(--fs-border-muted)",
-                          backgroundColor: isActive ? "var(--fs-surface-primary-inverse)" : "transparent"
-                        } as React.CSSProperties}
-                      >
-                        {category}
-                      </p>
-                    </div>
-                  );
-                })}
+            <div className="overflow-auto">
+              <div className="f_c_carousel_wrapper_base f_c_carousel_wrapper_mobile w-full flex overflow-x-auto scrollbar-hide" style={{ "--f-c-item-gap-mobile": "8px", "--f-c-item-gap-tablet": "8px", "--f-c-item-gap-desktop": "8px", "--f-c-item-gap-xlarge": "8px", "--f-c-item-gap-xxlarge": "8px", gap: "8px" } as React.CSSProperties}>
+                <div className="f_c_inner_container f_flex_base" style={{ transform: "translate3d(0px, 0px, 0px)" } as React.CSSProperties}>
+                  {categoryList.map((category, index) => {
+                    const isActive = categoryParam === category || (categoryParam === "" && index === 0);
+                    return (
+                      <div key={category} className="f_c_slide_width_free_flow f_c_slide_gap flex-shrink-0" data-index={index}>
+                        <div>
+                          <p
+                            tabIndex={0}
+                            onClick={() => {
+                              window.location.href = `/browse?category=${encodeURIComponent(category)}`;
+                            }}
+                            className={`f_t_base f_t_color hover:border-fs-action-border-default focus-visible:border-fs-action-border-default flex h-10 cursor-pointer items-center justify-center rounded-[40px] border p-4! f_t_paragraphSansRegular ${
+                              isActive
+                                ? "border-fs-action-border-default bg-fs-surface-primary-inverse"
+                                : "border-fs-border-muted"
+                            }`}
+                            style={{
+                              "--f_t_color": isActive ? "#ffffff" : "#333333",
+                              "--f_t_decorationColor": "#757575"
+                            } as React.CSSProperties}
+                          >
+                            {category}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
             <a
+              className="xl:pr-12! 2xl:pr-20! fslegacy-component hidden xl:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap flex-shrink-0"
+              aria-disabled={false}
               href={`/browse?category=${encodeURIComponent(selectedCategory)}`}
-              className="hidden xl:block xl:ml-6 2xl:ml-8 text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap flex-shrink-0"
             >
               All brands
             </a>
@@ -197,47 +200,50 @@ function BrowseContent() {
           <div className="relative w-full overflow-hidden pr-4 md:pr-8 lg:pr-12 2xl:pr-20 pill-with-content-fade-in bottom-0 opacity-100">
             <div className="items-start f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
               <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "24px", "--f_spacer_size_tablet": "16px", "--f_spacer_size_desktop": "24px", "--f_spacer_size_xlarge": "24px", "--f_spacer_size_xxlarge": "24px", width: "0px" } as React.CSSProperties}></div>
-              <div className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                {featuredBrands.map((vendor) => (
-                  <a
-                    key={vendor.id}
-                    href={`/browse?vendor=${encodeURIComponent(vendor.name)}`}
-                    className="group grid-item-equal-height"
-                  >
-                    <div className="w-full f_flex_base f_flex_single_value_direction h-full" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
-                      <div className="rounded-fs-component-default overflow-hidden aspect-square w-full flex-shrink-0">
-                        <picture className="flex lg:origin-left lg:transition-transform lg:duration-[1200ms] lg:ease-[cubic-bezier(0.17,0.67,0.24,1)] lg:group-hover:scale-110 block w-full h-full">
-                          <source media="(min-width: 1728px)" srcSet={`${vendor.image}?w=280&h=280`} />
-                          <source media="(min-width: 1440px)" srcSet={`${vendor.image}?w=240&h=240`} />
-                          <img
-                            src={vendor.image}
-                            alt={vendor.name}
-                            width="100%"
-                            height="100%"
-                            className="w-full h-full object-cover block"
-                            style={{ objectFit: "cover", width: "100%", height: "100%", borderRadius: "var(--radius-fs-component-default)" }}
-                            loading="lazy"
-                          />
-                        </picture>
+              <div className="w-full overflow-x-auto scrollbar-hide">
+                <div className="flex gap-4 md:gap-6" style={{ width: "max-content" } as React.CSSProperties}>
+                  {featuredBrands.map((vendor) => (
+                    <a
+                      key={vendor.id}
+                      href={`/browse?vendor=${encodeURIComponent(vendor.name)}`}
+                      className="group flex-shrink-0"
+                      style={{ width: "200px" } as React.CSSProperties}
+                    >
+                      <div className="w-full f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
+                        <div className="rounded-fs-component-default overflow-hidden aspect-square w-full">
+                          <picture className="flex lg:origin-left lg:transition-transform lg:duration-[1200ms] lg:ease-[cubic-bezier(0.17,0.67,0.24,1)] lg:group-hover:scale-110 block w-full h-full">
+                            <source media="(min-width: 1728px)" srcSet={`${vendor.image}?w=280&h=280`} />
+                            <source media="(min-width: 1440px)" srcSet={`${vendor.image}?w=240&h=240`} />
+                            <img
+                              alt={vendor.name}
+                              width="100%"
+                              height="100%"
+                              src={vendor.image}
+                              style={{ objectFit: "cover", width: "100%", height: "100%", borderRadius: "var(--radius-fs-component-default)", opacity: 0.7 } as React.CSSProperties}
+                              loading="lazy"
+                            />
+                          </picture>
+                        </div>
+                        <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "8px" } as React.CSSProperties}></div>
+                        <p className="f_t_base f_t_maxLines f_t_color lg:from-fs-text-primary lg:to-fs-text-primary w-fit group-focus-visible:[outline:2px_solid_var(--core-interactive-focus)_-2px] lg:bg-linear-to-r lg:bg-[length:0%_1px] lg:bg-left-bottom lg:bg-no-repeat lg:transition-all lg:duration-[1200ms] lg:ease-[cubic-bezier(0.17,0.67,0.24,1)] lg:group-hover:bg-[length:100%_1px] f_t_paragraphSansMedium" style={{ "--f_t_color": "#333333", "--f_t_maxLines": 1, "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
+                          {vendor.name}
+                        </p>
+                        <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "4px" } as React.CSSProperties}></div>
+                        <p className="f_t_base f_t_maxLines f_t_color f_t_paragraphSansRegular" style={{ "--f_t_color": "#333333", "--f_t_maxLines": 1, "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
+                          {vendor.location}
+                        </p>
+                        <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "4px" } as React.CSSProperties}></div>
                       </div>
-                      <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "8px" } as React.CSSProperties}></div>
-                      <p className="f_t_base f_t_maxLines f_t_color lg:from-fs-text-primary lg:to-fs-text-primary w-fit group-focus-visible:[outline:2px_solid_var(--core-interactive-focus)_-2px] lg:bg-linear-to-r lg:bg-[length:0%_1px] lg:bg-left-bottom lg:bg-no-repeat lg:transition-all lg:duration-[1200ms] lg:ease-[cubic-bezier(0.17,0.67,0.24,1)] lg:group-hover:bg-[length:100%_1px] f_t_paragraphSansMedium" style={{ "--f_t_color": "#333333", "--f_t_maxLines": 1, "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
-                        {vendor.name}
-                      </p>
-                      <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "4px" } as React.CSSProperties}></div>
-                      <p className="f_t_base f_t_maxLines f_t_color f_t_paragraphSansRegular" style={{ "--f_t_color": "#333333", "--f_t_maxLines": 1, "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
-                        {vendor.location}
-                      </p>
-                      <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "4px" } as React.CSSProperties}></div>
-                    </div>
-                  </a>
-                ))}
+                    </a>
+                  ))}
+                </div>
               </div>
               <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "32px", "--f_spacer_size_tablet": "32px", "--f_spacer_size_desktop": "48px", "--f_spacer_size_xlarge": "48px", "--f_spacer_size_xxlarge": "48px", width: "0px" } as React.CSSProperties}></div>
               <div className="block xl:hidden">
                 <a
+                  className="hover:bg-fs-surface-primary-inverse! w-fit bg-transparent! fslegacy-component inline-block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-4 py-2 rounded"
+                  aria-disabled={false}
                   href={`/browse?category=${encodeURIComponent(selectedCategory)}`}
-                  className="inline-block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap bg-transparent hover:bg-gray-50 px-4 py-2 rounded"
                 >
                   All brands
                 </a>
