@@ -44,9 +44,9 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
         className="bg-white rounded-2xl shadow-xl border border-gray-200 max-w-2xl w-full max-h-[53vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] auto-rows-[minmax(0,1fr)] gap-3 lg:gap-4 p-4 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.05fr] auto-rows-[minmax(0,1fr)] gap-3 lg:gap-4 p-4 h-full">
           {/* Image */}
-          <div className="relative aspect-[4/5] md:h-full bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200 min-h-0">
+          <div className="relative w-full h-full max-h-[26vh] md:max-h-none aspect-square md:aspect-[4/5] bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-lg overflow-hidden border border-gray-200 min-h-0">
             <Image
               src={product.images[0] || "/placeholder-product.jpg"}
               alt={product.name}
@@ -58,7 +58,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
           </div>
 
           {/* Details */}
-          <div className="flex flex-col h-full min-h-0 overflow-y-auto">
+          <div className="flex flex-col h-full min-h-0 overflow-hidden">
             <div className="flex items-start justify-between gap-3 mb-3">
               <div className="space-y-1 min-w-0">
                 <p className="text-xs uppercase tracking-wide text-gray-500 break-words">
@@ -95,7 +95,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </button>
             </div>
 
-            <p className="text-sm text-gray-700 mb-2 leading-relaxed line-clamp-2">
+            <p className="text-sm text-gray-700 mb-2 leading-relaxed line-clamp-3 break-words">
               {product.description}
             </p>
 
@@ -174,24 +174,26 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
               </button>
             </div>
 
-            {product.shippingOptions?.length ? (
-              <div className="mb-3 space-y-2">
-                <p className="text-sm font-semibold text-gray-900">Shipping options</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {product.shippingOptions.slice(0, 2).map((option) => (
-                    <div
-                      key={option.id}
-                      className="border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 flex items-center justify-between"
-                    >
-                      <span className="font-medium text-gray-900">{option.name}</span>
-                      <span className="text-gray-500">${option.price.toFixed(2)}</span>
-                    </div>
-                  ))}
+            <div className="flex-1 min-h-0 overflow-auto space-y-3 pr-1">
+              {product.shippingOptions?.length ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-semibold text-gray-900">Shipping options</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {product.shippingOptions.slice(0, 2).map((option) => (
+                      <div
+                        key={option.id}
+                        className="border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-700 flex items-center justify-between"
+                      >
+                        <span className="font-medium text-gray-900">{option.name}</span>
+                        <span className="text-gray-500">${option.price.toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
 
-            <div className="space-y-2.5 mt-6 pb-1">
+            <div className="space-y-2.5 mt-4 pt-3 border-t border-gray-100 shrink-0">
               <button
                 onClick={handleAddToCart}
                 disabled={!product.inStock}
