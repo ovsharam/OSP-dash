@@ -11,9 +11,14 @@ const animatedWords = [
   "bamboo straws",
 ];
 
-// Using four video files from the public folder
+// Using four video files hosted on Dropbox (direct download links)
 // Order: 11760024, 6792650, 11760007, 13960987
-const videoSources = ["/hero-video-1.mp4", "/hero-video-2.mp4", "/hero-video-3.mp4", "/hero-video-4.mp4"];
+const videoSources = [
+  "https://www.dropbox.com/scl/fi/bghb84f82ul6h35ma5e07/11760024-uhd_4096_2160_30fps.mp4?rlkey=00d624pfhax8h8b845noxp5ik&st=wd9k599y&dl=1",
+  "https://www.dropbox.com/scl/fi/e2yocnkycud2eikoqrswq/6792650-hd_1920_1080_24fps.mp4?rlkey=3u1uzm27kam9qzljd5j9vby4m&st=huwltq9l&dl=1",
+  "https://www.dropbox.com/scl/fi/g0gy4u38k6i6y33wolecy/11760007-uhd_4096_2160_30fps.mp4?rlkey=mccbbnso2f5mha8k6uwhihj8l&st=n3luqj4x&dl=1",
+  "https://www.dropbox.com/scl/fi/4bixveyv85niwvb3tovac/13960987_3840_2160_30fps.mp4?rlkey=kea44tvo61hxxlm90w1qhbqfk&st=yipqjhhr&dl=1",
+];
 
 export default function AnimatedHero() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
