@@ -925,7 +925,7 @@ export default function VendorDashboardPage() {
                           </span>
                         ) : (
                           <p className="text-xs text-gray-600">
-                            {order.status} • {order.estDelivery || ""}
+                            {order.status} • {(order as any).estDelivery || ""}
                           </p>
                         )}
                       </div>
