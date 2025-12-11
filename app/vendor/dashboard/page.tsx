@@ -1120,26 +1120,8 @@ export default function VendorDashboardPage() {
                       <div
                         key={order.id}
                         onClick={() => {
-                          // Find the customer name from the message
-                          const message = mockMessages.find((m) => m.id === selectedMessage);
-                          if (message) {
-                            // Find customer by name in mockCustomers
-                            const customer = mockCustomers.find((c) => c.businessName === message.customer);
-                            if (customer) {
-                              setSelectedCustomerId(customer.id);
-                              setCustomerDetailTab("orders");
-                              setSelectedOrderId(order.id);
-                              setActiveTab("customers");
-                            } else {
-                              // If customer not found, create a temporary customer ID based on the message customer name
-                              // This allows navigation even if customer doesn't exist in mockCustomers
-                              const tempCustomerId = `TEMP-${message.customer.replace(/\s+/g, '-')}`;
-                              setSelectedCustomerId(tempCustomerId);
-                              setCustomerDetailTab("orders");
-                              setSelectedOrderId(order.id);
-                              setActiveTab("customers");
-                            }
-                          }
+                          setSelectedOrderForDetail(order.id);
+                          setShowCustomerDetailPanel(true);
                         }}
                         className="border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors"
                       >
