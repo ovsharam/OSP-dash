@@ -267,7 +267,7 @@ function BrowseContent() {
           </h1>
 
           {/* Filter Tags */}
-          <div className="flex flex-wrap items-center gap-3 mb-8">
+          <div className="flex flex-wrap items-center gap-3 mb-8 mt-2">
             <button
               onClick={() => setShowSidebarFilters(!showSidebarFilters)}
               className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors whitespace-nowrap flex items-center ${
