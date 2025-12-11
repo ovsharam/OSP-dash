@@ -113,10 +113,45 @@ export default function AnimatedHero() {
     };
   }, []);
 
-  // Handle video end - transition to next video with smooth crossfade
-  const handleVideoEnd = async (_videoIndex: number) => {
-    // No-op because we loop each video continuously.
-    return;
+  // Handle video end - advance to next video in order
+  const handleVideoEnd = async (videoIndex: number) => {
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+    }
+
+    const nextIndex = (videoIndex + 1) % videoSources.length;
+    const currentVideo = videoRefs[videoIndex].current;
+    const nextVideo = videoRefs[nextIndex].current;
+    if (!nextVideo || !currentVideo) return;
+
+    try {
+      setIsTransitioning(true);
+
+      // Ensure next video is ready
+      if (nextVideo.readyState < 2) {
+        await new Promise<void>((resolve) => {
+          const handleCanPlay = () => {
+            nextVideo.removeEventListener("canplay", handleCanPlay);
+            resolve();
+          };
+          nextVideo.addEventListener("canplay", handleCanPlay);
+          nextVideo.load();
+        });
+      }
+
+      nextVideo.currentTime = 0;
+      await nextVideo.play();
+      setCurrentVideoIndex(nextIndex);
+
+      transitionTimeoutRef.current = setTimeout(() => {
+        currentVideo.pause();
+        currentVideo.currentTime = 0;
+        setIsTransitioning(false);
+      }, 1200); // match opacity transition duration
+    } catch (err) {
+      console.error("Error transitioning video:", err);
+      setIsTransitioning(false);
+    }
   };
 
   // Handle video errors
@@ -154,7 +189,7 @@ export default function AnimatedHero() {
                 controls={false}
                 playsInline
                 preload="metadata"
-                loop
+                loop={false}
                 onEnded={() => handleVideoEnd(index)}
                 onError={(e) => handleVideoError(e, index)}
                 onLoadedData={() => {
