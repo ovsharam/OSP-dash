@@ -72,7 +72,8 @@ export default function AnimatedHero() {
 
           video.muted = true;
           video.playsInline = true;
-          video.preload = "auto";
+          // Lighter preload to reduce 416/range issues with remote hosts
+          video.preload = "metadata";
           video.loop = false;
           video.currentTime = 0;
 
@@ -203,11 +204,16 @@ export default function AnimatedHero() {
                 ref={videoRefs[index]}
                 crossOrigin="anonymous"
                 muted
+                autoPlay
+                controls={false}
                 playsInline
-                preload="auto"
+                preload="metadata"
                 loop={false}
                 onEnded={() => handleVideoEnd(index)}
-                onError={handleVideoError}
+                onError={(e) => {
+                  console.error("Video error:", e, "index:", index, "src:", src);
+                  handleVideoError(e);
+                }}
                 onLoadedData={() => {
                   // Ensure video is ready
                   const video = videoRefs[index].current;
