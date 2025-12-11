@@ -149,20 +149,15 @@ export default function AnimatedHero() {
 
       nextVideo.currentTime = 0;
 
-      // Start the crossfade by changing the active index
-      setCurrentVideoIndex(nextIndex);
-
-      // Small delay to allow opacity transition to start
-      await new Promise((resolve) => {
-        transitionTimeoutRef.current = setTimeout(resolve, 100);
-      });
-
-      // Play next video
+      // Start playing next video before crossfade
       try {
         await nextVideo.play();
       } catch (err) {
         console.error("Error playing next video:", err);
       }
+
+      // Begin crossfade
+      setCurrentVideoIndex(nextIndex);
 
       // Pause and reset current video after transition completes
       transitionTimeoutRef.current = setTimeout(() => {
@@ -171,7 +166,7 @@ export default function AnimatedHero() {
           currentVideo.currentTime = 0;
         }
         setIsTransitioning(false);
-      }, 1000); // Match transition duration
+      }, 1200); // match transition duration (duration-1200)
     } catch (err) {
       console.error("Error transitioning video:", err);
       setIsTransitioning(false);
