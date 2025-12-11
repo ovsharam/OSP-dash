@@ -117,7 +117,7 @@ export default function Navbar() {
               aria-label="Go to homepage"
               className="flex items-center justify-center h-[50px] md:h-[60px] flex-shrink-0"
             >
-              <span className="text-2xl font-bold text-black" style={{ fontFamily: 'Georgia, serif', letterSpacing: '0.05em' }}>
+              <span className="text-2xl font-bold text-black" style={{ fontFamily: 'Georgia, serif', letterSpacing: '0.2em' }}>
                 OSP
               </span>
             </Link>
