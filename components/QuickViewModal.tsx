@@ -37,16 +37,16 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-6"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-5"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-5xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 p-6 lg:p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 p-5 lg:p-6">
           {/* Image */}
-          <div className="relative aspect-square bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-2xl overflow-hidden border border-gray-200">
+          <div className="relative aspect-square bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 rounded-xl overflow-hidden border border-gray-200">
             <Image
               src={product.images[0] || "/placeholder-product.jpg"}
               alt={product.name}
