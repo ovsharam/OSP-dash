@@ -197,8 +197,9 @@ export default function VendorDashboardPage() {
                   className="bg-white border border-green-500 text-green-600 px-4 py-2 rounded font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
                   onClick={() => alert("Import from Shopify coming soon!")}
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z" />
+                  {/* Shopify Logo SVG */}
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M15.637 15.637c-.36 0-.69-.13-.95-.35l-1.96-1.96c-.22-.26-.35-.59-.35-.95 0-.36.13-.69.35-.95l1.96-1.96c.26-.22.59-.35.95-.35.36 0 .69.13.95.35l1.96 1.96c.22.26.35.59.35.95 0 .36-.13.69-.35.95l-1.96 1.96c-.26.22-.59.35-.95.35zm-7.274 0c-.36 0-.69-.13-.95-.35L5.458 13.327c-.22-.26-.35-.59-.35-.95 0-.36.13-.69.35-.95l1.955-1.96c.26-.22.59-.35.95-.35.36 0 .69.13.95.35l1.96 1.96c.22.26.35.59.35.95 0 .36-.13.69-.35.95l-1.96 1.96c-.26.22-.59.35-.95.35zM12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0z"/>
                   </svg>
                   Import from Shopify
                 </button>
@@ -206,6 +207,7 @@ export default function VendorDashboardPage() {
                   className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2"
                   onClick={() => alert("Import from Website coming soon!")}
                 >
+                  {/* Code Icon </> */}
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                   </svg>
