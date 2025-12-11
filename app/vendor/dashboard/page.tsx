@@ -192,12 +192,32 @@ export default function VendorDashboardPage() {
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-black">Product Catalog</h2>
-              <Link
-                href="/vendor/products/new"
-                className="bg-black text-white px-4 py-2 rounded font-semibold hover:bg-gray-800 transition-colors"
-              >
-                Add New Product
-              </Link>
+              <div className="flex gap-3">
+                <button
+                  className="bg-white border border-green-500 text-green-600 px-4 py-2 rounded font-semibold hover:bg-green-50 transition-colors flex items-center gap-2"
+                  onClick={() => alert("Import from Shopify coming soon!")}
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2L3 7v11h4v-6h6v6h4V7l-7-5z" />
+                  </svg>
+                  Import from Shopify
+                </button>
+                <button
+                  className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded font-semibold hover:bg-gray-50 transition-colors flex items-center gap-2"
+                  onClick={() => alert("Import from Website coming soon!")}
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                  Import from Website
+                </button>
+                <Link
+                  href="/vendor/products/new"
+                  className="bg-black text-white px-4 py-2 rounded font-semibold hover:bg-gray-800 transition-colors"
+                >
+                  Add New Product
+                </Link>
+              </div>
             </div>
             <div className="text-center py-12 text-gray-500">
               <p>Product management interface coming soon.</p>
