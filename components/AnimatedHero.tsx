@@ -13,14 +13,8 @@ const animatedWords = [
 
 // Using four video files hosted on Dropbox (direct download links)
 // Order: 11760024, 6792650, 11760007, 13960987
-// Primary: Dropbox sources (user requested). Fallback: local public assets to avoid CORS failures.
-const primaryVideoSources = [
-  "https://www.dropbox.com/scl/fi/bghb84f82ul6h35ma5e07/11760024-uhd_4096_2160_30fps.mp4?dl=1",
-  "https://www.dropbox.com/scl/fi/e2yocnkycud2eikoqrswq/6792650-hd_1920_1080_24fps.mp4?dl=1",
-  "https://www.dropbox.com/scl/fi/g0gy4u38k6i6y33wolecy/11760007-uhd_4096_2160_30fps.mp4?dl=1",
-  "https://www.dropbox.com/scl/fi/4bixveyv85niwvb3tovac/13960987_3840_2160_30fps.mp4?dl=1",
-];
-const localFallbackSources = ["/hero-video-1.mp4", "/hero-video-2.mp4", "/hero-video-3.mp4", "/hero-video-4.mp4"];
+// Serve only local assets to avoid CORS/reliability issues
+const videoSources = ["/hero-video-1.mp4", "/hero-video-2.mp4", "/hero-video-3.mp4", "/hero-video-4.mp4"];
 
 export default function AnimatedHero() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -29,7 +23,6 @@ export default function AnimatedHero() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [resolvedSources, setResolvedSources] = useState<string[]>(primaryVideoSources);
   const videoRefs = [
     useRef<HTMLVideoElement>(null),
     useRef<HTMLVideoElement>(null),
@@ -124,16 +117,8 @@ export default function AnimatedHero() {
 
   // Handle video errors
   const handleVideoError = (e: any, index: number) => {
-    console.error("Video error:", e, "index:", index, "src:", resolvedSources[index]);
-    // fallback to local asset for this index
-    // fallback to local asset for this index
-    setResolvedSources((prev) => {
-      const next = [...prev];
-      next[index] = localFallbackSources[index] || prev[index];
-      return next;
-    });
-    // Keep rendering videos to allow fallback to load
-    setVideoError(false);
+    console.error("Video error:", e, "index:", index, "src:", videoSources[index]);
+    setVideoError(true);
   };
 
   // Ensure videos stay in sync when index changes
@@ -155,7 +140,7 @@ export default function AnimatedHero() {
       <div className="absolute inset-0 z-0">
         {!videoError ? (
           <>
-            {resolvedSources.map((src, index) => (
+            {videoSources.map((src, index) => (
               <video
                 key={`${index}-${src}`}
                 ref={videoRefs[index]}
