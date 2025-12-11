@@ -193,6 +193,7 @@ function BrowseContent() {
               className="xl:pr-12! 2xl:pr-20! fslegacy-component hidden xl:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap flex-shrink-0"
               aria-disabled={false}
               href={`/browse?category=${encodeURIComponent(selectedCategory)}`}
+              style={{ marginRight: "3rem" } as React.CSSProperties}
             >
               All brands
             </a>
