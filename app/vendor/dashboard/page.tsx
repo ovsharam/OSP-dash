@@ -694,68 +694,97 @@ export default function VendorDashboardPage() {
               )}
             </div>
 
-            {/* Right Panel - Recent Orders */}
-            <div className="w-80 border-l border-gray-200 flex flex-col">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-black">Recent orders</h3>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {[
-                  {
-                    id: "HGIODKSLE",
-                    date: "Jun 20",
-                    products: Array(8).fill(null),
-                    status: "New",
-                    isNew: true,
-                  },
-                  {
-                    id: "OIERULKDS",
-                    date: "Jun 18",
-                    products: Array(4).fill(null),
-                    status: "Shipped",
-                    estDelivery: "Est. Jul 01-03",
-                  },
-                  {
-                    id: "OIERULKDS",
-                    date: "Jun 18",
-                    products: Array(8).fill(null),
-                    status: "Shipped",
-                    estDelivery: "Est. Jul 01-03",
-                  },
-                ].map((order, idx) => (
-                  <div key={`${order.id}-${idx}`} className="border border-gray-200 rounded-lg p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-semibold text-black">Order #{order.id}</span>
-                      <span className="text-xs text-gray-500">{order.date}</span>
-                    </div>
-                    <div className="flex gap-1 mb-2">
-                      {order.products.slice(0, 4).map((_, i) => (
-                        <div
-                          key={i}
-                          className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0"
-                        >
-                          <span className="text-xs text-gray-500">Img</span>
-                        </div>
-                      ))}
-                      {order.products.length > 4 && (
-                        <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
-                          <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
-                        </div>
+            {/* Right Panel - Recent Orders - Only show when message is selected */}
+            {selectedMessage !== null && (
+              <div className="w-80 border-l border-gray-200 flex flex-col">
+                <div className="p-4 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-black">Recent orders</h3>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {[
+                    {
+                      id: "HGIODKSLE",
+                      date: "Jun 20",
+                      products: [
+                        "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+                        "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+                        "/images/orders/pexels-micheile-10045929.jpg",
+                        "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+                        "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+                        "/images/orders/pexels-oskelaq-1009158.jpg",
+                        "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+                        "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+                      ],
+                      status: "New",
+                      isNew: true,
+                    },
+                    {
+                      id: "OIERULKDS",
+                      date: "Jun 18",
+                      products: [
+                        "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+                        "/images/orders/pexels-micheile-10045929.jpg",
+                        "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+                        "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+                      ],
+                      status: "Shipped",
+                      estDelivery: "Est. Jul 01-03",
+                    },
+                    {
+                      id: "OIERULKDS",
+                      date: "Jun 18",
+                      products: [
+                        "/images/orders/pexels-oskelaq-1009158.jpg",
+                        "/images/orders/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+                        "/images/orders/pexels-introspectivedsgn-30652943.jpg",
+                        "/images/orders/pexels-jamie-saw-4619044-12999924.jpg",
+                        "/images/orders/pexels-micheile-10045929.jpg",
+                        "/images/orders/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+                        "/images/orders/pexels-olenkabohovyk-12851541.jpg",
+                        "/images/orders/pexels-oskelaq-1009158.jpg",
+                      ],
+                      status: "Shipped",
+                      estDelivery: "Est. Jul 01-03",
+                    },
+                  ].map((order, idx) => (
+                    <div key={`${order.id}-${idx}`} className="border border-gray-200 rounded-lg p-3">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-semibold text-black">Order #{order.id}</span>
+                        <span className="text-xs text-gray-500">{order.date}</span>
+                      </div>
+                      <div className="flex gap-1 mb-2">
+                        {order.products.slice(0, 4).map((img, i) => (
+                          <div
+                            key={i}
+                            className="w-12 h-12 rounded overflow-hidden flex-shrink-0 bg-gray-200 relative"
+                          >
+                            <img
+                              src={img}
+                              alt={`Product ${i + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))}
+                        {order.products.length > 4 && (
+                          <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center flex-shrink-0 relative">
+                            <span className="text-xs text-gray-500">+{order.products.length - 4}</span>
+                          </div>
+                        )}
+                      </div>
+                      {order.isNew ? (
+                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
+                          New
+                        </span>
+                      ) : (
+                        <p className="text-xs text-gray-600">
+                          {order.status} • {order.estDelivery}
+                        </p>
                       )}
                     </div>
-                    {order.isNew ? (
-                      <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
-                        New
-                      </span>
-                    ) : (
-                      <p className="text-xs text-gray-600">
-                        {order.status} • {order.estDelivery}
-                      </p>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
