@@ -208,12 +208,19 @@ function BrowseContent() {
             Welcome to OSP, {user?.name || "Buyer"}
           </h1>
 
-          {/* Category Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
-            {faireCategories.map((category) => (
+          {/* Category Grid - Filtered for specific categories */}
+          <div className="grid grid-cols-3 gap-4 md:gap-6 mb-12">
+            {[
+              { id: "beverages", name: "Beverages", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop", category: "Beverages" },
+              { id: "equipment", name: "Equipment", image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=400&fit=crop", category: "Equipment" },
+              { id: "straws", name: "Straws", image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&h=400&fit=crop", category: "Tableware", tag: "straw" },
+              { id: "plates", name: "Plates", image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop", category: "Tableware", tag: "plate" },
+              { id: "cups", name: "Cups", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=400&h=400&fit=crop", category: "Tableware", tag: "cup" },
+              { id: "silverware", name: "Silverware", image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&h=400&fit=crop", category: "Tableware", tag: "cutlery" },
+            ].map((category) => (
               <Link
                 key={category.id}
-                href={`/browse?category=${encodeURIComponent(category.name)}`}
+                href={`/browse?category=${encodeURIComponent(category.category)}${category.tag ? `&tag=${category.tag}` : ""}`}
                 className="group cursor-pointer"
               >
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
@@ -224,6 +231,7 @@ function BrowseContent() {
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 50vw, 25vw"
+                      loading="lazy"
                     />
                   </div>
                   <div className="p-4">
@@ -237,36 +245,50 @@ function BrowseContent() {
           </div>
 
           {/* Holiday Shop Banner */}
-          <div className="bg-[#8B4513] rounded-lg overflow-hidden mb-12 relative">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 md:p-12">
-              <div className="text-white z-10">
-                <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
-                  The Holiday Shop
-                </h2>
-                <p className="text-lg md:text-xl mb-6 text-white/90 leading-relaxed">
-                  Make this holiday season magical for your customers with everything they need from memorable family moments to gifts for everyone on their list.
-                </p>
-                <Link
-                  href="/browse?category=Holiday"
-                  className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
-                >
-                  Shop all
-                </Link>
-              </div>
-              <div className="relative h-64 md:h-96 flex items-center justify-center">
-                {/* Decorative holiday items */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 bg-yellow-400 rounded-full opacity-20"></div>
-                  <div className="absolute top-8 right-8 w-16 h-16 bg-amber-500 rounded-full opacity-30"></div>
-                  <div className="absolute bottom-8 left-8 w-20 h-20 bg-orange-400 rounded-full opacity-25"></div>
+          <div className="mb-12">
+            <Link href="/browse?category=Holiday" className="block relative">
+              <div className="relative w-full p-4 md:p-16 lg:p-10 rounded-lg md:rounded-xl overflow-hidden min-h-[200px] md:min-h-[240px] lg:min-h-[288px] flex items-center justify-center">
+                {/* Background Image */}
+                <picture className="absolute top-0 left-0 z-0 h-full w-full">
+                  <source
+                    media="(min-width: 1024px)"
+                    srcSet="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1184&h=288&fit=crop&q=80 1x, https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=2368&h=576&fit=crop&q=80 2x"
+                  />
+                  <source
+                    media="(min-width: 768px)"
+                    srcSet="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=768&h=240&fit=crop&q=80 1x, https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1536&h=480&fit=crop&q=80 2x"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=600&h=200&fit=crop&q=80"
+                    alt="Holiday Shop"
+                    className="w-full h-full object-cover object-center"
+                    loading="eager"
+                  />
+                </picture>
+
+                {/* Brown Background Overlay */}
+                <div className="absolute inset-0 bg-[#8B4513] z-[1]"></div>
+
+                {/* Content - Left Side (1/2 width) */}
+                <div className="z-[2] items-start text-left w-full md:w-1/2 relative flex flex-col justify-center">
+                  <div className="w-full flex flex-col items-start justify-start">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-2 md:mb-4 text-white">
+                      The Holiday Shop
+                    </h2>
+                  </div>
+                  <div className="h-2 md:h-4"></div>
+                  <div className="w-full flex flex-col items-start justify-start">
+                    <p className="text-base md:text-lg lg:text-xl mb-4 md:mb-6 text-white leading-relaxed">
+                      Make this holiday season magical for your customers with everything they need from memorable family moments to gifts for everyone on their list.
+                    </p>
+                  </div>
+                  <div className="h-4 md:h-4"></div>
+                  <button className="bg-gray-800 text-white px-6 py-3 md:px-8 md:py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                    Shop all
+                  </button>
                 </div>
-                <div className="relative z-10 text-white text-center">
-                  <div className="text-6xl mb-4">🎄</div>
-                  <div className="text-4xl mb-2">🎁</div>
-                  <div className="text-5xl">✨</div>
-                </div>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Product Carousels */}

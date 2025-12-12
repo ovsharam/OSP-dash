@@ -1,72 +1,220 @@
 import { ProductReview, ProductQuestion } from "@/types";
 
-export const mockReviews: ProductReview[] = [
+// Review templates for generating diverse reviews
+const reviewTemplates = [
   {
-    id: "rev-1",
-    productId: "1",
-    userId: "user-1",
     userName: "Sarah Johnson",
     userAvatar: "https://i.pravatar.cc/150?img=1",
-    rating: 5,
-    title: "Excellent quality and taste!",
-    comment: "We've been using this organic ginger root soda for our restaurant and our customers love it. The flavor is authentic and refreshing. Highly recommend!",
-    date: new Date("2024-01-05"),
-    verifiedPurchase: true,
-    helpfulCount: 12,
+    titles: [
+      "Excellent quality and taste!",
+      "Perfect for our restaurant",
+      "Highly recommend!",
+      "Great value for money",
+      "Outstanding product",
+    ],
+    comments: [
+      "We've been using this product for our restaurant and our customers love it. The quality is exceptional and the flavor is authentic.",
+      "Great product, fast shipping, and excellent customer service. The quality is consistent and our customers appreciate it.",
+      "This has become a staple in our inventory. The quality is top-notch and the pricing is fair. Highly recommend!",
+      "Excellent value for the quality. We've ordered multiple times and have never been disappointed. Fast shipping too!",
+      "Outstanding product that meets all our expectations. The quality is consistent and the service is excellent.",
+    ],
+    ratings: [5, 5, 4, 5, 4],
+    helpfulCounts: [12, 8, 15, 10, 7],
   },
   {
-    id: "rev-2",
-    productId: "1",
-    userId: "user-2",
     userName: "Michael Chen",
     userAvatar: "https://i.pravatar.cc/150?img=2",
-    rating: 5,
-    title: "Perfect for our cafe",
-    comment: "Great product, fast shipping, and excellent customer service. The organic certification is important to us and our customers appreciate it.",
-    date: new Date("2024-01-10"),
-    verifiedPurchase: true,
-    helpfulCount: 8,
+    titles: [
+      "Good quality product",
+      "Meets expectations",
+      "Reliable supplier",
+      "Decent value",
+      "Satisfied customer",
+    ],
+    comments: [
+      "Good quality product that works well for our needs. Shipping was prompt and packaging was secure.",
+      "The product meets our expectations. Quality is good and the price is reasonable. Would order again.",
+      "Reliable supplier with consistent quality. We've ordered multiple times and are always satisfied.",
+      "Decent value for the price. The product works as expected and delivery was on time.",
+      "Satisfied with the purchase. The product quality is good and the service is professional.",
+    ],
+    ratings: [4, 4, 5, 4, 4],
+    helpfulCounts: [6, 5, 9, 4, 6],
   },
   {
-    id: "rev-3",
-    productId: "2",
-    userId: "user-3",
     userName: "Emily Rodriguez",
     userAvatar: "https://i.pravatar.cc/150?img=3",
-    rating: 4,
-    title: "Good sparkling water",
-    comment: "Nice clean taste, zero calories is a plus. Our health-conscious customers appreciate this option.",
-    date: new Date("2024-01-08"),
-    verifiedPurchase: true,
-    helpfulCount: 5,
+    titles: [
+      "Nice clean taste",
+      "Good for health-conscious customers",
+      "Quality product",
+      "Well packaged",
+      "Fast delivery",
+    ],
+    comments: [
+      "Nice clean taste, our health-conscious customers appreciate this option. Quality is consistent.",
+      "Good product that aligns with our values. Customers appreciate the quality and we appreciate the service.",
+      "Quality product that delivers on its promises. We've been happy with our orders.",
+      "Well packaged and arrived in perfect condition. The product quality is excellent.",
+      "Fast delivery and good quality. The product meets our standards and customers are happy.",
+    ],
+    ratings: [4, 5, 4, 5, 4],
+    helpfulCounts: [5, 11, 7, 8, 5],
   },
   {
-    id: "rev-4",
-    productId: "19",
-    userId: "user-4",
     userName: "David Park",
     userAvatar: "https://i.pravatar.cc/150?img=4",
-    rating: 5,
-    title: "Eco-friendly and durable",
-    comment: "These bamboo straws are perfect for our sustainable restaurant concept. They're sturdy and our customers love the eco-friendly approach.",
-    date: new Date("2024-01-12"),
-    verifiedPurchase: true,
-    helpfulCount: 15,
+    titles: [
+      "Eco-friendly and durable",
+      "Sustainable choice",
+      "Great for the environment",
+      "Quality eco product",
+      "Love the sustainability",
+    ],
+    comments: [
+      "These eco-friendly products are perfect for our sustainable restaurant concept. They're sturdy and our customers love the approach.",
+      "Sustainable choice that doesn't compromise on quality. We're happy to support eco-friendly suppliers.",
+      "Great for the environment and great quality too. Our customers appreciate our commitment to sustainability.",
+      "Quality eco product that performs well. We're satisfied with both the product and the service.",
+      "Love the sustainability aspect. The product quality is excellent and we'll definitely order again.",
+    ],
+    ratings: [5, 5, 5, 4, 5],
+    helpfulCounts: [15, 12, 18, 9, 14],
   },
   {
-    id: "rev-5",
-    productId: "20",
-    userId: "user-5",
     userName: "Lisa Thompson",
     userAvatar: "https://i.pravatar.cc/150?img=5",
-    rating: 5,
-    title: "Compostable plates are amazing",
-    comment: "We switched to these wheat straw plates and couldn't be happier. They're durable, look great, and knowing they're compostable makes us feel good about our environmental impact.",
-    date: new Date("2024-01-11"),
-    verifiedPurchase: true,
-    helpfulCount: 20,
+    titles: [
+      "Amazing quality",
+      "Exceeded expectations",
+      "Best supplier we've worked with",
+      "Top notch product",
+      "Will order again",
+    ],
+    comments: [
+      "Amazing quality that exceeded our expectations. The product is well-made and our customers love it.",
+      "Exceeded expectations in both quality and service. This has become one of our go-to suppliers.",
+      "Best supplier we've worked with. Consistent quality, great prices, and excellent customer service.",
+      "Top notch product that delivers on every front. Quality, price, and service are all excellent.",
+      "Will definitely order again. The product quality is outstanding and the service is professional.",
+    ],
+    ratings: [5, 5, 5, 5, 5],
+    helpfulCounts: [20, 16, 22, 18, 15],
+  },
+  {
+    userName: "James Wilson",
+    userAvatar: "https://i.pravatar.cc/150?img=6",
+    titles: [
+      "Good but could be better",
+      "Decent product",
+      "Average quality",
+      "Meets basic needs",
+      "Okay for the price",
+    ],
+    comments: [
+      "Good product but could be better. Quality is decent but not exceptional. Price is fair though.",
+      "Decent product that serves its purpose. Nothing extraordinary but it works for our needs.",
+      "Average quality product. It does the job but there might be better options out there.",
+      "Meets our basic needs. Quality is acceptable and the price is reasonable.",
+      "Okay for the price point. Quality is adequate but not outstanding.",
+    ],
+    ratings: [3, 3, 3, 3, 3],
+    helpfulCounts: [3, 2, 4, 3, 2],
+  },
+  {
+    userName: "Maria Garcia",
+    userAvatar: "https://i.pravatar.cc/150?img=7",
+    titles: [
+      "Fast shipping",
+      "Quick delivery",
+      "Efficient service",
+      "On-time delivery",
+      "Great logistics",
+    ],
+    comments: [
+      "Fast shipping and good quality. The product arrived quickly and in perfect condition.",
+      "Quick delivery and excellent packaging. The product quality is good and we're satisfied.",
+      "Efficient service from order to delivery. The product meets our quality standards.",
+      "On-time delivery as promised. Product quality is consistent and we're happy with our purchase.",
+      "Great logistics and customer service. The product quality is good and delivery is always prompt.",
+    ],
+    ratings: [4, 5, 4, 4, 5],
+    helpfulCounts: [7, 9, 6, 8, 10],
+  },
+  {
+    userName: "Robert Brown",
+    userAvatar: "https://i.pravatar.cc/150?img=8",
+    titles: [
+      "Professional service",
+      "Business-grade quality",
+      "Perfect for commercial use",
+      "Reliable for restaurants",
+      "Commercial quality",
+    ],
+    comments: [
+      "Professional service and business-grade quality. Perfect for our commercial operations.",
+      "Business-grade quality that's perfect for our needs. Service is professional and reliable.",
+      "Perfect for commercial use. Quality is consistent and the product performs well in our setting.",
+      "Reliable for restaurants and food service. Quality is good and pricing is competitive.",
+      "Commercial quality product that meets our standards. Service is excellent and delivery is prompt.",
+    ],
+    ratings: [5, 5, 4, 5, 4],
+    helpfulCounts: [11, 13, 8, 12, 9],
   },
 ];
+
+// Generate reviews for all products
+const generateReviewsForProduct = (productId: string, reviewCount: number = 3): ProductReview[] => {
+  const reviews: ProductReview[] = [];
+  const dates = [
+    new Date("2024-12-01"),
+    new Date("2024-11-15"),
+    new Date("2024-11-01"),
+    new Date("2024-10-20"),
+    new Date("2024-10-05"),
+    new Date("2024-09-18"),
+    new Date("2024-09-01"),
+    new Date("2024-08-15"),
+  ];
+
+  for (let i = 0; i < reviewCount; i++) {
+    const template = reviewTemplates[i % reviewTemplates.length];
+    const titleIndex = Math.floor(i / reviewTemplates.length) % template.titles.length;
+    const commentIndex = Math.floor(i / reviewTemplates.length) % template.comments.length;
+    const ratingIndex = i % template.ratings.length;
+
+    reviews.push({
+      id: `rev-${productId}-${i + 1}`,
+      productId,
+      userId: `user-${productId}-${i + 1}`,
+      userName: template.userName,
+      userAvatar: template.userAvatar,
+      rating: template.ratings[ratingIndex],
+      title: template.titles[titleIndex],
+      comment: template.comments[commentIndex],
+      date: dates[i % dates.length],
+      verifiedPurchase: Math.random() > 0.3, // 70% verified purchases
+      helpfulCount: template.helpfulCounts[ratingIndex] + Math.floor(Math.random() * 10),
+    });
+  }
+
+  return reviews;
+};
+
+// All product IDs from mockData.ts
+const allProductIds = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+  "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24",
+  "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36",
+  "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48",
+];
+
+// Generate reviews for all products (3-5 reviews per product)
+export const mockReviews: ProductReview[] = allProductIds.flatMap((productId) => {
+  const reviewCount = 3 + Math.floor(Math.random() * 3); // 3-5 reviews per product
+  return generateReviewsForProduct(productId, reviewCount);
+});
 
 export const mockQuestions: ProductQuestion[] = [
   {
@@ -101,6 +249,38 @@ export const mockQuestions: ProductQuestion[] = [
       },
     ],
   },
+  {
+    id: "q-3",
+    productId: "2",
+    question: "Is this product organic certified?",
+    askedBy: "Health Food Store",
+    askedDate: new Date("2024-11-20"),
+    answers: [
+      {
+        id: "a-3",
+        answer: "Yes, this product is USDA Organic certified. All ingredients are organic and the certification is clearly marked on the packaging.",
+        answeredBy: "Sparkle Beverages",
+        answeredDate: new Date("2024-11-21"),
+        isVendor: true,
+      },
+    ],
+  },
+  {
+    id: "q-4",
+    productId: "14",
+    question: "What are the dimensions of this equipment?",
+    askedBy: "Restaurant Manager",
+    askedDate: new Date("2024-10-15"),
+    answers: [
+      {
+        id: "a-4",
+        answer: "The dimensions are 36\" x 24\" x 48\" (L x W x H). Please ensure you have adequate space for installation.",
+        answeredBy: "Beverage Equipment Pro",
+        answeredDate: new Date("2024-10-16"),
+        isVendor: true,
+      },
+    ],
+  },
 ];
 
 export function getReviewsByProductId(productId: string): ProductReview[] {
@@ -126,5 +306,3 @@ export function getRatingBreakdown(productId: string): { [key: number]: number }
   });
   return breakdown;
 }
-
-

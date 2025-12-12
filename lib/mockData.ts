@@ -1679,3 +1679,32 @@ export function getCategories(): string[] {
 export function getVendors(): string[] {
   return Array.from(new Set(mockProducts.map((p) => p.vendor.name)));
 }
+
+export function getProductsByVendor(vendorId: string, excludeId?: string): Product[] {
+  return mockProducts.filter(
+    (p) => p.vendor.id === vendorId && p.id !== excludeId
+  );
+}
+
+export function getProductsByCategory(category: string, excludeId?: string): Product[] {
+  return mockProducts.filter(
+    (p) => p.category === category && p.id !== excludeId
+  );
+}
+
+export function getRelatedProducts(productId: string, limit: number = 8): Product[] {
+  const product = getProductById(productId);
+  if (!product) return [];
+  
+  // Get products from same vendor and category
+  const sameVendor = getProductsByVendor(product.vendor.id, productId);
+  const sameCategory = getProductsByCategory(product.category, productId);
+  
+  // Combine and deduplicate
+  const combined = [...sameVendor, ...sameCategory];
+  const unique = combined.filter((p, index, self) => 
+    index === self.findIndex((t) => t.id === p.id)
+  );
+  
+  return unique.slice(0, limit);
+}
