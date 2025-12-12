@@ -48,6 +48,7 @@ export default function CheckoutPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [animatedPct, setAnimatedPct] = useState(0);
 
   if (!mounted) {
     return null;
@@ -66,7 +67,6 @@ export default function CheckoutPage() {
     (firstItem?.product.minOrderQuantity || 0) * (firstItem?.product.price || 0) || 135;
   const progressPct =
     minOrderThreshold > 0 ? Math.min(100, Math.round((subtotal / minOrderThreshold) * 100)) : 0;
-  const [animatedPct, setAnimatedPct] = useState(0);
 
   useEffect(() => {
     // Animate bar on first render and whenever progress changes
