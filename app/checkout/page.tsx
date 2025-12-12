@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { Address, PaymentMethod } from "@/types";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotal, clearCart } = useCart();
   const { user, isAuthenticated } = useAuth();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -203,72 +205,109 @@ export default function CheckoutPage() {
         </div>
 
         {/* Recently viewed */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           <h2 className="text-xl font-semibold text-black">Recently viewed</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {items.slice(0, 4).map((item, idx) => (
-              <div
-                key={item.product.id + idx}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow transition-shadow"
-              >
-                <div className="relative">
-                  <img
-                    src={item.product.images?.[0] || "/placeholder-product.jpg"}
-                    alt={item.product.name}
-                    className="w-full h-52 object-cover"
-                  />
-                  {item.product.isBestseller && (
-                    <span className="absolute top-2 left-2 bg-white text-xs font-semibold px-2 py-1 rounded shadow-sm">
-                      Bestseller
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
-                  >
-                    <svg
-                      className="w-4 h-4 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+            {items.slice(0, 4).map((item, idx) => {
+              const inWishlist = isInWishlist(item.product.id);
+              const minOrderValue = item.product.minOrderQuantity
+                ? (item.product.minOrderQuantity * item.product.price).toFixed(0)
+                : null;
+              
+              return (
+                <div
+                  key={item.product.id + idx}
+                  className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 group"
+                >
+                  {/* Image Section */}
+                  <div className="relative aspect-square bg-gray-50 overflow-hidden">
+                    <img
+                      src={item.product.images?.[0] || "/placeholder-product.jpg"}
+                      alt={item.product.name}
+                      className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-200"
+                    />
+                    {/* Bestseller Badge Overlay */}
+                    {item.product.isBestseller && (
+                      <span className="absolute top-3 left-3 bg-gray-100 text-gray-900 text-xs font-semibold px-2.5 py-1 rounded-full">
+                        Bestseller
+                      </span>
+                    )}
+                    {/* Heart Icon */}
+                    <button
+                      type="button"
+                      onClick={() => toggleWishlist(item.product)}
+                      className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                        inWishlist
+                          ? "bg-red-50 border border-red-200"
+                          : "bg-white border border-gray-200 hover:border-gray-300"
+                      }`}
+                      aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded">Bestseller</span>
-                    {item.product.compareAtPrice && (
-                      <span className="text-gray-500 line-through">
-                        ${item.product.compareAtPrice.toFixed(2)}
-                      </span>
+                      <svg
+                        className={`w-4 h-4 ${
+                          inWishlist ? "text-red-500 fill-red-500" : "text-gray-400"
+                        }`}
+                        fill={inWishlist ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {/* Product Details */}
+                  <div className="p-4 space-y-2.5">
+                    {/* Bestseller Tag (if applicable) */}
+                    {item.product.isBestseller && (
+                      <div className="mb-1">
+                        <span className="inline-block bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                          Bestseller
+                        </span>
+                      </div>
                     )}
-                  </div>
-                  <p className="text-sm text-gray-800 font-medium leading-snug">{item.product.name}</p>
-                  <p className="text-xs text-gray-600">{item.product.vendor.name}</p>
-                  <div className="text-sm font-semibold text-black">
-                    ${item.product.price.toFixed(2)}{" "}
-                    {item.product.compareAtPrice && (
-                      <span className="text-xs text-gray-500 font-normal">
-                        MSRP ${item.product.compareAtPrice.toFixed(2)}
+                    
+                    {/* Product Name */}
+                    <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[2.5rem]">
+                      {item.product.name}
+                    </h3>
+                    
+                    {/* Brand Name */}
+                    <p className="text-xs text-gray-600">{item.product.vendor.name}</p>
+                    
+                    {/* Price Section */}
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-base font-bold text-gray-900">
+                        ${item.product.price.toFixed(2)}
                       </span>
+                      {item.product.compareAtPrice && (
+                        <span className="text-xs text-gray-500 line-through">
+                          MSRP ${item.product.compareAtPrice.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Minimum Order */}
+                    {minOrderValue && (
+                      <p className="text-xs text-gray-600">
+                        ${minOrderValue} min
+                      </p>
                     )}
+                    
+                    {/* Shipping Info */}
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600 pt-1">
+                      <span className="text-base leading-none">∞</span>
+                      <span>Free shipping over $300</span>
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-600">
-                    {item.product.minOrderQuantity
-                      ? `$${(item.product.minOrderQuantity * item.product.price).toFixed(0)} min`
-                      : "Low min"}
-                  </div>
-                  <div className="text-xs text-gray-600">Free shipping over $300</div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
