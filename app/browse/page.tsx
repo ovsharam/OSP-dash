@@ -6,11 +6,13 @@ import SidebarFilters from "@/components/SidebarFilters";
 import ProductComparison from "@/components/ProductComparison";
 import AnimatedHero from "@/components/AnimatedHero";
 import { useComparison } from "@/contexts/ComparisonContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { mockProducts, getCategories, getVendors } from "@/lib/mockData";
 import { Product } from "@/types";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { FilterState } from "@/components/ProductFilters";
+import Link from "next/link";
 
 const categories = [
   { id: "beverages", name: "Organic Soda Beverages", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200" },
@@ -22,7 +24,20 @@ const categories = [
   { id: "bowls", name: "Compostable Bowls", image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200" },
 ];
 
+// Faire-style categories for authenticated buyers
+const faireCategories = [
+  { id: "kitchen-tabletop", name: "Kitchen & tabletop", image: "/images/categories/kitchen-tabletop.jpg" },
+  { id: "snacks", name: "Snacks", image: "/images/categories/snacks.jpg" },
+  { id: "home-accents", name: "Home accents", image: "/images/categories/home-accents.jpg" },
+  { id: "womens-apparel", name: "Women's apparel", image: "/images/categories/womens-apparel.jpg" },
+  { id: "confections", name: "Confections", image: "/images/categories/confections.jpg" },
+  { id: "beverages", name: "Beverages", image: "/images/categories/beverages.jpg" },
+  { id: "womens-accessories", name: "Women's accessories", image: "/images/categories/womens-accessories.jpg" },
+  { id: "coffee-tea", name: "Coffee & tea", image: "/images/categories/coffee-tea.jpg" },
+];
+
 function BrowseContent() {
+  const { user, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
   const searchParam = searchParams?.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(searchParam);
@@ -31,6 +46,9 @@ function BrowseContent() {
   const [showComparison, setShowComparison] = useState(false);
   const { items: comparisonItems, removeFromComparison } = useComparison();
   const categoryParam = searchParams?.get("category") || "";
+  
+  // Check if user is a buyer (not a vendor)
+  const isBuyer = isAuthenticated && user && !user.businessName?.toLowerCase().includes("vendor");
 
   const categoryList = getCategories();
   const vendors = getVendors();
@@ -143,6 +161,97 @@ function BrowseContent() {
 
   // Get selected category for "All [category]" link
   const selectedCategory = categoryParam || activeFilters.find(f => categoryList.includes(f)) || categoryList[0];
+
+  // Show Faire-style homepage for authenticated buyers
+  if (isBuyer) {
+    return (
+      <div className="min-h-screen bg-white">
+        {/* Top Promotional Banner */}
+        <div className="bg-amber-50 border-b border-amber-200 py-2">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-center text-sm">
+              <span className="text-gray-800">Enjoy 50% off! Shop food, drinks, and more.</span>
+              <Link href="/browse" className="ml-2 text-gray-800 underline hover:text-black">
+                View details
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Welcome Message */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-8">
+            Welcome to OSP, {user?.name || "Buyer"}
+          </h1>
+
+          {/* Category Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
+            {faireCategories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/browse?category=${encodeURIComponent(category.name)}`}
+                className="group cursor-pointer"
+              >
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="aspect-square relative bg-gray-100">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                      onError={(e) => {
+                        // Fallback to a placeholder if image doesn't exist
+                        (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200";
+                      }}
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium text-gray-900 text-center group-hover:text-black transition-colors">
+                      {category.name}
+                    </h3>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Holiday Shop Banner */}
+          <div className="bg-[#8B4513] rounded-lg overflow-hidden mb-12 relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+              <div className="text-white z-10">
+                <h2 className="text-4xl md:text-5xl font-serif font-bold mb-4">
+                  The Holiday Shop
+                </h2>
+                <p className="text-lg md:text-xl mb-6 text-white/90 leading-relaxed">
+                  Make this holiday season magical for your customers with everything they need from memorable family moments to gifts for everyone on their list.
+                </p>
+                <Link
+                  href="/browse?category=Holiday"
+                  className="inline-block bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
+                >
+                  Shop all
+                </Link>
+              </div>
+              <div className="relative h-64 md:h-96 flex items-center justify-center">
+                {/* Decorative holiday items */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 bg-yellow-400 rounded-full opacity-20"></div>
+                  <div className="absolute top-8 right-8 w-16 h-16 bg-amber-500 rounded-full opacity-30"></div>
+                  <div className="absolute bottom-8 left-8 w-20 h-20 bg-orange-400 rounded-full opacity-25"></div>
+                </div>
+                <div className="relative z-10 text-white text-center">
+                  <div className="text-6xl mb-4">🎄</div>
+                  <div className="text-4xl mb-2">🎁</div>
+                  <div className="text-5xl">✨</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
