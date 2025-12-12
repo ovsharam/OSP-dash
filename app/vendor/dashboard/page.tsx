@@ -401,6 +401,7 @@ function MessageThread({ messageId, onBack, replyText, setReplyText }: MessageTh
 }
 
 export default function VendorDashboardPage() {
+  const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "customers" | "messages" | "profile">("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -411,6 +412,28 @@ export default function VendorDashboardPage() {
   const [customerDetailTab, setCustomerDetailTab] = useState<"overview" | "orders">("overview");
   const [showCustomerDetailPanel, setShowCustomerDetailPanel] = useState(false);
   const [selectedOrderForDetail, setSelectedOrderForDetail] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check if user has a seller profile
+    if (isAuthenticated && !user?.sellerProfile) {
+      // Redirect to seller signup if no seller profile exists
+      router.push("/vendor/signup");
+    } else if (!isAuthenticated) {
+      // Redirect to login if not authenticated
+      router.push("/login");
+    }
+  }, [user, isAuthenticated, router]);
+
+  // Show loading or redirect message while checking
+  if (!isAuthenticated || !user?.sellerProfile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Redirecting...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Mock data
   const stats = {
