@@ -168,19 +168,22 @@ function BrowseContent() {
   const popularProducts = useMemo(() => {
     return mockProducts
       .filter((p) => p.isBestseller || (p.vendor.rating ?? 0) >= 4.8)
-      .slice(0, 12);
+      .slice(0, 12)
+      .map((p) => ({ ...p, showWholesalePrice: true }));
   }, []);
 
   const homeAccentsProducts = useMemo(() => {
     return mockProducts
       .filter((p) => p.category === "Tableware" || p.tags.some((t) => t.toLowerCase().includes("home")))
-      .slice(0, 12);
+      .slice(0, 12)
+      .map((p) => ({ ...p, showWholesalePrice: true }));
   }, []);
 
   const beveragesProducts = useMemo(() => {
     return mockProducts
       .filter((p) => p.category === "Beverages")
-      .slice(0, 12);
+      .slice(0, 12)
+      .map((p) => ({ ...p, showWholesalePrice: true }));
   }, []);
 
   // Show Faire-style homepage for authenticated buyers

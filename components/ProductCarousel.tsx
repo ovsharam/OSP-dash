@@ -139,7 +139,9 @@ export default function ProductCarousel({ title, products, shopAllLink }: Produc
                         </div>
                       )}
                       <div className="text-gray-500">
-                        {product.shippingOptions.some((s) => s.name.includes("Free"))
+                        {product.shippingOptions.some((s) => s.name.toLowerCase().includes("free"))
+                          ? "Free shipping"
+                          : product.shippingOptions.some((s) => s.name.toLowerCase().includes("express"))
                           ? "Free shipping over $300"
                           : "Standard shipping"}
                       </div>
