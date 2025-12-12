@@ -49,7 +49,7 @@ export default function CheckoutPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  if (!mounted || items.length === 0) {
+  if (!mounted) {
     return null;
   }
 
@@ -60,6 +60,12 @@ export default function CheckoutPage() {
   );
   const tax = (subtotal + shipping) * 0.08; // 8% tax
   const total = subtotal + shipping + tax;
+
+  const firstItem = items[0];
+  const minOrderThreshold =
+    (firstItem?.product.minOrderQuantity || 0) * (firstItem?.product.price || 0) || 135;
+  const progressPct =
+    minOrderThreshold > 0 ? Math.min(100, Math.round((subtotal / minOrderThreshold) * 100)) : 0;
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -97,328 +103,186 @@ export default function CheckoutPage() {
     }
   };
 
+  // If cart is empty, route back to cart
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-semibold text-black">Your cart is empty</h1>
+          <button
+            onClick={() => router.push("/browse")}
+            className="inline-flex items-center px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+          >
+            Continue shopping
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-black mb-8">Checkout</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
-            {/* Checkout Form - Left Column */}
-            <div className="space-y-6">
-              {/* Shipping Address */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-black mb-6">Shipping Address</h2>
-                <div className="space-y-4">
-                  {/* Street Address */}
-                  <div className="w-full">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Street Address <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={shippingAddress.street}
-                      onChange={(e) =>
-                        setShippingAddress({ ...shippingAddress, street: e.target.value })
-                      }
-                      className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                    />
-                    {errors.shippingStreet && (
-                      <p className="text-red-500 text-sm mt-1.5">{errors.shippingStreet}</p>
-                    )}
-                  </div>
-
-                  {/* City and State */}
-                  <div className="grid grid-cols-2 gap-4 w-full">
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        City <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={shippingAddress.city}
-                        onChange={(e) =>
-                          setShippingAddress({ ...shippingAddress, city: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                      {errors.shippingCity && (
-                        <p className="text-red-500 text-sm mt-1.5">{errors.shippingCity}</p>
-                      )}
-                    </div>
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        State <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={shippingAddress.state}
-                        onChange={(e) =>
-                          setShippingAddress({ ...shippingAddress, state: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                      {errors.shippingState && (
-                        <p className="text-red-500 text-sm mt-1.5">{errors.shippingState}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* ZIP Code and Country */}
-                  <div className="grid grid-cols-2 gap-4 w-full">
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        ZIP Code <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={shippingAddress.zipCode}
-                        onChange={(e) =>
-                          setShippingAddress({ ...shippingAddress, zipCode: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                      {errors.shippingZip && (
-                        <p className="text-red-500 text-sm mt-1.5">{errors.shippingZip}</p>
-                      )}
-                    </div>
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Country <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={shippingAddress.country}
-                        onChange={(e) =>
-                          setShippingAddress({ ...shippingAddress, country: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Billing Address */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center mb-6">
-                  <input
-                    type="checkbox"
-                    id="billingSame"
-                    checked={billingSameAsShipping}
-                    onChange={(e) => setBillingSameAsShipping(e.target.checked)}
-                    className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black focus:ring-2"
-                  />
-                  <label htmlFor="billingSame" className="ml-3 text-sm font-medium text-gray-700">
-                    Billing address same as shipping
-                  </label>
-                </div>
-                {!billingSameAsShipping && (
-                  <div className="space-y-5 pt-4 border-t border-gray-200">
-                    <h2 className="text-xl font-semibold text-black mb-6">Billing Address</h2>
-                    {/* Street Address */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Street Address <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={billingAddress.street}
-                        onChange={(e) =>
-                          setBillingAddress({ ...billingAddress, street: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                      {errors.billingStreet && (
-                        <p className="text-red-500 text-sm mt-1.5">{errors.billingStreet}</p>
-                      )}
-                    </div>
-                    {/* City and State */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          City <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={billingAddress.city}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, city: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                        />
-                        {errors.billingCity && (
-                          <p className="text-red-500 text-sm mt-1.5">{errors.billingCity}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          State <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={billingAddress.state}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, state: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                        />
-                        {errors.billingState && (
-                          <p className="text-red-500 text-sm mt-1.5">{errors.billingState}</p>
-                        )}
-                      </div>
-                    </div>
-                    {/* ZIP Code and Country */}
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          ZIP Code <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={billingAddress.zipCode}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, zipCode: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                        />
-                        {errors.billingZip && (
-                          <p className="text-red-500 text-sm mt-1.5">{errors.billingZip}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Country <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          value={billingAddress.country}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, country: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Payment Method */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-semibold text-black mb-6">Payment Method</h2>
-                <div className="space-y-4">
-                  {/* Card Number */}
-                  <div className="w-full">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Card Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      value={paymentMethod.cardNumber}
-                      onChange={(e) =>
-                        setPaymentMethod({ ...paymentMethod, cardNumber: e.target.value })
-                      }
-                      className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                    />
-                    {errors.cardNumber && (
-                      <p className="text-red-500 text-sm mt-1.5">{errors.cardNumber}</p>
-                    )}
-                  </div>
-
-                  {/* Name on Card */}
-                  <div className="w-full">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Name on Card <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={paymentMethod.nameOnCard}
-                      onChange={(e) =>
-                        setPaymentMethod({ ...paymentMethod, nameOnCard: e.target.value })
-                      }
-                      className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                    />
-                    {errors.nameOnCard && (
-                      <p className="text-red-500 text-sm mt-1.5">{errors.nameOnCard}</p>
-                    )}
-                  </div>
-
-                  {/* Expiry Date and CVV */}
-                  <div className="grid grid-cols-2 gap-4 w-full">
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Expiry Date <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="MM/YY"
-                        value={paymentMethod.expiryDate}
-                        onChange={(e) =>
-                          setPaymentMethod({ ...paymentMethod, expiryDate: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                      {errors.expiryDate && (
-                        <p className="text-red-500 text-sm mt-1.5">{errors.expiryDate}</p>
-                      )}
-                    </div>
-                    <div className="w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        CVV <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="123"
-                        value={paymentMethod.cvv}
-                        onChange={(e) =>
-                          setPaymentMethod({ ...paymentMethod, cvv: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
-                      />
-                      {errors.cvv && (
-                        <p className="text-red-500 text-sm mt-1.5">{errors.cvv}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+    <div className="min-h-screen bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h1 className="text-3xl font-bold text-black">Carts</h1>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="flex-1 md:w-96">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search for products or brands"
+                  className="w-full border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                />
+                <svg
+                  className="w-5 h-5 text-gray-500 absolute right-3 top-2.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+                </svg>
               </div>
             </div>
+            <button className="px-4 py-2 border border-gray-200 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              Select carts
+            </button>
+          </div>
+        </div>
 
-            {/* Order Summary - Right Column */}
-            <div className="w-full">
-              <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-4">
-                <h2 className="text-xl font-semibold text-black mb-6">Order Summary</h2>
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between items-center text-sm text-gray-700">
-                    <span>Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm text-gray-700">
-                    <span>Shipping</span>
-                    <span className="font-medium">${shipping.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm text-gray-700">
-                    <span>Tax (estimated)</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
-                  </div>
-                  <div className="border-t border-gray-200 pt-3 mt-3">
-                    <div className="flex justify-between items-center font-bold text-black text-lg">
-                      <span>Total</span>
-                      <span>${total.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full bg-black text-white py-3 rounded-md font-semibold hover:bg-gray-800 transition-colors"
-                >
-                  Place Order
-                </button>
+        {/* Cart Card */}
+        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex-1 min-w-0 space-y-3">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span className="font-semibold text-black">{firstItem?.product.vendor.name || "Vendor"}</span>
+              <span className="text-gray-500">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm text-gray-700">Minimum reached</div>
+              <div className="h-2.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-green-600 rounded-full transition-all"
+                  style={{ width: `${progressPct}%` }}
+                />
               </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => router.push("/cart")}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                View cart
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="px-5 py-2 bg-black text-white rounded-md text-sm font-semibold hover:bg-gray-800 transition-colors"
+              >
+                Checkout
+              </button>
             </div>
           </div>
-        </form>
+          {firstItem && (
+            <div className="w-48 h-44 flex-shrink-0 flex items-center justify-center bg-white">
+              <img
+                src={firstItem.product.images?.[0] || "/placeholder-product.jpg"}
+                alt={firstItem.product.name}
+                className="max-h-full max-w-full object-contain rounded-md border border-gray-200"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Recently viewed */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold text-black">Recently viewed</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {items.slice(0, 4).map((item, idx) => (
+              <div
+                key={item.product.id + idx}
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow transition-shadow"
+              >
+                <div className="relative">
+                  <img
+                    src={item.product.images?.[0] || "/placeholder-product.jpg"}
+                    alt={item.product.name}
+                    className="w-full h-52 object-cover"
+                  />
+                  {item.product.isBestseller && (
+                    <span className="absolute top-2 left-2 bg-white text-xs font-semibold px-2 py-1 rounded shadow-sm">
+                      Bestseller
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    className="absolute top-2 right-2 bg-white rounded-full p-1 shadow-sm border border-gray-200"
+                  >
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded">Bestseller</span>
+                    {item.product.compareAtPrice && (
+                      <span className="text-gray-500 line-through">
+                        ${item.product.compareAtPrice.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-800 font-medium leading-snug">{item.product.name}</p>
+                  <p className="text-xs text-gray-600">{item.product.vendor.name}</p>
+                  <div className="text-sm font-semibold text-black">
+                    ${item.product.price.toFixed(2)}{" "}
+                    {item.product.compareAtPrice && (
+                      <span className="text-xs text-gray-500 font-normal">
+                        MSRP ${item.product.compareAtPrice.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {item.product.minOrderQuantity
+                      ? `$${(item.product.minOrderQuantity * item.product.price).toFixed(0)} min`
+                      : "Low min"}
+                  </div>
+                  <div className="text-xs text-gray-600">Free shipping over $300</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="sticky bottom-0 w-full bg-white border-t border-gray-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="text-sm text-gray-700">
+            <div className="font-medium">{items.length} cart ready to checkout</div>
+            <div className="text-gray-600">
+              Item total: <span className="line-through text-gray-400">${(subtotal * 2).toFixed(2)}</span>{" "}
+              <span className="font-semibold text-black">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="text-green-600 font-medium">Welcome 50% off</div>
+          </div>
+          <button
+            onClick={handleSubmit}
+            className="w-full sm:w-auto px-6 py-3 bg-black text-white rounded-md font-semibold hover:bg-gray-800 transition-colors"
+          >
+            Checkout all
+          </button>
+        </div>
       </div>
     </div>
   );
