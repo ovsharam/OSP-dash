@@ -26,14 +26,14 @@ const categories = [
 
 // Faire-style categories for authenticated buyers
 const faireCategories = [
-  { id: "kitchen-tabletop", name: "Kitchen & tabletop", image: "/images/categories/kitchen-tabletop.jpg" },
-  { id: "snacks", name: "Snacks", image: "/images/categories/snacks.jpg" },
-  { id: "home-accents", name: "Home accents", image: "/images/categories/home-accents.jpg" },
-  { id: "womens-apparel", name: "Women's apparel", image: "/images/categories/womens-apparel.jpg" },
-  { id: "confections", name: "Confections", image: "/images/categories/confections.jpg" },
-  { id: "beverages", name: "Beverages", image: "/images/categories/beverages.jpg" },
-  { id: "womens-accessories", name: "Women's accessories", image: "/images/categories/womens-accessories.jpg" },
-  { id: "coffee-tea", name: "Coffee & tea", image: "/images/categories/coffee-tea.jpg" },
+  { id: "kitchen-tabletop", name: "Kitchen & tabletop", image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop" },
+  { id: "snacks", name: "Snacks", image: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&h=400&fit=crop" },
+  { id: "home-accents", name: "Home accents", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop" },
+  { id: "womens-apparel", name: "Women's apparel", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=400&fit=crop" },
+  { id: "confections", name: "Confections", image: "https://images.unsplash.com/photo-1606312619070-d48b4e0016a4?w=400&h=400&fit=crop" },
+  { id: "beverages", name: "Beverages", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop" },
+  { id: "womens-accessories", name: "Women's accessories", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=400&fit=crop" },
+  { id: "coffee-tea", name: "Coffee & tea", image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=400&fit=crop" },
 ];
 
 function BrowseContent() {
@@ -47,8 +47,9 @@ function BrowseContent() {
   const { items: comparisonItems, removeFromComparison } = useComparison();
   const categoryParam = searchParams?.get("category") || "";
   
-  // Check if user is a buyer (not a vendor)
-  const isBuyer = isAuthenticated && user && !user.businessName?.toLowerCase().includes("vendor");
+  // Check if user is a buyer (authenticated and not on vendor routes)
+  // For now, assume authenticated users on browse page are buyers
+  const isBuyer = isAuthenticated && user;
 
   const categoryList = getCategories();
   const vendors = getVendors();
@@ -193,17 +194,13 @@ function BrowseContent() {
                 className="group cursor-pointer"
               >
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                  <div className="aspect-square relative bg-gray-100">
+                  <div className="aspect-square relative bg-gray-100 overflow-hidden">
                     <Image
                       src={category.image}
                       alt={category.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      onError={(e) => {
-                        // Fallback to a placeholder if image doesn't exist
-                        (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200";
-                      }}
                     />
                   </div>
                   <div className="p-4">
