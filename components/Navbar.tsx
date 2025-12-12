@@ -313,7 +313,10 @@ export default function Navbar() {
                     )}
                   </Link>
                   <button
-                    onClick={logout}
+                    onClick={() => {
+                      logout();
+                      router.push("/browse");
+                    }}
                     className="relative flex items-center justify-center px-4 text-gray-700 hover:text-black h-[50px] md:h-[60px] cursor-pointer text-sm whitespace-nowrap"
                     data-test-id="login"
                   >
