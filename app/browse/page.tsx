@@ -186,6 +186,13 @@ function BrowseContent() {
       .map((p) => ({ ...p, showWholesalePrice: true }));
   }, []);
 
+  const equipmentProducts = useMemo(() => {
+    return mockProducts
+      .filter((p) => p.category === "Equipment")
+      .slice(0, 12)
+      .map((p) => ({ ...p, showWholesalePrice: true }));
+  }, []);
+
   // Show Faire-style homepage for authenticated buyers
   if (isBuyer) {
     return (
@@ -244,51 +251,25 @@ function BrowseContent() {
             ))}
           </div>
 
-          {/* Holiday Shop Banner */}
-          <div className="mb-12">
-            <Link href="/browse?category=Holiday" className="block relative">
-              <div className="relative w-full p-4 md:p-16 lg:p-10 rounded-lg md:rounded-xl overflow-hidden min-h-[200px] md:min-h-[240px] lg:min-h-[288px] flex items-center justify-center">
-                {/* Background Image */}
-                <picture className="absolute top-0 left-0 z-0 h-full w-full">
-                  <source
-                    media="(min-width: 1024px)"
-                    srcSet="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1184&h=288&fit=crop&q=80 1x, https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=2368&h=576&fit=crop&q=80 2x"
-                  />
-                  <source
-                    media="(min-width: 768px)"
-                    srcSet="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=768&h=240&fit=crop&q=80 1x, https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1536&h=480&fit=crop&q=80 2x"
-                  />
-                  <img
-                    src="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=600&h=200&fit=crop&q=80"
-                    alt="Holiday Shop"
-                    className="w-full h-full object-cover object-center"
-                    loading="eager"
-                  />
-                </picture>
-
-                {/* Brown Background Overlay */}
-                <div className="absolute inset-0 bg-[#8B4513] z-[1]"></div>
-
-                {/* Content - Left Side (1/2 width) */}
-                <div className="z-[2] items-start text-left w-full md:w-1/2 relative flex flex-col justify-center">
-                  <div className="w-full flex flex-col items-start justify-start">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-2 md:mb-4 text-white">
-                      The Holiday Shop
-                    </h2>
-                  </div>
-                  <div className="h-2 md:h-4"></div>
-                  <div className="w-full flex flex-col items-start justify-start">
-                    <p className="text-base md:text-lg lg:text-xl mb-4 md:mb-6 text-white leading-relaxed">
-                      Make this holiday season magical for your customers with everything they need from memorable family moments to gifts for everyone on their list.
-                    </p>
-                  </div>
-                  <div className="h-4 md:h-4"></div>
-                  <button className="bg-gray-800 text-white px-6 py-3 md:px-8 md:py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
-                    Shop all
-                  </button>
-                </div>
+          {/* Sustainable Solutions Banner */}
+          <div className="ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 py-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
+                <Image
+                  alt="Promotional"
+                  src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
+                />
               </div>
-            </Link>
+              <div>
+                <h2 className="text-3xl font-bold text-black mb-4">Sustainable solutions, waiting for you</h2>
+                <p className="text-lg text-gray-600 mb-6">Sign up to discover organic beverages and eco-friendly tableware for your business.</p>
+                <button className="bg-black text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-gray-800 transition-colors">Unlock wholesale pricing</button>
+              </div>
+            </div>
           </div>
 
           {/* Product Carousels */}
@@ -299,38 +280,6 @@ function BrowseContent() {
               products={popularProducts}
               shopAllLink="/browse?filter=bestseller"
             />
-
-            {/* Mid-Page Promotional Banner */}
-            <div className="bg-gray-50 rounded-lg overflow-hidden mb-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 md:p-12">
-                <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
-                  <Image
-                    src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&h=600&fit=crop"
-                    alt="First order discount"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="p-4 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                    You've got 50% off your first order.
-                  </h2>
-                  <p className="text-base md:text-lg text-gray-700 mb-2">
-                    Welcome to OSP! You've got 7 days to use this welcome offer.
-                  </p>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Maximum discount is $100. Offer ends December 19, 2025, at 07:59 AM UTC and is automatically applied at checkout.
-                  </p>
-                  <Link
-                    href="/browse"
-                    className="inline-block bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-                  >
-                    Shop now
-                  </Link>
-                </div>
-              </div>
-            </div>
 
             {/* Home accents */}
             <ProductCarousel
@@ -344,6 +293,13 @@ function BrowseContent() {
               title="Beverages"
               products={beveragesProducts}
               shopAllLink="/beverages"
+            />
+
+            {/* Equipment */}
+            <ProductCarousel
+              title="Equipment"
+              products={equipmentProducts}
+              shopAllLink="/equipment"
             />
           </div>
         </div>
@@ -569,34 +525,6 @@ function BrowseContent() {
               onClose={() => setShowComparison(false)}
             />
           )}
-        </div>
-      </div>
-
-      {/* Mid-Page Promotional Banner */}
-      <div className="bg-gray-50 border-t border-gray-200 my-12">
-        <div className="ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800"
-                alt="Promotional"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold text-black mb-4">
-                Sustainable solutions, waiting for you
-              </h2>
-              <p className="text-lg text-gray-600 mb-6">
-                Sign up to discover organic beverages and eco-friendly tableware for your business.
-              </p>
-              <button className="bg-black text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-gray-800 transition-colors">
-                Unlock wholesale pricing
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
