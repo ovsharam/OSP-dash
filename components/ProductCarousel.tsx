@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
@@ -17,6 +17,22 @@ export default function ProductCarousel({ title, products, shopAllLink }: Produc
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    // Check scroll state on mount and when products change
+    const checkScroll = () => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+      }
+    };
+    
+    checkScroll();
+    // Also check after a short delay to ensure layout is complete
+    const timeout = setTimeout(checkScroll, 100);
+    return () => clearTimeout(timeout);
+  }, [products]);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
