@@ -66,6 +66,14 @@ export default function CheckoutPage() {
     (firstItem?.product.minOrderQuantity || 0) * (firstItem?.product.price || 0) || 135;
   const progressPct =
     minOrderThreshold > 0 ? Math.min(100, Math.round((subtotal / minOrderThreshold) * 100)) : 0;
+  const [animatedPct, setAnimatedPct] = useState(0);
+
+  useEffect(() => {
+    // Animate bar on first render and whenever progress changes
+    setAnimatedPct(0);
+    const id = setTimeout(() => setAnimatedPct(progressPct), 50);
+    return () => clearTimeout(id);
+  }, [progressPct]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -161,8 +169,8 @@ export default function CheckoutPage() {
               <div className="text-sm text-gray-700">Minimum reached</div>
               <div className="h-2.5 w-full bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-green-600 rounded-full transition-all"
-                  style={{ width: `${progressPct}%` }}
+                  className="h-full bg-green-600 rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${animatedPct}%` }}
                 />
               </div>
             </div>
