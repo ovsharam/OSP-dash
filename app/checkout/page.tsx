@@ -50,10 +50,6 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [animatedPct, setAnimatedPct] = useState(0);
 
-  if (!mounted) {
-    return null;
-  }
-
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shipping = items.reduce(
     (sum, item) => sum + (item.selectedShipping?.price || 0),
@@ -74,6 +70,10 @@ export default function CheckoutPage() {
     const id = setTimeout(() => setAnimatedPct(progressPct), 50);
     return () => clearTimeout(id);
   }, [progressPct]);
+
+  if (!mounted) {
+    return null;
+  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
