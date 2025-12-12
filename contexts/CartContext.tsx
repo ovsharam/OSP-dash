@@ -34,7 +34,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items]);
 
   const addToCart = (product: Product, quantity = 1, shipping?: ShippingOption) => {
-    const minimum = product.minOrderQuantity || 1;
+    const minimum = product.minOrderQuantity ?? (product.category === "Beverages" ? 24 : 1);
     const normalizedQuantity = Math.max(minimum, quantity);
 
     setItems((prevItems) => {

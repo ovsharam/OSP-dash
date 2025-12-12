@@ -16,8 +16,10 @@ export default function ProductDetailPage() {
   const { isAuthenticated, user } = useAuth();
   const product = getProductById(params.id as string);
 
+  const minimumOrder = product?.minOrderQuantity ?? (product?.category === "Beverages" ? 24 : 1);
+
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(product?.minOrderQuantity || 1);
+  const [quantity, setQuantity] = useState(minimumOrder);
   const [selectedShipping, setSelectedShipping] = useState<ShippingOption | undefined>(
     product?.shippingOptions[0]
   );
@@ -247,7 +249,7 @@ export default function ProductDetailPage() {
               </label>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => setQuantity(Math.max(product.minOrderQuantity || 1, quantity - 1))}
+                  onClick={() => setQuantity(Math.max(minimumOrder, quantity - 1))}
                   className="w-10 h-10 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 flex-shrink-0"
                   type="button"
                   aria-label="Decrease quantity"
@@ -258,9 +260,9 @@ export default function ProductDetailPage() {
                   type="number"
                   value={quantity}
                   onChange={(e) =>
-                    setQuantity(Math.max(product.minOrderQuantity || 1, Number(e.target.value)))
+                    setQuantity(Math.max(minimumOrder, Number(e.target.value)))
                   }
-                  min={product.minOrderQuantity || 1}
+                  min={minimumOrder}
                   className="w-20 text-center border border-gray-300 rounded py-2 text-black"
                 />
                 <button

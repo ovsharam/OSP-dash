@@ -35,7 +35,8 @@ export default function ProductComparison({ products, onRemove, onClose }: Produ
   }
 
   const handleAddToCart = (product: Product) => {
-    const quantity = quantities[product.id] || product.minOrderQuantity || 1;
+    const minimumOrder = product.minOrderQuantity ?? (product.category === "Beverages" ? 24 : 1);
+    const quantity = quantities[product.id] || minimumOrder;
     addToCart(product, quantity);
     toast.success("Added to cart");
   };
@@ -149,12 +150,19 @@ export default function ProductComparison({ products, onRemove, onClose }: Produ
                       <div className="space-y-2">
                         <input
                           type="number"
-                          min={product.minOrderQuantity || 1}
-                          value={quantities[product.id] || product.minOrderQuantity || 1}
+                          min={product.minOrderQuantity ?? (product.category === "Beverages" ? 24 : 1)}
+                          value={
+                            quantities[product.id] ||
+                            product.minOrderQuantity ||
+                            (product.category === "Beverages" ? 24 : 1)
+                          }
                           onChange={(e) =>
                             setQuantities({
                               ...quantities,
-                              [product.id]: Math.max(product.minOrderQuantity || 1, Number(e.target.value)),
+                              [product.id]: Math.max(
+                                product.minOrderQuantity ?? (product.category === "Beverages" ? 24 : 1),
+                                Number(e.target.value)
+                              ),
                             })
                           }
                           className="w-20 text-center border border-gray-300 rounded px-2 py-1 text-black"

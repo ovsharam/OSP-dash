@@ -19,7 +19,8 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
-  const [quantity, setQuantity] = useState(product.minOrderQuantity || 1);
+  const minimumOrder = product.minOrderQuantity ?? (product.category === "Beverages" ? 24 : 1);
+  const [quantity, setQuantity] = useState(minimumOrder);
   const inWishlist = isInWishlist(product.id);
 
   if (!isOpen) return null;
@@ -131,7 +132,7 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
             <div className="flex items-center gap-2 mb-3">
               <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
                 <button
-                  onClick={() => setQuantity(Math.max(product.minOrderQuantity || 1, quantity - 1))}
+                  onClick={() => setQuantity(Math.max(minimumOrder, quantity - 1))}
                   className="px-3 py-2 hover:bg-gray-50 text-gray-700 text-sm"
                   aria-label="Decrease quantity"
                 >
@@ -140,10 +141,8 @@ export default function QuickViewModal({ product, isOpen, onClose }: QuickViewMo
                 <input
                   type="number"
                   value={quantity}
-                  min={product.minOrderQuantity || 1}
-                  onChange={(e) =>
-                    setQuantity(Math.max(product.minOrderQuantity || 1, Number(e.target.value)))
-                  }
+                  min={minimumOrder}
+                  onChange={(e) => setQuantity(Math.max(minimumOrder, Number(e.target.value)))}
                   className="w-12 text-center border-0 focus:outline-none text-black text-sm"
                 />
                 <button
