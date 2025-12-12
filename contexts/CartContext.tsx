@@ -84,27 +84,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addToCart = (product: Product, quantity = 1, shipping?: ShippingOption) => {
     const minimum = product.minOrderQuantity ?? (product.category === "Beverages" ? 24 : 1);
     const normalizedQuantity = Math.max(minimum, quantity);
-    const thresholdAmount = (product.minOrderQuantity || 0) * product.price;
+    const thresholdAmount = (product.minOrderQuantity || minimum) * product.price;
+    let toastQuantity = normalizedQuantity;
 
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.product.id === product.id);
       if (existingItem) {
-        const updatedItems = prevItems.map((item) =>
+        toastQuantity = Math.max(minimum, (existingItem.quantity || 0) + normalizedQuantity);
+        return prevItems.map((item) =>
           item.product.id === product.id
             ? {
                 ...item,
-                quantity: Math.max(minimum, item.quantity + normalizedQuantity),
+                quantity: toastQuantity,
                 selectedShipping: shipping || item.selectedShipping,
               }
             : item
         );
-        showAddToast(product, Math.max(minimum, (existingItem?.quantity || 0) + normalizedQuantity), thresholdAmount);
-        return updatedItems;
       }
 
-      showAddToast(product, normalizedQuantity, thresholdAmount);
+      toastQuantity = normalizedQuantity;
       return [...prevItems, { product, quantity: normalizedQuantity, selectedShipping: shipping }];
     });
+
+    showAddToast(product, toastQuantity, thresholdAmount);
   };
 
   const removeFromCart = (productId: string) => {
