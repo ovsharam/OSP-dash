@@ -34,16 +34,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items]);
 
   const addToCart = (product: Product, quantity = 1, shipping?: ShippingOption) => {
+    const minimum = product.minOrderQuantity || 1;
+    const normalizedQuantity = Math.max(minimum, quantity);
+
     setItems((prevItems) => {
       const existingItem = prevItems.find((item) => item.product.id === product.id);
       if (existingItem) {
         return prevItems.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity, selectedShipping: shipping || item.selectedShipping }
+            ? {
+                ...item,
+                quantity: Math.max(minimum, item.quantity + normalizedQuantity),
+                selectedShipping: shipping || item.selectedShipping,
+              }
             : item
         );
       }
-      return [...prevItems, { product, quantity, selectedShipping: shipping }];
+
+      return [...prevItems, { product, quantity: normalizedQuantity, selectedShipping: shipping }];
     });
   };
 
@@ -52,15 +60,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
-    );
+    setItems((prevItems) => {
+      if (quantity <= 0) {
+        return prevItems.filter((item) => item.product.id !== productId);
+      }
+
+      return prevItems.map((item) => {
+        if (item.product.id !== productId) return item;
+        const minimum = item.product.minOrderQuantity || 1;
+        return { ...item, quantity: Math.max(minimum, quantity) };
+      });
+    });
   };
 
   const clearCart = () => {

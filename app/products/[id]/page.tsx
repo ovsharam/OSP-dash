@@ -17,7 +17,7 @@ export default function ProductDetailPage() {
   const product = getProductById(params.id as string);
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(product?.minOrderQuantity || 1);
   const [selectedShipping, setSelectedShipping] = useState<ShippingOption | undefined>(
     product?.shippingOptions[0]
   );
