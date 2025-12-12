@@ -198,9 +198,9 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Billing Address Checkbox */}
+              {/* Billing Address */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center">
+                <div className="flex items-center mb-6">
                   <input
                     type="checkbox"
                     id="billingSame"
@@ -212,6 +212,95 @@ export default function CheckoutPage() {
                     Billing address same as shipping
                   </label>
                 </div>
+                {!billingSameAsShipping && (
+                  <div className="space-y-5 pt-4 border-t border-gray-200">
+                    <h2 className="text-xl font-semibold text-black mb-6">Billing Address</h2>
+                    {/* Street Address */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Street Address <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={billingAddress.street}
+                        onChange={(e) =>
+                          setBillingAddress({ ...billingAddress, street: e.target.value })
+                        }
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
+                      />
+                      {errors.billingStreet && (
+                        <p className="text-red-500 text-sm mt-1.5">{errors.billingStreet}</p>
+                      )}
+                    </div>
+                    {/* City and State */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          City <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={billingAddress.city}
+                          onChange={(e) =>
+                            setBillingAddress({ ...billingAddress, city: e.target.value })
+                          }
+                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
+                        />
+                        {errors.billingCity && (
+                          <p className="text-red-500 text-sm mt-1.5">{errors.billingCity}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          State <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={billingAddress.state}
+                          onChange={(e) =>
+                            setBillingAddress({ ...billingAddress, state: e.target.value })
+                          }
+                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
+                        />
+                        {errors.billingState && (
+                          <p className="text-red-500 text-sm mt-1.5">{errors.billingState}</p>
+                        )}
+                      </div>
+                    </div>
+                    {/* ZIP Code and Country */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          ZIP Code <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={billingAddress.zipCode}
+                          onChange={(e) =>
+                            setBillingAddress({ ...billingAddress, zipCode: e.target.value })
+                          }
+                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
+                        />
+                        {errors.billingZip && (
+                          <p className="text-red-500 text-sm mt-1.5">{errors.billingZip}</p>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Country <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={billingAddress.country}
+                          onChange={(e) =>
+                            setBillingAddress({ ...billingAddress, country: e.target.value })
+                          }
+                          className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Payment Method */}
