@@ -103,15 +103,16 @@ export default function CheckoutPage() {
         <h1 className="text-3xl font-bold text-black mb-8">Checkout</h1>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Checkout Form */}
-            <div className="lg:col-span-2 space-y-8">
+            {/* Checkout Form - Left Column */}
+            <div className="lg:col-span-2 space-y-6">
               {/* Shipping Address */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-bold text-black mb-4">Shipping Address</h2>
-                <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-black mb-6">Shipping Address</h2>
+                <div className="space-y-5">
+                  {/* Street Address */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Street Address *
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Street Address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -119,46 +120,54 @@ export default function CheckoutPage() {
                       onChange={(e) =>
                         setShippingAddress({ ...shippingAddress, street: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                      className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                     />
                     {errors.shippingStreet && (
-                      <p className="text-red-500 text-sm mt-1">{errors.shippingStreet}</p>
+                      <p className="text-red-500 text-sm mt-1.5">{errors.shippingStreet}</p>
                     )}
                   </div>
+
+                  {/* City and State */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        City <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         value={shippingAddress.city}
                         onChange={(e) =>
                           setShippingAddress({ ...shippingAddress, city: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                       />
                       {errors.shippingCity && (
-                        <p className="text-red-500 text-sm mt-1">{errors.shippingCity}</p>
+                        <p className="text-red-500 text-sm mt-1.5">{errors.shippingCity}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        State <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         value={shippingAddress.state}
                         onChange={(e) =>
                           setShippingAddress({ ...shippingAddress, state: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                       />
                       {errors.shippingState && (
-                        <p className="text-red-500 text-sm mt-1">{errors.shippingState}</p>
+                        <p className="text-red-500 text-sm mt-1.5">{errors.shippingState}</p>
                       )}
                     </div>
                   </div>
+
+                  {/* ZIP Code and Country */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        ZIP Code *
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        ZIP Code <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -166,130 +175,53 @@ export default function CheckoutPage() {
                         onChange={(e) =>
                           setShippingAddress({ ...shippingAddress, zipCode: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                       />
                       {errors.shippingZip && (
-                        <p className="text-red-500 text-sm mt-1">{errors.shippingZip}</p>
+                        <p className="text-red-500 text-sm mt-1.5">{errors.shippingZip}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Country <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         value={shippingAddress.country}
                         onChange={(e) =>
                           setShippingAddress({ ...shippingAddress, country: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                       />
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Billing Address */}
+              {/* Billing Address Checkbox */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <div className="flex items-center mb-4">
+                <div className="flex items-center">
                   <input
                     type="checkbox"
                     id="billingSame"
                     checked={billingSameAsShipping}
                     onChange={(e) => setBillingSameAsShipping(e.target.checked)}
-                    className="mr-2"
+                    className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black focus:ring-2"
                   />
-                  <label htmlFor="billingSame" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="billingSame" className="ml-3 text-sm font-medium text-gray-700">
                     Billing address same as shipping
                   </label>
                 </div>
-                {!billingSameAsShipping && (
-                  <div className="space-y-4">
-                    <h2 className="text-xl font-bold text-black mb-4">Billing Address</h2>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Street Address *
-                      </label>
-                      <input
-                        type="text"
-                        value={billingAddress.street}
-                        onChange={(e) =>
-                          setBillingAddress({ ...billingAddress, street: e.target.value })
-                        }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
-                      />
-                      {errors.billingStreet && (
-                        <p className="text-red-500 text-sm mt-1">{errors.billingStreet}</p>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-                        <input
-                          type="text"
-                          value={billingAddress.city}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, city: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                        {errors.billingCity && (
-                          <p className="text-red-500 text-sm mt-1">{errors.billingCity}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                        <input
-                          type="text"
-                          value={billingAddress.state}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, state: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                        {errors.billingState && (
-                          <p className="text-red-500 text-sm mt-1">{errors.billingState}</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          ZIP Code *
-                        </label>
-                        <input
-                          type="text"
-                          value={billingAddress.zipCode}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, zipCode: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                        {errors.billingZip && (
-                          <p className="text-red-500 text-sm mt-1">{errors.billingZip}</p>
-                        )}
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
-                        <input
-                          type="text"
-                          value={billingAddress.country}
-                          onChange={(e) =>
-                            setBillingAddress({ ...billingAddress, country: e.target.value })
-                          }
-                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Payment Method */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h2 className="text-xl font-bold text-black mb-4">Payment Method</h2>
-                <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-black mb-6">Payment Method</h2>
+                <div className="space-y-5">
+                  {/* Card Number */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Card Number *
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Card Number <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -298,15 +230,17 @@ export default function CheckoutPage() {
                       onChange={(e) =>
                         setPaymentMethod({ ...paymentMethod, cardNumber: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                      className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                     />
                     {errors.cardNumber && (
-                      <p className="text-red-500 text-sm mt-1">{errors.cardNumber}</p>
+                      <p className="text-red-500 text-sm mt-1.5">{errors.cardNumber}</p>
                     )}
                   </div>
+
+                  {/* Name on Card */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Name on Card *
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Name on Card <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -314,16 +248,18 @@ export default function CheckoutPage() {
                       onChange={(e) =>
                         setPaymentMethod({ ...paymentMethod, nameOnCard: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                      className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                     />
                     {errors.nameOnCard && (
-                      <p className="text-red-500 text-sm mt-1">{errors.nameOnCard}</p>
+                      <p className="text-red-500 text-sm mt-1.5">{errors.nameOnCard}</p>
                     )}
                   </div>
+
+                  {/* Expiry Date and CVV */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Expiry Date *
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Expiry Date <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -332,14 +268,16 @@ export default function CheckoutPage() {
                         onChange={(e) =>
                           setPaymentMethod({ ...paymentMethod, expiryDate: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                       />
                       {errors.expiryDate && (
-                        <p className="text-red-500 text-sm mt-1">{errors.expiryDate}</p>
+                        <p className="text-red-500 text-sm mt-1.5">{errors.expiryDate}</p>
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">CVV *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        CVV <span className="text-red-500">*</span>
+                      </label>
                       <input
                         type="text"
                         placeholder="123"
@@ -347,10 +285,10 @@ export default function CheckoutPage() {
                         onChange={(e) =>
                           setPaymentMethod({ ...paymentMethod, cvv: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black text-black"
+                        className="w-full border border-gray-300 rounded-md px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-black focus:border-black text-black"
                       />
                       {errors.cvv && (
-                        <p className="text-red-500 text-sm mt-1">{errors.cvv}</p>
+                        <p className="text-red-500 text-sm mt-1.5">{errors.cvv}</p>
                       )}
                     </div>
                   </div>
@@ -358,24 +296,24 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Order Summary */}
+            {/* Order Summary - Right Column */}
             <div className="lg:col-span-1">
               <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-4">
-                <h2 className="text-xl font-bold text-black mb-4">Order Summary</h2>
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-gray-700">
+                <h2 className="text-xl font-semibold text-black mb-6">Order Summary</h2>
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-sm text-gray-700">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-700">
+                  <div className="flex justify-between text-sm text-gray-700">
                     <span>Shipping</span>
-                    <span>${shipping.toFixed(2)}</span>
+                    <span className="font-medium">${shipping.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-gray-700">
+                  <div className="flex justify-between text-sm text-gray-700">
                     <span>Tax (estimated)</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span className="font-medium">${tax.toFixed(2)}</span>
                   </div>
-                  <div className="border-t border-gray-200 pt-2 mt-2">
+                  <div className="border-t border-gray-200 pt-3 mt-3">
                     <div className="flex justify-between font-bold text-black text-lg">
                       <span>Total</span>
                       <span>${total.toFixed(2)}</span>
@@ -384,7 +322,7 @@ export default function CheckoutPage() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-black text-white py-3 rounded font-semibold hover:bg-gray-800 transition-colors"
+                  className="w-full bg-black text-white py-3 rounded-md font-semibold hover:bg-gray-800 transition-colors"
                 >
                   Place Order
                 </button>
