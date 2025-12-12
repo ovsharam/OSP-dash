@@ -102,15 +102,15 @@ export default function CheckoutPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-3xl font-bold text-black mb-8">Checkout</h1>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-8">
             {/* Checkout Form - Left Column */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="space-y-6">
               {/* Shipping Address */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h2 className="text-xl font-semibold text-black mb-6">Shipping Address</h2>
-                <div className="space-y-5">
+                <div className="space-y-4">
                   {/* Street Address */}
-                  <div>
+                  <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Street Address <span className="text-red-500">*</span>
                     </label>
@@ -128,8 +128,8 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* City and State */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
+                  <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="w-full">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         City <span className="text-red-500">*</span>
                       </label>
@@ -145,7 +145,7 @@ export default function CheckoutPage() {
                         <p className="text-red-500 text-sm mt-1.5">{errors.shippingCity}</p>
                       )}
                     </div>
-                    <div>
+                    <div className="w-full">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         State <span className="text-red-500">*</span>
                       </label>
@@ -164,8 +164,8 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* ZIP Code and Country */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
+                  <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="w-full">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         ZIP Code <span className="text-red-500">*</span>
                       </label>
@@ -181,7 +181,7 @@ export default function CheckoutPage() {
                         <p className="text-red-500 text-sm mt-1.5">{errors.shippingZip}</p>
                       )}
                     </div>
-                    <div>
+                    <div className="w-full">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Country <span className="text-red-500">*</span>
                       </label>
@@ -306,9 +306,9 @@ export default function CheckoutPage() {
               {/* Payment Method */}
               <div className="bg-white border border-gray-200 rounded-lg p-6">
                 <h2 className="text-xl font-semibold text-black mb-6">Payment Method</h2>
-                <div className="space-y-5">
+                <div className="space-y-4">
                   {/* Card Number */}
-                  <div>
+                  <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Card Number <span className="text-red-500">*</span>
                     </label>
@@ -327,7 +327,7 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Name on Card */}
-                  <div>
+                  <div className="w-full">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Name on Card <span className="text-red-500">*</span>
                     </label>
@@ -345,8 +345,8 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Expiry Date and CVV */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
+                  <div className="grid grid-cols-2 gap-4 w-full">
+                    <div className="w-full">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Expiry Date <span className="text-red-500">*</span>
                       </label>
@@ -363,7 +363,7 @@ export default function CheckoutPage() {
                         <p className="text-red-500 text-sm mt-1.5">{errors.expiryDate}</p>
                       )}
                     </div>
-                    <div>
+                    <div className="w-full">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         CVV <span className="text-red-500">*</span>
                       </label>
@@ -386,24 +386,24 @@ export default function CheckoutPage() {
             </div>
 
             {/* Order Summary - Right Column */}
-            <div className="lg:col-span-1">
+            <div className="w-full">
               <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-4">
                 <h2 className="text-xl font-semibold text-black mb-6">Order Summary</h2>
                 <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-sm text-gray-700">
+                  <div className="flex justify-between items-center text-sm text-gray-700">
                     <span>Subtotal</span>
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-700">
+                  <div className="flex justify-between items-center text-sm text-gray-700">
                     <span>Shipping</span>
                     <span className="font-medium">${shipping.toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-700">
+                  <div className="flex justify-between items-center text-sm text-gray-700">
                     <span>Tax (estimated)</span>
                     <span className="font-medium">${tax.toFixed(2)}</span>
                   </div>
                   <div className="border-t border-gray-200 pt-3 mt-3">
-                    <div className="flex justify-between font-bold text-black text-lg">
+                    <div className="flex justify-between items-center font-bold text-black text-lg">
                       <span>Total</span>
                       <span>${total.toFixed(2)}</span>
                     </div>
