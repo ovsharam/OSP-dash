@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import SidebarFilters from "@/components/SidebarFilters";
 import ProductComparison from "@/components/ProductComparison";
+import ProductCarousel from "@/components/ProductCarousel";
 import AnimatedHero from "@/components/AnimatedHero";
 import { useComparison } from "@/contexts/ComparisonContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -163,6 +164,25 @@ function BrowseContent() {
   // Get selected category for "All [category]" link
   const selectedCategory = categoryParam || activeFilters.find(f => categoryList.includes(f)) || categoryList[0];
 
+  // Get products for carousels
+  const popularProducts = useMemo(() => {
+    return mockProducts
+      .filter((p) => p.isBestseller || (p.vendor.rating ?? 0) >= 4.8)
+      .slice(0, 12);
+  }, []);
+
+  const homeAccentsProducts = useMemo(() => {
+    return mockProducts
+      .filter((p) => p.category === "Tableware" || p.tags.some((t) => t.toLowerCase().includes("home")))
+      .slice(0, 12);
+  }, []);
+
+  const beveragesProducts = useMemo(() => {
+    return mockProducts
+      .filter((p) => p.category === "Beverages")
+      .slice(0, 12);
+  }, []);
+
   // Show Faire-style homepage for authenticated buyers
   if (isBuyer) {
     return (
@@ -244,6 +264,62 @@ function BrowseContent() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Product Carousels */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Popular with stores like yours */}
+            <ProductCarousel
+              title="Popular with stores like yours"
+              products={popularProducts}
+              shopAllLink="/browse?filter=bestseller"
+            />
+
+            {/* Mid-Page Promotional Banner */}
+            <div className="bg-gray-50 rounded-lg overflow-hidden mb-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+                <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&h=600&fit=crop"
+                    alt="First order discount"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                </div>
+                <div className="p-4 md:p-8">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                    You've got 50% off your first order.
+                  </h2>
+                  <p className="text-base md:text-lg text-gray-700 mb-2">
+                    Welcome to OSP! You've got 7 days to use this welcome offer.
+                  </p>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Maximum discount is $100. Offer ends December 19, 2025, at 07:59 AM UTC and is automatically applied at checkout.
+                  </p>
+                  <Link
+                    href="/browse"
+                    className="inline-block bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+                  >
+                    Shop now
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Home accents */}
+            <ProductCarousel
+              title="Home accents"
+              products={homeAccentsProducts}
+              shopAllLink="/browse?category=Tableware"
+            />
+
+            {/* Beverages */}
+            <ProductCarousel
+              title="Beverages"
+              products={beveragesProducts}
+              shopAllLink="/beverages"
+            />
           </div>
         </div>
       </div>
