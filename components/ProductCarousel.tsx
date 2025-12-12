@@ -71,7 +71,11 @@ export default function ProductCarousel({ title, products, shopAllLink }: Produc
           ref={scrollRef}
           onScroll={handleScroll}
           className="overflow-x-auto scrollbar-hide flex gap-4 pb-4"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          style={{ 
+            scrollbarWidth: "none", 
+            msOverflowStyle: "none",
+            WebkitOverflowScrolling: "touch"
+          }}
         >
           {products.map((product) => (
             <Link
