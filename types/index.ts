@@ -65,10 +65,30 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
   businessName?: string;
   address?: Address;
   isAuthenticated: boolean;
   contractSigned?: boolean;
+  // Seller profile
+  sellerProfile?: SellerProfile;
+}
+
+export interface SellerProfile {
+  id: string;
+  email: string;
+  password?: string; // Only for creation, not stored
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  businessName: string;
+  businessType: string;
+  businessWebsite?: string;
+  businessAddress: Address;
+  createdAt: Date;
+  isActive: boolean;
 }
 
 export interface Address {

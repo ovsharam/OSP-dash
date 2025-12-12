@@ -245,7 +245,7 @@ export default function Navbar() {
 
             {/* Right Navigation */}
             <div className="flex items-center flex-shrink-0">
-              {isAuthenticated && user?.businessName ? (
+              {isAuthenticated ? (
                 <>
                   <Link
                     href="/blog"
@@ -254,12 +254,21 @@ export default function Navbar() {
                   >
                     Blog
                   </Link>
-                  <Link
-                    href="/vendor/dashboard"
-                    className="hidden md:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-2"
-                  >
-                    Sell on OSP
-                  </Link>
+                  {user?.sellerProfile ? (
+                    <Link
+                      href="/vendor/dashboard"
+                      className="hidden md:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-2"
+                    >
+                      Sell on OSP
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/vendor/signup"
+                      className="hidden md:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-2"
+                    >
+                      Sell on OSP
+                    </Link>
+                  )}
                   <Link
                     href="/buyer/dashboard"
                     className="hidden md:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-2"
