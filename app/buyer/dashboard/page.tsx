@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { mockOrders, mockSampleRequests } from "@/lib/mockBuyerData";
 
 export default function BuyerDashboardPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "samples" | "settings">("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const recentOrders = mockOrders.slice(0, 3);
   const pendingSamples = mockSampleRequests.filter((s) => s.status !== "delivered").length;
@@ -13,36 +16,85 @@ export default function BuyerDashboardPage() {
   const totalSpent = mockOrders.reduce((sum, order) => sum + order.total, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2">Buyer Portal</h1>
-          <p className="text-gray-600">Manage your orders, samples, and account</p>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Left Sidebar */}
+      <div className={`${sidebarOpen ? "w-64" : "w-16"} transition-all duration-300 bg-white border-r border-gray-200 overflow-hidden flex-shrink-0`}>
+        <div className="p-4">
+          {/* Hamburger Menu Button */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="mb-4 p-2 hover:bg-gray-100 rounded transition-colors"
+            aria-label="Toggle sidebar"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
 
-        {/* Tabs */}
-        <div className="bg-white border-b border-gray-200 mb-6">
-          <div className="flex space-x-8">
-            {[
-              { id: "overview", label: "Overview" },
-              { id: "orders", label: "Orders" },
-              { id: "samples", label: "Sample Requests" },
-              { id: "settings", label: "Settings" },
-            ].map((tab) => (
+          {/* Navigation Buttons */}
+          {sidebarOpen && (
+            <div className="flex flex-col">
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? "border-black text-black"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
+                onClick={() => setActiveTab("overview")}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors text-left ${
+                  activeTab === "overview"
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                {tab.label}
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <span className="font-medium">Overview</span>
               </button>
-            ))}
-          </div>
+              <button
+                onClick={() => setActiveTab("orders")}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors text-left ${
+                  activeTab === "orders"
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <span className="font-medium">Orders</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("samples")}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors text-left ${
+                  activeTab === "samples"
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                <span className="font-medium">Sample Requests</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("settings")}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors text-left ${
+                  activeTab === "settings"
+                    ? "bg-black text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span className="font-medium">Settings</span>
+              </button>
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 min-w-0">
+        <div className="p-6">
 
         {/* Overview Tab */}
         {activeTab === "overview" && (
@@ -181,6 +233,7 @@ export default function BuyerDashboardPage() {
             <SettingsContent />
           </div>
         )}
+        </div>
       </div>
     </div>
   );
