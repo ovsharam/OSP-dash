@@ -1,0 +1,122 @@
+{% comment %}
+  Product Card Snippet
+  Reusable product card component matching Next.js ProductCard.tsx
+{% endcomment %}
+
+{% assign product_image = product.featured_image | default: product.images.first %}
+{% assign is_new = false %}
+{% assign is_bestseller = false %}
+{% if product.tags contains 'new' or product.tags contains 'New' %}
+  {% assign is_new = true %}
+{% endif %}
+{% if product.tags contains 'bestseller' or product.tags contains 'Bestseller' %}
+  {% assign is_bestseller = true %}
+{% endif %}
+
+{% assign show_wholesale_price = true %}
+{% if customer.tags contains 'wholesale' or customer %}
+  {% assign show_wholesale_price = true %}
+{% else %}
+  {% assign show_wholesale_price = false %}
+{% endif %}
+
+<div class="group block relative h-full">
+  <a href="{{ product.url }}" class="h-full block">
+    <div class="bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col transform hover:-translate-y-1">
+      <div class="relative aspect-square bg-gray-100 w-full flex-shrink-0">
+        {% if product_image %}
+          <img
+            src="{{ product_image | img_url: '400x400' }}"
+            alt="{{ product.title | escape }}"
+            class="object-cover transition-transform duration-300 group-hover:scale-105 w-full h-full"
+            loading="lazy"
+          />
+        {% else %}
+          <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+            <span class="text-gray-400">No image</span>
+          </div>
+        {% endif %}
+        
+        {% comment %} Badges {% endcomment %}
+        {% if is_new %}
+          <div class="absolute top-2 left-2 bg-pink-100 text-pink-800 px-2 py-1 text-xs font-semibold rounded">
+            New
+          </div>
+        {% endif %}
+        {% if is_bestseller %}
+          <div class="absolute top-2 left-2 bg-green-100 text-green-800 px-2 py-1 text-xs font-semibold rounded flex items-center">
+            <span class="mr-1">★</span> Bestseller
+          </div>
+        {% endif %}
+        
+        {% comment %} Action Buttons {% endcomment %}
+        <div class="absolute top-2 right-2 flex flex-col space-y-2 z-10">
+          <button
+            type="button"
+            class="wishlist-toggle bg-white rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors"
+            data-product-id="{{ product.id }}"
+            aria-label="Add to wishlist"
+          >
+            <svg class="w-4 h-4 text-gray-400 wishlist-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="comparison-toggle bg-white rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors text-gray-400"
+            data-product-id="{{ product.id }}"
+            aria-label="Add to comparison"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="p-3 flex-1 flex flex-col min-h-[120px]">
+        <h3 class="font-semibold text-black mb-1 line-clamp-2 text-sm leading-tight min-h-[2.5rem]">
+          {{ product.title }}
+        </h3>
+        <p class="text-xs text-gray-500 mb-2 line-clamp-1 min-h-[1rem]">{{ product.vendor }}</p>
+        
+        {% comment %} Rating {% endcomment %}
+        <div class="min-h-[1.25rem] mb-2">
+          {% assign vendor_rating = product.metafields.custom.vendor_rating | default: 0 %}
+          {% if vendor_rating > 0 %}
+            <div class="flex items-center">
+              <span class="text-xs text-black font-medium">
+                ★ {{ vendor_rating }}
+              </span>
+              {% assign review_count = product.metafields.custom.review_count | default: 0 %}
+              {% if review_count > 0 %}
+                <span class="text-xs text-gray-500 ml-1">
+                  ({{ review_count }})
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+        
+        {% comment %} Price {% endcomment %}
+        <div class="flex items-center text-sm mt-auto min-h-[1.5rem]">
+          {% if show_wholesale_price %}
+            <span class="font-semibold text-black">{{ product.price | money }}</span>
+            {% if product.compare_at_price > product.price %}
+              <span class="text-gray-500 line-through ml-2 text-xs">
+                {{ product.compare_at_price | money }}
+              </span>
+            {% endif %}
+          {% else %}
+            <div class="flex items-center text-gray-600">
+              <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+              <span class="text-xs">Unlock wholesale price</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </a>
+</div>

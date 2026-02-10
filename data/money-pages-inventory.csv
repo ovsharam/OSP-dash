@@ -1,0 +1,21 @@
+Shopify Handle,Current URL,GSC Clicks (90d),GA4 Revenue (90d),Primary Keyword,SEO Title,SEO Description,Priority Level
+# TODO: Populate from GSC/GA4 exports and products CSV
+# Instructions:
+# 1. Load data/gsc-performance-export.csv
+# 2. Load data/ga4-landing-pages-export.csv
+# 3. Load products_export_1.csv
+# 4. Map GSC/GA4 URLs to Shopify handles
+# 5. Calculate top 20% by:
+#    - Traffic (GSC clicks)
+#    - Revenue (GA4 revenue)
+# 6. For each money page, extract:
+#    - Shopify Handle (from products CSV)
+#    - Current URL (from GSC)
+#    - GSC Clicks (90d) (from GSC export)
+#    - GA4 Revenue (90d) (from GA4 export)
+#    - Primary Keyword (top query from GSC)
+#    - SEO Title (from products CSV)
+#    - SEO Description (from products CSV)
+#    - Priority Level (High/Medium based on traffic+revenue)
+# Expected columns: Shopify Handle, Current URL, GSC Clicks (90d), GA4 Revenue (90d), Primary Keyword, SEO Title, SEO Description, Priority Level
+

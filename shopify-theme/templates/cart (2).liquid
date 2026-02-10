@@ -1,0 +1,57 @@
+{%- comment -%}
+Legacy Liquid cart template.
+OS 2.0 equivalent is cart.json. This wrapper renders a simple cart table plus optional freight quote.
+{%- endcomment -%}
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="text-3xl font-bold mb-6">Your cart</h1>
+
+  {%- if cart.item_count == 0 -%}
+    <p>Your cart is empty.</p>
+  {%- else -%}
+    <form action="/cart" method="post" novalidate>
+      <table class="w-full mb-6">
+        <thead>
+          <tr class="text-left border-b border-gray-200">
+            <th class="py-3">Item</th>
+            <th class="py-3">Quantity</th>
+            <th class="py-3 text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for item in cart.items -%}
+            <tr class="border-b border-gray-100">
+              <td class="py-4">
+                <a href="{{ item.url }}" class="font-semibold text-black">{{ item.product.title }}</a>
+                <div class="text-sm text-gray-600">{{ item.variant.title }}</div>
+              </td>
+              <td class="py-4">
+                <input class="border border-gray-300 rounded px-2 py-1 w-16" type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
+              </td>
+              <td class="py-4 text-right font-semibold text-black">
+                {{ item.line_price | money }}
+              </td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+
+      <div class="flex items-center justify-between mb-6">
+        <a class="text-sm text-gray-700 hover:text-black" href="/collections/all">Continue shopping</a>
+        <div class="text-right">
+          <p class="text-sm text-gray-600">Subtotal</p>
+          <p class="text-2xl font-bold text-black">{{ cart.total_price | money }}</p>
+          <p class="text-xs text-gray-500">Shipping and taxes calculated at checkout.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <button type="submit" name="update" class="border border-gray-300 px-4 py-2 rounded text-sm hover:border-gray-400">Update cart</button>
+        <button type="submit" name="checkout" class="bg-black text-white px-6 py-3 rounded text-sm font-semibold hover:bg-gray-800">Check out</button>
+      </div>
+    </form>
+  {%- endif -%}
+</div>
+
+{%- comment -%} Optional freight quote section {%- endcomment -%}
+{%- section 'shipping-quote' -%}

@@ -1,0 +1,124 @@
+{% comment %}
+  Product Bundle Section
+  Frequently bought together / bundle products
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Product Bundle",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frequently bought together"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "label": "Show bundle discount",
+      "default": true
+    },
+    {
+      "type": "product_list",
+      "id": "bundle_products",
+      "label": "Bundle products",
+      "limit": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Bundle"
+    }
+  ]
+}
+{% endschema %}
+
+{% if section.settings.bundle_products.size > 0 %}
+  <div class="mt-16 pt-8 border-t border-gray-200">
+    <h2 class="text-2xl font-semibold text-black mb-6">{{ section.settings.title }}</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      {% for bundle_product in section.settings.bundle_products %}
+        <div class="border border-gray-200 rounded-lg p-4">
+          {% include 'product-card' %}
+        </div>
+      {% endfor %}
+    </div>
+    
+    {% if section.settings.show_discount %}
+      <div class="bg-gray-50 rounded-lg p-6 mb-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-600">Bundle Total:</p>
+            <p class="text-2xl font-bold text-black">
+              {% assign bundle_total = product.price %}
+              {% for bundle_product in section.settings.bundle_products %}
+                {% assign bundle_total = bundle_total | plus: bundle_product.price %}
+              {% endfor %}
+              {{ bundle_total | money }}
+            </p>
+            <p class="text-sm text-gray-500 line-through mt-1">
+              {% assign original_total = product.compare_at_price | default: product.price %}
+              {% for bundle_product in section.settings.bundle_products %}
+                {% assign original_total = original_total | plus: bundle_product.compare_at_price | default: bundle_product.price %}
+              {% endfor %}
+              {{ original_total | money }}
+            </p>
+          </div>
+          <button
+            type="button"
+            class="bg-black text-white px-8 py-3 rounded font-semibold hover:bg-gray-800 transition-colors add-bundle-to-cart"
+            data-product-id="{{ product.id }}"
+            data-bundle-ids="{{ section.settings.bundle_products | map: 'id' | join: ',' }}"
+          >
+            Add Bundle to Cart
+          </button>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const addBundleBtn = document.querySelector('.add-bundle-to-cart');
+      if (addBundleBtn) {
+        addBundleBtn.addEventListener('click', function() {
+          const productId = this.dataset.productId;
+          const bundleIds = this.dataset.bundleIds.split(',');
+          
+          // Add main product
+          const formData = new FormData();
+          formData.append('id', productId);
+          formData.append('quantity', '1');
+          
+          fetch('/cart/add.js', {
+            method: 'POST',
+            body: formData
+          })
+          .then(() => {
+            // Add bundle products
+            const addPromises = bundleIds.map(id => {
+              const bundleFormData = new FormData();
+              bundleFormData.append('id', id);
+              bundleFormData.append('quantity', '1');
+              return fetch('/cart/add.js', {
+                method: 'POST',
+                body: bundleFormData
+              });
+            });
+            
+            return Promise.all(addPromises);
+          })
+          .then(() => {
+            window.location.href = '/cart';
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding bundle to cart');
+          });
+        });
+      }
+    });
+  </script>
+{% endif %}

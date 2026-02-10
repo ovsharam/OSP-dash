@@ -1,0 +1,9 @@
+URL,Query,Clicks,Impressions,CTR,Position
+# TODO: Export from Google Search Console
+# Instructions:
+# 1. Go to GSC → Performance
+# 2. Set date range: Last 90 days
+# 3. Export → Download CSV
+# 4. Replace this file with actual export
+# Expected columns: URL, Query, Clicks, Impressions, CTR, Position
+

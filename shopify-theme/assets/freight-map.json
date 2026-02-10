@@ -1,0 +1,38 @@
+{
+  "comment": "Freight map for shipping quote calculations",
+  "origin_zips": {
+    "78219": {
+      "name": "Lancer Worldwide",
+      "address": "San Antonio, TX 78219, United States",
+      "type": "BUSINESS"
+    }
+  },
+  "freight_classes": {
+    "50": "Clean freight",
+    "55": "Clean freight",
+    "60": "Clean freight",
+    "65": "Clean freight",
+    "70": "Standard palletized goods",
+    "77.5": "Standard palletized goods",
+    "85": "Standard palletized goods",
+    "92.5": "Standard palletized goods",
+    "100": "Standard palletized goods",
+    "110": "Standard palletized goods",
+    "125": "Standard palletized goods",
+    "150": "Standard palletized goods",
+    "175": "Standard palletized goods",
+    "200": "Standard palletized goods",
+    "250": "Standard palletized goods",
+    "300": "Standard palletized goods",
+    "400": "Standard palletized goods",
+    "500": "Standard palletized goods"
+  },
+  "defaults": {
+    "origin_zip": "78219",
+    "freight_class": "70",
+    "origin_type": "BUSINESS",
+    "dest_type": "RESIDENTIAL",
+    "min_weight_lbs": 150
+  }
+}
+

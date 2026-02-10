@@ -1,0 +1,1752 @@
+import { Product, ProductReview } from "@/types";
+
+const baseReviewTemplates: Array<{
+  userName: string;
+  title: string;
+  comment: string;
+  rating: number;
+  helpfulCount: number;
+  avatar: string;
+}> = [
+    {
+      userName: "Avery L.",
+      title: "Great quality and packaging",
+      comment: "Arrived quickly, well-packed, and the quality was better than expected.",
+      rating: 5,
+      helpfulCount: 18,
+      avatar: "https://i.pravatar.cc/150?img=3",
+    },
+    {
+      userName: "Jordan M.",
+      title: "Customers love it",
+      comment: "Our store sold through the first batch in days. Flavor is spot on.",
+      rating: 4,
+      helpfulCount: 12,
+      avatar: "https://i.pravatar.cc/150?img=8",
+    },
+    {
+      userName: "Sam K.",
+      title: "Reliable supplier",
+      comment: "Consistent quality over multiple orders. Will keep reordering.",
+      rating: 5,
+      helpfulCount: 9,
+      avatar: "https://i.pravatar.cc/150?img=15",
+    },
+    {
+      userName: "Casey R.",
+      title: "Good value",
+      comment: "Pricing is fair for the quality. Shipping was on time.",
+      rating: 4,
+      helpfulCount: 7,
+      avatar: "https://i.pravatar.cc/150?img=22",
+    },
+  ];
+
+const reviewDates: Date[] = [
+  new Date("2024-10-04"),
+  new Date("2024-09-18"),
+  new Date("2024-08-27"),
+  new Date("2024-07-30"),
+];
+
+const buildReviews = (productId: string): ProductReview[] =>
+  baseReviewTemplates.map((template, idx) => ({
+    id: `${productId}-r${idx + 1}`,
+    productId,
+    userId: `u-${idx + 1}`,
+    userName: template.userName,
+    userAvatar: template.avatar,
+    rating: template.rating,
+    title: template.title,
+    comment: template.comment,
+    date: reviewDates[idx % reviewDates.length],
+    verifiedPurchase: true,
+    helpfulCount: template.helpfulCount,
+  }));
+
+export const mockProducts: Product[] = [
+  // Organic Soda Beverages (with samples)
+  {
+    id: "1",
+    handle: "organic-ginger-root-soda",
+    name: "Organic Ginger Root Soda",
+    description: "Crisp and refreshing organic ginger root soda made with real ginger extract. Perfect for restaurants and cafes looking for premium beverage options.",
+    price: 2.49,
+    compareAtPrice: 3.29,
+    images: [
+      "/images/products/pexels-introspectivedsgn-30652943.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "ginger", "refreshing"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    deals: [
+      { id: "d1", name: "Bulk Discount", discount: 15, minQuantity: 100 },
+    ],
+    offers: [
+      { id: "o1", name: "Free Shipping", description: "Free shipping on orders over $500" },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "2",
+    handle: "organic-lemon-lime-sparkling-water",
+    name: "Organic Lemon Lime Sparkling Water",
+    description: "Naturally flavored organic sparkling water with a zesty lemon-lime twist. Zero calories, zero sugar, all flavor.",
+    price: 1.99,
+    images: [
+      "/images/products/pexels-jamie-saw-4619044-12999924.jpg",
+    ],
+    vendor: {
+      id: "v2",
+      name: "Sparkle Beverages",
+      rating: 4.8,
+      reviewCount: 89,
+      location: "San Francisco, CA",
+    },
+    category: "Beverages",
+    tags: ["organic", "sparkling", "zero-calorie"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "3",
+    handle: "organic-cola-classic",
+    name: "Organic Cola Classic",
+    description: "Classic cola flavor made with organic cane sugar and natural flavors. A healthier alternative to traditional sodas.",
+    price: 2.79,
+    compareAtPrice: 3.49,
+    images: [
+      "/images/products/pexels-micheile-10045929.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "cola", "classic"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "4",
+    name: "Organic Root Beer",
+    description: "Creamy, smooth organic root beer with authentic sassafras flavor. Perfect for soda fountains and restaurants.",
+    price: 2.59,
+    images: [
+      "/images/products/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+    ],
+    vendor: {
+      id: "v3",
+      name: "Heritage Beverages",
+      rating: 4.7,
+      reviewCount: 156,
+      location: "Austin, TX",
+    },
+    category: "Beverages",
+    tags: ["organic", "root-beer", "classic"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "5",
+    name: "Organic Orange Cream Soda",
+    description: "Delicious organic orange cream soda with a smooth, creamy finish. A crowd favorite for all ages.",
+    price: 2.69,
+    compareAtPrice: 3.19,
+    images: [
+      "/images/products/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+    ],
+    vendor: {
+      id: "v2",
+      name: "Sparkle Beverages",
+      rating: 4.8,
+      reviewCount: 89,
+      location: "San Francisco, CA",
+    },
+    category: "Beverages",
+    tags: ["organic", "orange", "cream"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "6",
+    name: "Organic Grapefruit Soda",
+    description: "Tangy and refreshing organic grapefruit soda with natural citrus flavors. Perfect for brunch menus.",
+    price: 2.39,
+    images: [
+      "/images/products/pexels-olenkabohovyk-12851541.jpg",
+    ],
+    vendor: {
+      id: "v4",
+      name: "Citrus Fresh Co.",
+      rating: 4.6,
+      reviewCount: 73,
+      location: "Miami, FL",
+    },
+    category: "Beverages",
+    tags: ["organic", "grapefruit", "citrus"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "7",
+    name: "Organic Cherry Vanilla Soda",
+    description: "Sweet cherry flavor blended with smooth vanilla. Made with organic ingredients and natural flavors.",
+    price: 2.89,
+    images: [
+      "/images/products/pexels-micheile-10045929.jpg",
+    ],
+    vendor: {
+      id: "v3",
+      name: "Heritage Beverages",
+      rating: 4.7,
+      reviewCount: 156,
+      location: "Austin, TX",
+    },
+    category: "Beverages",
+    tags: ["organic", "cherry", "vanilla"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "8",
+    name: "Organic Blackberry Soda",
+    description: "Rich, fruity organic blackberry soda with deep berry flavors. Perfect for upscale dining establishments.",
+    price: 2.99,
+    images: [
+      "/images/products/pexels-oskelaq-1009158.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "blackberry", "fruity"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "9",
+    name: "Organic Peach Soda",
+    description: "Sweet and juicy organic peach soda with natural peach essence. A summer favorite.",
+    price: 2.49,
+    images: [
+      "/images/products/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+    ],
+    vendor: {
+      id: "v4",
+      name: "Citrus Fresh Co.",
+      rating: 4.6,
+      reviewCount: 73,
+      location: "Miami, FL",
+    },
+    category: "Beverages",
+    tags: ["organic", "peach", "fruity"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "10",
+    name: "Organic Raspberry Lime Soda",
+    description: "Tart raspberry and zesty lime combine in this refreshing organic soda. Perfect for cocktail mixers.",
+    price: 2.79,
+    images: [
+      "/images/products/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+    ],
+    vendor: {
+      id: "v2",
+      name: "Sparkle Beverages",
+      rating: 4.8,
+      reviewCount: 89,
+      location: "San Francisco, CA",
+    },
+    category: "Beverages",
+    tags: ["organic", "raspberry", "lime"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "11",
+    name: "Organic Pineapple Soda",
+    description: "Tropical organic pineapple soda with natural fruit flavors. Brings the tropics to your menu.",
+    price: 2.59,
+    images: [
+      "/images/products/pexels-micheile-10045929.jpg",
+    ],
+    vendor: {
+      id: "v4",
+      name: "Citrus Fresh Co.",
+      rating: 4.6,
+      reviewCount: 73,
+      location: "Miami, FL",
+    },
+    category: "Beverages",
+    tags: ["organic", "pineapple", "tropical"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "12",
+    name: "Organic Watermelon Mint Soda",
+    description: "Refreshing organic watermelon soda with a hint of mint. Perfect for hot summer days.",
+    price: 2.89,
+    images: [
+      "/images/products/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "watermelon", "mint"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "25",
+    name: "Organic Strawberry Soda",
+    description: "Sweet and fruity organic strawberry soda with natural strawberry flavor. Perfect for summer menus and special occasions.",
+    price: 2.69,
+    compareAtPrice: 3.19,
+    images: [
+      "/images/products/pexels-micheile-10045929.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "strawberry", "fruity"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "26",
+    name: "Organic Blueberry Soda",
+    description: "Rich and tangy organic blueberry soda with natural blueberry essence. A unique flavor for discerning customers.",
+    price: 2.79,
+    images: [
+      "/images/products/pexels-oskelaq-1009158.jpg",
+    ],
+    vendor: {
+      id: "v2",
+      name: "Sparkle Beverages",
+      rating: 4.8,
+      reviewCount: 89,
+      location: "San Francisco, CA",
+    },
+    category: "Beverages",
+    tags: ["organic", "blueberry", "unique"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "27",
+    name: "Organic Mango Soda",
+    description: "Tropical organic mango soda with exotic mango flavor. Brings a taste of the tropics to your beverage menu.",
+    price: 2.89,
+    compareAtPrice: 3.39,
+    images: [
+      "/images/products/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+    ],
+    vendor: {
+      id: "v4",
+      name: "Citrus Fresh Co.",
+      rating: 4.6,
+      reviewCount: 73,
+      location: "Miami, FL",
+    },
+    category: "Beverages",
+    tags: ["organic", "mango", "tropical"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "28",
+    name: "Organic Cucumber Lime Soda",
+    description: "Refreshing organic cucumber lime soda with a crisp, clean taste. Perfect for health-conscious customers.",
+    price: 2.59,
+    images: [
+      "/images/products/pexels-introspectivedsgn-30652943.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "cucumber", "lime", "refreshing"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "29",
+    name: "Organic Vanilla Cream Soda",
+    description: "Smooth and creamy organic vanilla cream soda with rich vanilla flavor. A classic favorite for all ages.",
+    price: 2.49,
+    images: [
+      "/images/products/pexels-jamie-saw-4619044-12999924.jpg",
+    ],
+    vendor: {
+      id: "v3",
+      name: "Heritage Beverages",
+      rating: 4.7,
+      reviewCount: 156,
+      location: "Austin, TX",
+    },
+    category: "Beverages",
+    tags: ["organic", "vanilla", "cream", "classic"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "30",
+    name: "Organic Pomegranate Soda",
+    description: "Bold and tangy organic pomegranate soda with antioxidant-rich flavor. A premium choice for upscale establishments.",
+    price: 2.99,
+    compareAtPrice: 3.49,
+    images: [
+      "/images/products/pexels-muhammed-nasrallah-fotograf-1448516764-27289728.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "pomegranate", "premium"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "31",
+    name: "Organic Mint Soda",
+    description: "Cool and refreshing organic mint soda with natural mint extract. Perfect for pairing with meals or as a standalone refreshment.",
+    price: 2.39,
+    images: [
+      "/images/products/pexels-olenkabohovyk-12851541.jpg",
+    ],
+    vendor: {
+      id: "v2",
+      name: "Sparkle Beverages",
+      rating: 4.8,
+      reviewCount: 89,
+      location: "San Francisco, CA",
+    },
+    category: "Beverages",
+    tags: ["organic", "mint", "refreshing"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "32",
+    name: "Organic Blood Orange Soda",
+    description: "Vibrant organic blood orange soda with a unique citrus twist. Eye-catching color and bold flavor make it a standout choice.",
+    price: 2.79,
+    images: [
+      "/images/products/pexels-micheile-10045929.jpg",
+    ],
+    vendor: {
+      id: "v4",
+      name: "Citrus Fresh Co.",
+      rating: 4.6,
+      reviewCount: 73,
+      location: "Miami, FL",
+    },
+    category: "Beverages",
+    tags: ["organic", "blood-orange", "citrus"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "33",
+    name: "Organic Lavender Lemon Soda",
+    description: "Elegant organic lavender lemon soda with floral notes and citrus brightness. A sophisticated choice for premium dining.",
+    price: 2.89,
+    images: [
+      "/images/products/pexels-oskelaq-1009158.jpg",
+    ],
+    vendor: {
+      id: "v1",
+      name: "Pure Soda Co.",
+      rating: 4.9,
+      reviewCount: 127,
+      location: "Portland, OR",
+    },
+    category: "Beverages",
+    tags: ["organic", "lavender", "lemon", "premium"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "34",
+    name: "Organic Hibiscus Soda",
+    description: "Floral and tangy organic hibiscus soda with vibrant color and unique flavor profile. Perfect for specialty beverage menus.",
+    price: 2.69,
+    images: [
+      "/images/products/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+    ],
+    vendor: {
+      id: "v2",
+      name: "Sparkle Beverages",
+      rating: 4.8,
+      reviewCount: 89,
+      location: "San Francisco, CA",
+    },
+    category: "Beverages",
+    tags: ["organic", "hibiscus", "floral"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "35",
+    name: "Organic Elderflower Soda",
+    description: "Delicate organic elderflower soda with subtle floral notes. A European-inspired flavor that pairs beautifully with meals.",
+    price: 2.99,
+    compareAtPrice: 3.59,
+    images: [
+      "/images/products/pexels-introspectivedsgn-30652943.jpg",
+    ],
+    vendor: {
+      id: "v3",
+      name: "Heritage Beverages",
+      rating: 4.7,
+      reviewCount: 156,
+      location: "Austin, TX",
+    },
+    category: "Beverages",
+    tags: ["organic", "elderflower", "floral", "european"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "36",
+    name: "Organic Passionfruit Soda",
+    description: "Exotic organic passionfruit soda with tropical flavor and vibrant taste. Brings an island vibe to any beverage selection.",
+    price: 2.79,
+    images: [
+      "/images/products/pexels-jamie-saw-4619044-12999924.jpg",
+    ],
+    vendor: {
+      id: "v4",
+      name: "Citrus Fresh Co.",
+      rating: 4.6,
+      reviewCount: 73,
+      location: "Miami, FL",
+    },
+    category: "Beverages",
+    tags: ["organic", "passionfruit", "tropical"],
+    dimensions: {
+      length: 3,
+      width: 3,
+      height: 8,
+      weight: 0.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 24,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  // Soda Equipment (no samples)
+  {
+    id: "13",
+    name: "Commercial Soda Dispenser System",
+    description: "Professional-grade commercial soda dispenser with 6 flavor stations. Features automatic carbonation and temperature control.",
+    price: 2499.99,
+    compareAtPrice: 2999.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["dispenser", "commercial", "soda"],
+    dimensions: {
+      length: 36,
+      width: 24,
+      height: 48,
+      weight: 85,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 199.99, estimatedDays: 10 },
+      { id: "s2", name: "Express Shipping", price: 299.99, estimatedDays: 5 },
+    ],
+    deals: [
+      { id: "d1", name: "Trade Discount", discount: 10, minQuantity: 1 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "14",
+    name: "Countertop Ice Dispenser",
+    description: "Compact countertop ice dispenser perfect for bars and cafes. Produces up to 100 lbs of ice per day.",
+    price: 1299.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["ice-dispenser", "countertop", "commercial"],
+    dimensions: {
+      length: 20,
+      width: 20,
+      height: 32,
+      weight: 45,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 149.99, estimatedDays: 10 },
+      { id: "s2", name: "Express Shipping", price: 229.99, estimatedDays: 5 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "15",
+    name: "Freestanding Ice & Water Dispenser",
+    description: "Large capacity freestanding ice and water dispenser. Ideal for high-volume restaurants and hotels.",
+    price: 3499.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["ice-dispenser", "freestanding", "high-capacity"],
+    dimensions: {
+      length: 30,
+      width: 30,
+      height: 60,
+      weight: 120,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 299.99, estimatedDays: 14 },
+      { id: "s2", name: "Express Shipping", price: 449.99, estimatedDays: 7 },
+    ],
+    deals: [
+      { id: "d1", name: "Volume Discount", discount: 15, minQuantity: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "16",
+    name: "Portable Soda Fountain System",
+    description: "Portable soda fountain system perfect for events and catering. Includes CO2 tank and syrup dispensers.",
+    price: 899.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["portable", "soda-fountain", "catering"],
+    dimensions: {
+      length: 24,
+      width: 18,
+      height: 36,
+      weight: 35,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 99.99, estimatedDays: 7 },
+      { id: "s2", name: "Express Shipping", price: 179.99, estimatedDays: 3 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "17",
+    name: "Under-Counter Ice Maker",
+    description: "Space-saving under-counter ice maker. Produces 50 lbs of ice per day. Perfect for small bars and cafes.",
+    price: 799.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["ice-maker", "under-counter", "compact"],
+    dimensions: {
+      length: 24,
+      width: 24,
+      height: 34,
+      weight: 55,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 89.99, estimatedDays: 7 },
+      { id: "s2", name: "Express Shipping", price: 149.99, estimatedDays: 3 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "18",
+    name: "Multi-Flavor Soda Gun System",
+    description: "Professional soda gun system with 8 flavor options. Includes all necessary connections and mounting hardware.",
+    price: 599.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["soda-gun", "multi-flavor", "bar-equipment"],
+    dimensions: {
+      length: 12,
+      width: 8,
+      height: 6,
+      weight: 8,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 49.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 89.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "43",
+    name: "Commercial CO2 Regulator System",
+    description: "Professional CO2 regulator system for commercial soda dispensers. Includes dual-gauge regulator and safety features.",
+    price: 349.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["co2-regulator", "commercial", "safety"],
+    dimensions: {
+      length: 12,
+      width: 8,
+      height: 10,
+      weight: 12,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 29.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 59.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "44",
+    name: "Stainless Steel Soda Syrup Pump",
+    description: "Heavy-duty stainless steel syrup pump for commercial use. Compatible with all standard syrup containers.",
+    price: 89.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["syrup-pump", "stainless-steel", "commercial"],
+    dimensions: {
+      length: 6,
+      width: 6,
+      height: 12,
+      weight: 2,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 8.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 15.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "45",
+    name: "Post-Mix Soda Dispensing Tower",
+    description: "Professional post-mix soda dispensing tower with 4 flavor stations. Perfect for bars and restaurants.",
+    price: 1299.99,
+    compareAtPrice: 1599.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["dispensing-tower", "post-mix", "commercial"],
+    dimensions: {
+      length: 18,
+      width: 18,
+      height: 42,
+      weight: 65,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 179.99, estimatedDays: 10 },
+      { id: "s2", name: "Express Shipping", price: 279.99, estimatedDays: 5 },
+    ],
+    deals: [
+      { id: "d1", name: "Installation Discount", discount: 5, minQuantity: 1 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "46",
+    name: "Bag-in-Box Soda System",
+    description: "Complete bag-in-box soda dispensing system. Includes dispenser, CO2 connection, and all necessary hardware.",
+    price: 1899.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["bag-in-box", "dispensing-system", "commercial"],
+    dimensions: {
+      length: 28,
+      width: 24,
+      height: 40,
+      weight: 75,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 199.99, estimatedDays: 10 },
+      { id: "s2", name: "Express Shipping", price: 299.99, estimatedDays: 5 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "47",
+    name: "Carbonated Water Maker",
+    description: "Commercial-grade carbonated water maker. Produces fresh sparkling water on demand for your beverage station.",
+    price: 1499.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["carbonated-water", "sparkling-water", "commercial"],
+    dimensions: {
+      length: 20,
+      width: 20,
+      height: 36,
+      weight: 50,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 149.99, estimatedDays: 10 },
+      { id: "s2", name: "Express Shipping", price: 229.99, estimatedDays: 5 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "48",
+    name: "Soda Gun Cleaning Kit",
+    description: "Professional cleaning kit for soda guns and dispensing systems. Includes brushes, cleaning solution, and instructions.",
+    price: 49.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["cleaning-kit", "maintenance", "soda-gun"],
+    dimensions: {
+      length: 10,
+      width: 8,
+      height: 4,
+      weight: 1.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 6.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "37",
+    name: "Wall-Mounted Soda Dispenser",
+    description: "Space-saving wall-mounted soda dispenser with 6 flavor options. Perfect for compact bars and cafes.",
+    price: 1699.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["wall-mounted", "space-saving", "dispenser"],
+    dimensions: {
+      length: 24,
+      width: 8,
+      height: 36,
+      weight: 55,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 179.99, estimatedDays: 10 },
+      { id: "s2", name: "Express Shipping", price: 269.99, estimatedDays: 5 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "38",
+    name: "Commercial Soda Nozzle Set",
+    description: "Professional-grade soda nozzle set with 8 different nozzles. Compatible with most commercial dispensing systems.",
+    price: 129.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["nozzles", "dispensing", "commercial"],
+    dimensions: {
+      length: 8,
+      width: 8,
+      height: 6,
+      weight: 3,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 12.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 24.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "39",
+    name: "Soda Water Chiller System",
+    description: "Commercial soda water chiller system. Keeps beverages at optimal serving temperature for maximum carbonation.",
+    price: 2199.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["chiller", "temperature-control", "commercial"],
+    dimensions: {
+      length: 30,
+      width: 24,
+      height: 44,
+      weight: 95,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 249.99, estimatedDays: 14 },
+      { id: "s2", name: "Express Shipping", price: 399.99, estimatedDays: 7 },
+    ],
+    deals: [
+      { id: "d1", name: "Volume Discount", discount: 10, minQuantity: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "40",
+    name: "Portable CO2 Tank Cart",
+    description: "Mobile CO2 tank cart with wheels for easy transport. Holds standard 20lb CO2 tank and includes regulator.",
+    price: 199.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["co2-tank", "portable", "cart"],
+    dimensions: {
+      length: 20,
+      width: 16,
+      height: 36,
+      weight: 25,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 39.99, estimatedDays: 7 },
+      { id: "s2", name: "Express Shipping", price: 69.99, estimatedDays: 3 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "41",
+    name: "Soda Syrup Storage Rack",
+    description: "Heavy-duty storage rack for bag-in-box syrup containers. Holds up to 12 containers and includes drip tray.",
+    price: 299.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v5",
+      name: "Beverage Equipment Pro",
+      rating: 4.8,
+      reviewCount: 234,
+      location: "Chicago, IL",
+    },
+    category: "Equipment",
+    tags: ["storage-rack", "syrup", "organization"],
+    dimensions: {
+      length: 48,
+      width: 24,
+      height: 60,
+      weight: 45,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 79.99, estimatedDays: 7 },
+      { id: "s2", name: "Express Shipping", price: 129.99, estimatedDays: 3 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    showWholesalePrice: false,
+  },
+  {
+    id: "42",
+    name: "Digital Soda Flow Meter",
+    description: "Precision digital flow meter for monitoring soda syrup usage. Helps track inventory and optimize costs.",
+    price: 179.99,
+    images: [
+      "/images/products/istockphoto-1178172599-612x612.jpg",
+    ],
+    vendor: {
+      id: "v6",
+      name: "Commercial Kitchen Solutions",
+      rating: 4.7,
+      reviewCount: 189,
+      location: "New York, NY",
+    },
+    category: "Equipment",
+    tags: ["flow-meter", "digital", "monitoring"],
+    dimensions: {
+      length: 4,
+      width: 4,
+      height: 6,
+      weight: 1,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 12.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 24.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: false,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  // Organic/Sustainable Tableware
+  {
+    id: "19",
+    name: "Bamboo Straws - Bulk Pack",
+    description: "Eco-friendly reusable bamboo straws. Sustainable, biodegradable, and perfect for restaurants and cafes. Pack of 500.",
+    price: 89.99,
+    images: [
+      "/images/products/pexels-oskelaq-1009158.jpg",
+    ],
+    vendor: {
+      id: "v7",
+      name: "Eco Tableware Co.",
+      rating: 4.9,
+      reviewCount: 312,
+      location: "Seattle, WA",
+    },
+    category: "Tableware",
+    tags: ["bamboo", "sustainable", "straws", "eco-friendly"],
+    dimensions: {
+      length: 8,
+      width: 0.25,
+      height: 0.25,
+      weight: 2.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 8.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 15.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "20",
+    name: "Wheat Straw Plates - Compostable",
+    description: "Compostable plates made from wheat straw. Durable, microwave-safe, and 100% biodegradable. Perfect for sustainable dining.",
+    price: 45.99,
+    compareAtPrice: 59.99,
+    images: [
+      "/images/products/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+    ],
+    vendor: {
+      id: "v7",
+      name: "Eco Tableware Co.",
+      rating: 4.9,
+      reviewCount: 312,
+      location: "Seattle, WA",
+    },
+    category: "Tableware",
+    tags: ["wheat-straw", "compostable", "plates", "sustainable"],
+    dimensions: {
+      length: 10,
+      width: 10,
+      height: 1,
+      weight: 0.3,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 6.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    deals: [
+      { id: "d1", name: "Bulk Discount", discount: 20, minQuantity: 100 },
+    ],
+    inStock: true,
+    minOrderQuantity: 50,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "21",
+    name: "Palm Leaf Cups - Sustainable",
+    description: "Beautiful palm leaf cups made from fallen palm leaves. Natural, compostable, and perfect for hot and cold beverages.",
+    price: 38.99,
+    images: [
+      "/images/products/pexels-introspectivedsgn-30652943.jpg",
+    ],
+    vendor: {
+      id: "v7",
+      name: "Eco Tableware Co.",
+      rating: 4.9,
+      reviewCount: 312,
+      location: "Seattle, WA",
+    },
+    category: "Tableware",
+    tags: ["palm-leaf", "cups", "compostable", "sustainable"],
+    dimensions: {
+      length: 4,
+      width: 4,
+      height: 5,
+      weight: 0.2,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 11.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 50,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "22",
+    name: "Sugarcane Fiber Bowls",
+    description: "Eco-friendly bowls made from sugarcane fiber. Leak-proof, microwave-safe, and fully compostable. Ideal for soups and salads.",
+    price: 42.99,
+    images: [
+      "/images/products/pexels-shardar-tarikul-islam-84327533-8885948.jpg",
+    ],
+    vendor: {
+      id: "v7",
+      name: "Eco Tableware Co.",
+      rating: 4.9,
+      reviewCount: 312,
+      location: "Seattle, WA",
+    },
+    category: "Tableware",
+    tags: ["sugarcane", "bowls", "compostable", "sustainable"],
+    dimensions: {
+      length: 6,
+      width: 6,
+      height: 3,
+      weight: 0.4,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 6.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 12.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 50,
+    sampleAvailable: true,
+    isBestseller: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "23",
+    name: "Cornstarch Cutlery Set",
+    description: "Biodegradable cutlery made from cornstarch. Strong, heat-resistant, and compostable. Perfect for takeout and events.",
+    price: 34.99,
+    images: [
+      "/images/products/pexels-oskelaq-1009158.jpg",
+    ],
+    vendor: {
+      id: "v7",
+      name: "Eco Tableware Co.",
+      rating: 4.9,
+      reviewCount: 312,
+      location: "Seattle, WA",
+    },
+    category: "Tableware",
+    tags: ["cornstarch", "cutlery", "biodegradable", "sustainable"],
+    dimensions: {
+      length: 7,
+      width: 1,
+      height: 0.5,
+      weight: 0.1,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 5.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 11.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 100,
+    sampleAvailable: true,
+    showWholesalePrice: false,
+  },
+  {
+    id: "24",
+    name: "Paper Straws - Recycled",
+    description: "Eco-friendly paper straws made from recycled materials. Biodegradable and perfect for beverages. Pack of 1000.",
+    price: 24.99,
+    images: [
+      "/images/products/pexels-micheile-10045929.jpg",
+    ],
+    vendor: {
+      id: "v7",
+      name: "Eco Tableware Co.",
+      rating: 4.9,
+      reviewCount: 312,
+      location: "Seattle, WA",
+    },
+    category: "Tableware",
+    tags: ["paper", "straws", "recycled", "biodegradable"],
+    dimensions: {
+      length: 8,
+      width: 0.25,
+      height: 0.25,
+      weight: 1.5,
+    },
+    shippingOptions: [
+      { id: "s1", name: "Standard Shipping", price: 4.99, estimatedDays: 5 },
+      { id: "s2", name: "Express Shipping", price: 10.99, estimatedDays: 2 },
+    ],
+    inStock: true,
+    minOrderQuantity: 1,
+    sampleAvailable: true,
+    isNew: true,
+    showWholesalePrice: false,
+  },
+];
+
+// Attach dummy reviews to each product
+mockProducts.forEach((product) => {
+  product.reviews = buildReviews(product.id);
+});
+
+export function getProductById(id: string): Product | undefined {
+  return mockProducts.find((p) => p.id === id);
+}
+
+export function getProductByHandle(handle: string): Product | undefined {
+  return mockProducts.find((p) =>
+    p.handle === handle ||
+    p.id === handle ||
+    p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === handle
+  );
+}
+
+export function getCategories(): string[] {
+  return Array.from(new Set(mockProducts.map((p) => p.category)));
+}
+
+export function getCategoryByHandle(handle: string): string | undefined {
+  const categories = getCategories();
+  return categories.find(c =>
+    c.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === handle
+  );
+}
+
+export function getVendors(): string[] {
+  return Array.from(new Set(mockProducts.map((p) => p.vendor.name)));
+}
+
+export function getProductsByVendor(vendorId: string, excludeId?: string): Product[] {
+  return mockProducts.filter(
+    (p) => p.vendor.id === vendorId && p.id !== excludeId
+  );
+}
+
+export function getProductsByCategory(category: string, excludeId?: string): Product[] {
+  return mockProducts.filter(
+    (p) => p.category === category && p.id !== excludeId
+  );
+}
+
+export function getRelatedProducts(productId: string, limit: number = 8): Product[] {
+  const product = getProductById(productId);
+  if (!product) return [];
+
+  // Get products from same vendor and category
+  const sameVendor = getProductsByVendor(product.vendor.id, productId);
+  const sameCategory = getProductsByCategory(product.category, productId);
+
+  // Combine and deduplicate
+  const combined = [...sameVendor, ...sameCategory];
+  const unique = combined.filter((p, index, self) =>
+    index === self.findIndex((t) => t.id === p.id)
+  );
+
+  return unique.slice(0, limit);
+}
+
+export interface CategoryMapping {
+  type: string;
+  handle: string;
+}
+
+export function getCategoryMapping(category: string): CategoryMapping {
+  switch (category) {
+    case "Beverages":
+      return { type: "beverages", handle: "organic-sodas" };
+    case "Equipment":
+      return { type: "equipment", handle: "soda-equipment" };
+    case "Tableware":
+      return { type: "tableware", handle: "sustainable-tableware" };
+    default:
+      return { type: "other", handle: category.toLowerCase().replace(/[^a-z0-9]+/g, '-') };
+  }
+}
+
+export function getProductUrl(product: Product): string {
+  const { type, handle } = getCategoryMapping(product.category);
+  const productHandle = product.handle || product.id;
+  return `/collections/${type}/${handle}/products/${productHandle}`;
+}

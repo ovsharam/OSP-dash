@@ -1,0 +1,74 @@
+{
+  "sections": {
+    "hero_video": {
+      "type": "hero-video",
+      "settings": {
+        "headline": "Find your next bestseller",
+        "subheadline": "Sign up to unlock wholesale pricing with over 100,000 brands.",
+        "cta_text": "Sign up to buy",
+        "cta_link": "/account/register",
+        "secondary_cta_text": "Are you a brand?",
+        "secondary_cta_link": "/pages/sell-on-osp"
+      }
+    },
+    "featured_brands": {
+      "type": "featured-brands",
+      "settings": {
+        "title": "Featured brands",
+        "show_count": 10
+      }
+    },
+    "popular_products": {
+      "type": "featured-products-carousel",
+      "settings": {
+        "title": "Popular with stores like yours",
+        "collection": "",
+        "products_to_show": 12,
+        "shop_all_link": "/collections/all?filter=bestseller"
+      }
+    },
+    "home_accents": {
+      "type": "featured-products-carousel",
+      "settings": {
+        "title": "Home accents",
+        "collection": "",
+        "products_to_show": 12,
+        "shop_all_link": "/collections/tableware"
+      }
+    },
+    "beverages": {
+      "type": "featured-products-carousel",
+      "settings": {
+        "title": "Beverages",
+        "collection": "beverages",
+        "products_to_show": 12,
+        "shop_all_link": "/collections/beverages"
+      }
+    },
+    "equipment": {
+      "type": "featured-products-carousel",
+      "settings": {
+        "title": "Equipment",
+        "collection": "equipment",
+        "products_to_show": 12,
+        "shop_all_link": "/collections/equipment"
+      }
+    },
+    "newsletter_signup": {
+      "type": "newsletter-signup",
+      "settings": {
+        "title": "Sign up to unlock customized recommendations at wholesale prices",
+        "button_text": "Sign up"
+      }
+    }
+  },
+  "order": [
+    "hero_video",
+    "featured_brands",
+    "popular_products",
+    "home_accents",
+    "beverages",
+    "equipment",
+    "newsletter_signup"
+  ]
+}

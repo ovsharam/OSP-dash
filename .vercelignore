@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+.DS_Store
+out
+build
+dist
+*.mp4
+*.mov
+*.zip
+*.csv

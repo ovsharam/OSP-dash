@@ -1,0 +1,11 @@
+Landing Page,Sessions,Users,Revenue,Conversions
+# TODO: Export from Google Analytics 4
+# Instructions:
+# 1. Go to GA4 → Explore → Landing page report
+# 2. Set date range: Last 90 days
+# 3. Add dimensions: Landing page
+# 4. Add metrics: Sessions, Users, Revenue, Conversions
+# 5. Export → Download CSV
+# 6. Replace this file with actual export
+# Expected columns: Landing Page, Sessions, Users, Revenue, Conversions
+

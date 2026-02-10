@@ -1,0 +1,54 @@
+{% comment %}
+  Pagination Snippet
+  Reusable pagination component
+{% endcomment %}
+
+{% if paginate.pages > 1 %}
+  <div class="pagination flex items-center justify-center gap-2 mt-8">
+    {% if paginate.previous %}
+      <a href="{{ paginate.previous.url }}" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </a>
+    {% else %}
+      <span class="px-4 py-2 border border-gray-300 rounded text-gray-400 cursor-not-allowed">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </span>
+    {% endif %}
+
+    {% for part in paginate.parts %}
+      {% if part.is_link %}
+        <a href="{{ part.url }}" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+          {{ part.title }}
+        </a>
+      {% else %}
+        {% if part.title == paginate.current_page %}
+          <span class="px-4 py-2 border border-black bg-black text-white rounded">
+            {{ part.title }}
+          </span>
+        {% else %}
+          <span class="px-4 py-2 border border-gray-300 rounded text-gray-400">
+            {{ part.title }}
+          </span>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% if paginate.next %}
+      <a href="{{ paginate.next.url }}" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    {% else %}
+      <span class="px-4 py-2 border border-gray-300 rounded text-gray-400 cursor-not-allowed">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </span>
+    {% endif %}
+  </div>
+{% endif %}

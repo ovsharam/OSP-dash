@@ -1,0 +1,171 @@
+{% comment %}
+  Product Detail Sticky Add to Cart Section
+  Sticky ATC bar that appears when scrolling on product pages
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Product Detail Sticky ATC",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_atc",
+      "label": "Enable sticky add to cart",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "scroll_offset",
+      "label": "Scroll offset (px)",
+      "min": 100,
+      "max": 500,
+      "step": 50,
+      "default": 200
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Detail Sticky ATC"
+    }
+  ]
+}
+{% endschema %}
+
+{% if section.settings.enable_sticky_atc %}
+  <div
+    id="sticky-atc-bar"
+    class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 transform translate-y-full transition-transform duration-300"
+    style="display: none;"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-4 flex-1">
+          {% if product.featured_image %}
+            <img
+              src="{{ product.featured_image | img_url: '100x100' }}"
+              alt="{{ product.title | escape }}"
+              class="w-16 h-16 object-cover rounded"
+            >
+          {% endif %}
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-black text-sm truncate">{{ product.title }}</h3>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="font-bold text-black">{{ product.price | money }}</span>
+              {% if product.compare_at_price > product.price %}
+                <span class="text-gray-500 line-through text-sm">{{ product.compare_at_price | money }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          {% comment %} Quantity selector {% endcomment %}
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="w-10 h-10 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 flex-shrink-0 quantity-decrease"
+            >
+              -
+            </button>
+            <input
+              type="number"
+              id="sticky-quantity"
+              value="1"
+              min="1"
+              class="w-20 text-center border border-gray-300 rounded py-2 text-black"
+            >
+            <button
+              type="button"
+              class="w-10 h-10 border border-gray-300 rounded flex items-center justify-center hover:bg-gray-50 flex-shrink-0 quantity-increase"
+            >
+              +
+            </button>
+          </div>
+          
+          {% comment %} Add to cart button {% endcomment %}
+          <form action="/cart/add" method="post" enctype="multipart/form-data" class="flex-shrink-0">
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <input type="hidden" name="quantity" id="sticky-quantity-input" value="1">
+            <button
+              type="submit"
+              class="bg-black text-white px-8 py-3 rounded font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+              {% unless product.available %}disabled{% endunless %}
+            >
+              {% if product.available %}
+                Add to Cart
+              {% else %}
+                Out of Stock
+              {% endif %}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const stickyBar = document.getElementById('sticky-atc-bar');
+      const scrollOffset = {{ section.settings.scroll_offset }};
+      const productForm = document.querySelector('form[action="/cart/add"]');
+      
+      if (!stickyBar) return;
+      
+      let lastScrollTop = 0;
+      
+      window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > scrollOffset) {
+          stickyBar.style.display = 'block';
+          stickyBar.classList.remove('translate-y-full');
+          stickyBar.classList.add('translate-y-0');
+        } else {
+          stickyBar.classList.remove('translate-y-0');
+          stickyBar.classList.add('translate-y-full');
+        }
+        
+        lastScrollTop = scrollTop;
+      });
+      
+      // Quantity controls
+      const quantityInput = document.getElementById('sticky-quantity');
+      const quantityHiddenInput = document.getElementById('sticky-quantity-input');
+      const decreaseBtn = stickyBar.querySelector('.quantity-decrease');
+      const increaseBtn = stickyBar.querySelector('.quantity-increase');
+      
+      if (decreaseBtn) {
+        decreaseBtn.addEventListener('click', function() {
+          const currentValue = parseInt(quantityInput.value) || 1;
+          if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            if (quantityHiddenInput) quantityHiddenInput.value = quantityInput.value;
+          }
+        });
+      }
+      
+      if (increaseBtn) {
+        increaseBtn.addEventListener('click', function() {
+          const currentValue = parseInt(quantityInput.value) || 1;
+          quantityInput.value = currentValue + 1;
+          if (quantityHiddenInput) quantityHiddenInput.value = quantityInput.value;
+        });
+      }
+      
+      if (quantityInput) {
+        quantityInput.addEventListener('change', function() {
+          if (quantityHiddenInput) quantityHiddenInput.value = this.value;
+        });
+      }
+      
+      // Sync with main product form quantity
+      const mainQuantityInput = document.querySelector('input[name="quantity"]');
+      if (mainQuantityInput) {
+        mainQuantityInput.addEventListener('change', function() {
+          if (quantityInput) quantityInput.value = this.value;
+          if (quantityHiddenInput) quantityHiddenInput.value = this.value;
+        });
+      }
+    });
+  </script>
+{% endif %}

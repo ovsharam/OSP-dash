@@ -1,0 +1,61 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "enable_sticky_atc": true,
+        "show_vendor": true,
+        "show_quantity_selector": true,
+        "enable_payment_button": true,
+        "show_share_buttons": true
+      }
+    },
+    "product_reviews": {
+      "type": "product-reviews",
+      "settings": {}
+    },
+    "product_shipping_quote": {
+      "type": "shipping-quote",
+      "settings": {}
+    },
+    "sticky_atc": {
+      "type": "product-detail-sticky-atc",
+      "settings": {
+        "enable_sticky_atc": true,
+        "scroll_offset": 200
+      }
+    },
+    "upsell_products": {
+      "type": "featured-products-carousel",
+      "settings": {
+        "title": "You may also like",
+        "collection": "",
+        "products_to_show": 6
+      }
+    },
+    "bundle_products": {
+      "type": "product-bundle",
+      "settings": {
+        "title": "Frequently bought together",
+        "show_discount": true
+      }
+    },
+    "related_products": {
+      "type": "featured-products-carousel",
+      "settings": {
+        "title": "Related Products",
+        "collection": "",
+        "products_to_show": 8
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product_reviews",
+    "product_shipping_quote",
+    "upsell_products",
+    "bundle_products",
+    "related_products",
+    "sticky_atc"
+  ]
+}

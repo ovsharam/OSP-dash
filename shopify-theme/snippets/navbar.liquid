@@ -1,0 +1,143 @@
+{% comment %}
+  Navbar Snippet
+  Main navigation matching Next.js Navbar.tsx
+{% endcomment %}
+
+{% comment %} Top Promotional Bar {% endcomment %}
+<div class="bg-stone-50 border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-center h-8 text-xs text-gray-800">
+      <span>Shop wholesale online from over 100,000 brands.</span>
+      <a href="/account/register" class="ml-1 text-black font-medium underline hover:no-underline">
+        Sign up
+      </a>
+    </div>
+  </div>
+</div>
+
+{% comment %} Main Header {% endcomment %}
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="w-full px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center h-[50px] md:h-[60px]">
+      {% comment %} Mobile Menu Button {% endcomment %}
+      <button
+        class="relative flex items-center justify-center px-4 text-gray-700 hover:text-black h-[50px] md:h-[60px] cursor-pointer md:hidden flex-shrink-0"
+        aria-label="Menu button"
+        id="mobile-menu-toggle"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+
+      {% comment %} Logo {% endcomment %}
+      <a
+        href="/"
+        id="faire-logo-link"
+        aria-label="Go to homepage"
+        class="flex items-center justify-center h-[50px] md:h-[60px] flex-shrink-0"
+      >
+        <span class="text-2xl font-bold text-black" style="font-family: Georgia, serif; letter-spacing: 0.2em;">
+          OSP
+        </span>
+      </a>
+
+      {% comment %} Search Bar {% endcomment %}
+      <div style="flex: 1 1 0%;" class="hidden md:block ml-4 md:ml-6 relative">
+        <div class="topsearch-component flex items-center justify-between w-full">
+          <form action="/search" method="get" class="relative w-full flex items-center">
+            <div class="flex items-center w-full">
+              <input
+                type="hidden"
+                name="auto-fill guard"
+                autocomplete="username"
+                style="display: none;"
+              />
+              <input
+                id="top-search"
+                type="text"
+                name="q"
+                placeholder="Search wholesale products or brands"
+                value="{{ search.terms }}"
+                class="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black text-sm text-black bg-white"
+                aria-label="Search products or brands"
+                autocomplete="off"
+                data-test-id="searchBarInput"
+              />
+            </div>
+            <button
+              type="submit"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center justify-center"
+              aria-label="Search"
+            >
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M.857 10.144a9.287 9.287 0 1 0 18.573 0 9.287 9.287 0 0 0-18.573 0ZM23.143 23.143l-6.434-6.434"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {% comment %} Right Nav {% endcomment %}
+      <div class="hidden md:block" style="width: 16px; flex-shrink: 0;"></div>
+      <div class="flex items-center flex-shrink-0">
+        <a href="/blogs/news" class="hidden md:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-2">
+          Blog
+        </a>
+        <a href="/pages/sell-on-osp" class="hidden md:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-2">
+          Sell on OSP
+        </a>
+        {% if customer %}
+          <a href="/account/logout" class="relative flex items-center justify-center px-4 text-gray-700 hover:text-black h-[50px] md:h-[60px] cursor-pointer text-sm whitespace-nowrap">
+            Sign out
+          </a>
+        {% else %}
+          <a href="/account/login" class="relative flex items-center justify-center px-4 text-gray-700 hover:text-black h-[50px] md:h-[60px] cursor-pointer text-sm whitespace-nowrap">
+            Sign in
+          </a>
+        {% endif %}
+        {% unless customer %}
+          <div>
+            <a href="/account/register" class="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-black transition-colors whitespace-nowrap inline-block">
+              Sign up to buy
+            </a>
+          </div>
+        {% endunless %}
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Category Nav Bar {% endcomment %}
+  {% unless template.name == 'page' and page.handle == 'vendor' %}
+    <nav class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-center items-center space-x-8 overflow-x-auto py-0">
+          <a href="/collections/all" class="py-4 px-1 whitespace-nowrap text-sm font-normal transition-colors {% if collection.handle == 'all' %}text-black border-b-2 border-black{% else %}text-gray-700 hover:text-black{% endif %}">
+            Featured
+          </a>
+          <a href="/collections/all?filter=new" class="py-4 px-1 whitespace-nowrap text-sm font-normal transition-colors text-gray-700 hover:text-black">
+            New
+          </a>
+          {% assign beverages_collection = collections['beverages'] %}
+          {% if beverages_collection %}
+            <a href="{{ beverages_collection.url }}" class="py-4 px-1 whitespace-nowrap text-sm font-normal transition-colors {% if collection.handle == 'beverages' %}text-black border-b-2 border-black{% else %}text-gray-700 hover:text-black{% endif %}">
+              Organic Sodas
+            </a>
+          {% endif %}
+          {% assign equipment_collection = collections['equipment'] %}
+          {% if equipment_collection %}
+            <a href="{{ equipment_collection.url }}" class="py-4 px-1 whitespace-nowrap text-sm font-normal transition-colors {% if collection.handle == 'equipment' %}text-black border-b-2 border-black{% else %}text-gray-700 hover:text-black{% endif %}">
+              Soda Equipment
+            </a>
+          {% endif %}
+          {% assign tableware_collection = collections['tableware'] %}
+          {% if tableware_collection %}
+            <a href="{{ tableware_collection.url }}" class="py-4 px-1 whitespace-nowrap text-sm font-normal transition-colors {% if collection.handle == 'tableware' %}text-black border-b-2 border-black{% else %}text-gray-700 hover:text-black{% endif %}">
+              Sustainable Tableware
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+  {% endunless %}
+</header>

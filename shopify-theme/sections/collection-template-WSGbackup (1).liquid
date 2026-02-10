@@ -1,0 +1,195 @@
+{% comment %}
+  Collection Products Section
+  Main product grid for collection pages with filtering and sorting
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Collection Products",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 12,
+      "max": 48,
+      "step": 12,
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "grid_layout",
+      "label": "Grid layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "collage",
+          "label": "Collage"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_add",
+      "label": "Show quick add button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Products"
+    }
+  ]
+}
+{% endschema %}
+
+{% paginate collection.products by section.settings.products_per_page %}
+  <div class="flex">
+    {% comment %} Sidebar filters (if enabled) {% endcomment %}
+    {% if section.settings.enable_filtering %}
+      <div id="sidebar-filters" class="w-64 lg:w-80 xl:w-96 flex-shrink-0 border-r border-gray-200 bg-white hidden md:block">
+        <div class="sticky top-24 max-h-[calc(100vh-96px)] overflow-y-auto px-4">
+          {% section 'sidebar-filters' %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% comment %} Product Grid {% endcomment %}
+    <div class="flex-1 pt-8 pb-8 transition-all duration-300 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20">
+      {% comment %} Sort and View Options {% endcomment %}
+      {% if section.settings.enable_sorting %}
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-4">
+            <label for="sort-by" class="text-sm text-gray-700">Sort by:</label>
+            <select id="sort-by" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+              <option value="manual">Featured</option>
+              <option value="price-ascending">Price: Low to High</option>
+              <option value="price-descending">Price: High to Low</option>
+              <option value="title-ascending">Name: A-Z</option>
+              <option value="title-descending">Name: Z-A</option>
+              <option value="created-ascending">Oldest First</option>
+              <option value="created-descending">Newest First</option>
+              <option value="best-selling">Best Selling</option>
+            </select>
+          </div>
+          <div class="text-sm text-gray-600">
+            {{ paginate.current_offset | plus: 1 }}-{{ paginate.current_offset | plus: paginate.page_size }} of {{ collection.products_count }}
+          </div>
+        </div>
+      {% endif %}
+
+      {% comment %} Product Grid {% endcomment %}
+      {% if collection.products.size > 0 %}
+        <div class="grid gap-6 mb-12 {% if section.settings.enable_filtering %}grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4{% else %}grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5{% endif %}">
+          {% for product in collection.products %}
+            <div class="product-card-wrapper">
+              {% include 'product-card' %}
+              
+              {% comment %} Quick Add Button {% endcomment %}
+              {% if section.settings.show_quick_add and product.available %}
+                <div class="mt-2">
+                  <form action="/cart/add" method="post" enctype="multipart/form-data" class="quick-add-form">
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button
+                      type="submit"
+                      class="w-full bg-black text-white py-2 rounded text-sm font-medium hover:bg-gray-800 transition-colors quick-add-btn"
+                    >
+                      Quick Add
+                    </button>
+                  </form>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg">
+          <p class="text-gray-500">No products found in this collection.</p>
+        </div>
+      {% endif %}
+
+      {% comment %} Pagination {% endcomment %}
+      {% include 'pagination' %}
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Sort functionality
+      const sortSelect = document.getElementById('sort-by');
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set('sort_by', this.value);
+          window.location.href = currentUrl.toString();
+        });
+      }
+      
+      // Quick add functionality
+      const quickAddForms = document.querySelectorAll('.quick-add-form');
+      quickAddForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          
+          fetch('/cart/add.js', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Update cart count
+            fetch('/cart.js')
+              .then(res => res.json())
+              .then(cart => {
+                const cartCount = cart.item_count;
+                const cartCountElements = document.querySelectorAll('.cart-count');
+                cartCountElements.forEach(el => el.textContent = cartCount);
+              });
+            
+            // Show success message
+            alert('Product added to cart!');
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error adding product to cart');
+          });
+        });
+      });
+      
+      // Toggle sidebar filters
+      const toggleFiltersBtn = document.getElementById('toggle-filters');
+      const sidebarFilters = document.getElementById('sidebar-filters');
+      if (toggleFiltersBtn && sidebarFilters) {
+        toggleFiltersBtn.addEventListener('click', function() {
+          sidebarFilters.classList.toggle('hidden');
+          const isHidden = sidebarFilters.classList.contains('hidden');
+          this.setAttribute('aria-expanded', !isHidden);
+        });
+      }
+    });
+  </script>
+{% endpaginate %}

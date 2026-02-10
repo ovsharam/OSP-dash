@@ -1,0 +1,11 @@
+URL,Status Code,Title Tag,Meta Description,H1 Tag,Canonical Tag,Internal Links Count
+# TODO: Crawl current Shopify site
+# Instructions:
+# 1. Use Screaming Frog SEO Spider
+# 2. Enter URL: https://organicsodapops.com
+# 3. Run crawl
+# 4. Export → All Inlinks → CSV
+# 5. Export → Internal HTML → CSV
+# 6. Combine exports and replace this file
+# Expected columns: URL, Status Code, Title Tag, Meta Description, H1 Tag, Canonical Tag, Internal Links Count
+

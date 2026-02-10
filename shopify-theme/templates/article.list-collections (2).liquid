@@ -1,0 +1,16 @@
+{%- comment -%}
+Legacy template: article list-collections wrapper.
+Renders a list of collections in a simple grid.
+{%- endcomment -%}
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h1 class="text-3xl font-bold mb-6">Collections</h1>
+  <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    {%- for collection in collections -%}
+      <a href="{{ collection.url }}" class="block border border-gray-200 rounded-lg p-4 hover:shadow-sm transition">
+        <h2 class="text-lg font-semibold text-black mb-2">{{ collection.title }}</h2>
+        <p class="text-sm text-gray-600">{{ collection.description | strip_html | truncate: 120 }}</p>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>

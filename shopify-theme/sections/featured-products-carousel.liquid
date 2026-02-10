@@ -1,0 +1,202 @@
+{% comment %}
+  Featured Products Carousel Section
+  Horizontal scrolling product carousel matching ProductCarousel.tsx
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Featured Products Carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured Products"
+    },
+    {
+      "type": "url",
+      "id": "shop_all_link",
+      "label": "Shop All Link"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products Carousel"
+    }
+  ]
+}
+{% endschema %}
+
+{% assign collection = collections[section.settings.collection] %}
+{% if collection == blank %}
+  {% assign collection = collections.all %}
+{% endif %}
+
+{% assign products = collection.products | limit: section.settings.products_to_show %}
+
+{% if products.size > 0 %}
+  <div class="mb-12">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-semibold text-gray-900">{{ section.settings.title }}</h2>
+      {% if section.settings.shop_all_link %}
+        <a
+          href="{{ section.settings.shop_all_link }}"
+          class="text-sm text-gray-700 hover:text-black transition-colors flex items-center gap-1"
+        >
+          Shop all {{ section.settings.title | downcase }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="relative">
+      <div class="product-carousel overflow-x-auto scrollbar-hide flex gap-4 pb-4" style="scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;">
+        {% for product in products %}
+          <div class="flex-shrink-0 w-64 group">
+            <a href="{{ product.url }}" class="block">
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                <div class="relative aspect-square bg-gray-100">
+                  {% if product.featured_image %}
+                    <img
+                      src="{{ product.featured_image | img_url: '400x400' }}"
+                      alt="{{ product.title | escape }}"
+                      class="object-cover group-hover:scale-105 transition-transform duration-300 w-full h-full"
+                      loading="lazy"
+                    />
+                  {% endif %}
+                  
+                  {% include 'product-badge' %}
+                </div>
+                
+                <div class="p-4 flex-1 flex flex-col">
+                  <h3 class="font-semibold text-black mb-1 line-clamp-2 text-sm leading-tight">
+                    {{ product.title }}
+                  </h3>
+                  <p class="text-xs text-gray-500 mb-2 line-clamp-1">{{ product.vendor }}</p>
+
+                  {% comment %} Rating {% endcomment %}
+                  {% assign vendor_rating = product.metafields.custom.vendor_rating | default: 0 %}
+                  {% if vendor_rating > 0 %}
+                    <div class="flex items-center mb-2">
+                      <span class="text-xs text-black font-medium">
+                        ★ {{ vendor_rating }}
+                      </span>
+                    </div>
+                  {% endif %}
+
+                  {% comment %} Price {% endcomment %}
+                  <div class="mt-auto">
+                    <div class="flex items-baseline gap-2 mb-2">
+                      {% if customer %}
+                        <span class="text-base font-semibold text-black">
+                          {{ product.price | money }}
+                        </span>
+                        {% if product.compare_at_price > product.price %}
+                          <span class="text-xs text-gray-500 line-through">
+                            {{ product.compare_at_price | money }}
+                          </span>
+                        {% endif %}
+                      {% else %}
+                        <span class="text-base font-semibold text-gray-600">
+                          Unlock wholesale price
+                        </span>
+                      {% endif %}
+                    </div>
+
+                    {% comment %} Min order and shipping {% endcomment %}
+                    <div class="text-xs text-gray-600 space-y-1">
+                      {% assign min_order_qty = product.metafields.custom.min_order_quantity | default: 0 %}
+                      {% if min_order_qty > 0 %}
+                        <div>
+                          {{ product.price | times: min_order_qty | money }} min
+                        </div>
+                      {% endif %}
+                      <div class="text-gray-500">
+                        Standard shipping
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+
+      {% comment %} Scroll buttons {% endcomment %}
+      <button
+        class="carousel-scroll-left absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors hidden"
+        aria-label="Scroll left"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button
+        class="carousel-scroll-right absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-2 shadow-md hover:bg-gray-50 transition-colors"
+        aria-label="Scroll right"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+{% endif %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const carousel = document.querySelector('.product-carousel');
+    const leftBtn = document.querySelector('.carousel-scroll-left');
+    const rightBtn = document.querySelector('.carousel-scroll-right');
+    
+    if (!carousel) return;
+    
+    function updateButtons() {
+      const { scrollLeft, scrollWidth, clientWidth } = carousel;
+      if (leftBtn) {
+        leftBtn.classList.toggle('hidden', scrollLeft === 0);
+      }
+      if (rightBtn) {
+        rightBtn.classList.toggle('hidden', scrollLeft >= scrollWidth - clientWidth - 10);
+      }
+    }
+    
+    carousel.addEventListener('scroll', updateButtons);
+    updateButtons();
+    
+    if (leftBtn) {
+      leftBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: -400, behavior: 'smooth' });
+      });
+    }
+    
+    if (rightBtn) {
+      rightBtn.addEventListener('click', () => {
+        carousel.scrollBy({ left: 400, behavior: 'smooth' });
+      });
+    }
+  });
+</script>
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>

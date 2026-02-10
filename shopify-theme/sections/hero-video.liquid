@@ -1,0 +1,180 @@
+{% comment %}
+  Hero Video Section
+  Animated hero section with video background matching AnimatedHero.tsx
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Hero Video",
+  "settings": [
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Find your next bestseller"
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Sign up to unlock wholesale pricing with over 100,000 brands."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Button Text",
+      "default": "Sign up to buy"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Button Link",
+      "default": "/"
+    },
+    {
+      "type": "text",
+      "id": "secondary_cta_text",
+      "label": "Secondary CTA Text",
+      "default": "Are you a brand?"
+    },
+    {
+      "type": "url",
+      "id": "secondary_cta_link",
+      "label": "Secondary CTA Link",
+      "default": "/"
+    },
+    {
+      "type": "video",
+      "id": "video_1",
+      "label": "Video 1"
+    },
+    {
+      "type": "video",
+      "id": "video_2",
+      "label": "Video 2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Video"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="relative min-h-[600px] md:min-h-[700px] flex items-center overflow-hidden bg-gray-100">
+  {% comment %} Video Background {% endcomment %}
+  <div class="absolute inset-0 z-0">
+    {% if section.settings.video_1 or section.settings.video_2 %}
+      <div class="hero-video-container">
+        {% if section.settings.video_1 %}
+          <video
+            class="hero-video absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out opacity-100"
+            autoplay
+            muted
+            playsinline
+            loop
+            style="filter: brightness(0.7) contrast(1.1);"
+          >
+            <source src="{{ section.settings.video_1 }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {% endif %}
+        {% if section.settings.video_2 %}
+          <video
+            class="hero-video absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out opacity-0"
+            muted
+            playsinline
+            loop
+            style="filter: brightness(0.7) contrast(1.1);"
+          >
+            <source src="{{ section.settings.video_2 }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        {% endif %}
+      </div>
+    {% else %}
+      {% comment %} Fallback gradient background {% endcomment %}
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400"></div>
+    {% endif %}
+    
+    {% comment %} Dark overlay for text readability {% endcomment %}
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
+
+  {% comment %} Content - Positioned on the left {% endcomment %}
+  <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="max-w-2xl">
+      {% comment %} Main Headline {% endcomment %}
+      <div class="builder-block builder-has-component">
+        <span class="builder-text">
+          <p class="text-5xl md:text-6xl lg:text-7xl text-white mb-6 leading-tight drop-shadow-lg text-left" style="font-family: nantes, georgia, serif; font-weight: 300;">
+            {{ section.settings.headline }}
+          </p>
+        </span>
+      </div>
+
+      {% comment %} Sub-headline {% endcomment %}
+      <p class="text-lg md:text-xl text-white mb-8 drop-shadow-md text-left" style="font-family: nantes, georgia, serif; font-weight: 300;">
+        {{ section.settings.subheadline }}
+      </p>
+
+      {% comment %} Call to Action Button {% endcomment %}
+      <div class="mb-4">
+        <a
+          href="{{ section.settings.cta_link }}"
+          class="inline-block bg-white text-black px-6 py-3 rounded text-base font-medium hover:bg-gray-50 transition-colors"
+          style="border-radius: 4px; text-decoration: none;"
+        >
+          {{ section.settings.cta_text }}
+        </a>
+      </div>
+
+      {% comment %} Secondary Call to Action {% endcomment %}
+      <div class="text-left">
+        <a
+          href="{{ section.settings.secondary_cta_link }}"
+          class="text-white hover:text-gray-200 text-base md:text-lg font-normal transition-colors drop-shadow-md"
+        >
+          {{ section.settings.secondary_cta_text }}
+          <span class="underline text-white">Sell on OSP</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Video rotation logic
+  document.addEventListener('DOMContentLoaded', function() {
+    const videos = document.querySelectorAll('.hero-video');
+    if (videos.length < 2) return;
+    
+    let currentIndex = 0;
+    
+    function switchVideo() {
+      videos[currentIndex].classList.remove('opacity-100');
+      videos[currentIndex].classList.add('opacity-0');
+      videos[currentIndex].pause();
+      
+      currentIndex = (currentIndex + 1) % videos.length;
+      
+      videos[currentIndex].classList.remove('opacity-0');
+      videos[currentIndex].classList.add('opacity-100');
+      videos[currentIndex].play();
+    }
+    
+    videos.forEach((video, index) => {
+      video.addEventListener('ended', function() {
+        if (index === currentIndex) {
+          switchVideo();
+        }
+      });
+    });
+    
+    // Start first video
+    if (videos[0]) {
+      videos[0].play();
+    }
+  });
+</script>

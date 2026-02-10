@@ -1,0 +1,115 @@
+{% comment %}
+  Featured Brands Section
+  Horizontal scrolling brand showcase
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Featured Brands",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Featured brands"
+    },
+    {
+      "type": "range",
+      "id": "show_count",
+      "label": "Number of brands to show",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "collection_list",
+      "id": "brand_collections",
+      "label": "Brand collections",
+      "limit": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Brands"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="mt-12 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 lg:flex lg:flex-col">
+  <div class="items-start flex flex-col">
+    <h4 class="text-2xl font-serif text-[#333333] mb-6">
+      {{ section.settings.title }}
+    </h4>
+    
+    <div class="w-full flex justify-between items-center mb-6">
+      <div class="overflow-auto flex-1">
+        <div class="flex gap-2 overflow-x-auto scrollbar-hide pr-4">
+          {% assign all_collections = collections | sort: 'title' %}
+          {% for collection in all_collections limit: section.settings.show_count %}
+            <div class="flex-shrink-0">
+              <a
+                href="{{ collection.url }}"
+                class="flex h-10 px-6 cursor-pointer items-center justify-center rounded-[40px] border text-sm font-sans transition-all border-gray-200 text-gray-600 hover:border-gray-400"
+              >
+                {{ collection.title }}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <a
+        class="hidden xl:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap ml-8 mr-12 lg:mr-20"
+        href="/collections/all"
+      >
+        All brands
+      </a>
+    </div>
+
+    {% comment %} Brand Grid {% endcomment %}
+    <div class="w-full overflow-x-auto scrollbar-hide mb-12">
+      <div class="flex gap-4 md:gap-6 pb-4">
+        {% for collection in section.settings.brand_collections limit: section.settings.show_count %}
+          <a
+            href="{{ collection.url }}"
+            class="group flex-shrink-0 w-[200px] flex flex-col"
+          >
+            <div class="rounded-lg overflow-hidden aspect-square w-full relative mb-2">
+              {% if collection.featured_image %}
+                <img
+                  src="{{ collection.featured_image | img_url: '400x400' }}"
+                  alt="{{ collection.title | escape }}"
+                  class="object-cover transition-transform duration-[1200ms] group-hover:scale-110 w-full h-full"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <span class="text-gray-400">{{ collection.title | truncate: 20 }}</span>
+                </div>
+              {% endif %}
+            </div>
+            <p class="font-sans font-medium text-[#333333] truncate group-hover:underline underline-offset-4 decoration-1 transition-all duration-300">
+              {{ collection.title }}
+            </p>
+            {% if collection.description %}
+              <p class="text-xs text-gray-600 truncate">
+                {{ collection.description | truncate: 30 }}
+              </p>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

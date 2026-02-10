@@ -1,0 +1,168 @@
+{% comment %}
+  Sidebar Filters Section
+  Collapsible sidebar with filters matching SidebarFilters.tsx
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Sidebar Filters",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_category_nav",
+      "label": "Show category navigation",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sidebar Filters"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="w-full bg-white">
+  <div class="overflow-hidden">
+    {% if section.settings.show_category_nav %}
+      <div class="max-h-[360px] overflow-y-auto pb-4">
+        <nav data-test-id="category-page-sidebar" aria-label="Side Navigation" class="px-4 py-2">
+          <ul class="list-none pl-0 space-y-1">
+            <li>
+              <a
+                data-test-id="left-nav-link"
+                class="block py-2 px-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-50 rounded transition-colors"
+                href="/collections/all"
+              >
+                Food & drink
+              </a>
+              <ul class="list-none pl-4 mt-1 space-y-1">
+                <li>
+                  <a
+                    data-test-id="left-nav-link"
+                    class="block py-1.5 px-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50 rounded transition-colors"
+                    href="/collections/all?filter=new-brands"
+                  >
+                    New brands
+                  </a>
+                </li>
+                <li>
+                  <a
+                    data-test-id="left-nav-link"
+                    class="block py-1.5 px-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50 rounded transition-colors"
+                    href="/collections/all?filter=new-products"
+                  >
+                    New products
+                  </a>
+                </li>
+                {% assign beverages_collection = collections['beverages'] %}
+                {% if beverages_collection %}
+                  <li>
+                    <a
+                      data-test-id="left-nav-link"
+                      class="block py-1.5 px-2 text-sm font-medium rounded {% if collection.handle == 'beverages' %}text-black bg-gray-100{% else %}text-gray-600 hover:text-black hover:bg-gray-50{% endif %}"
+                      href="{{ beverages_collection.url }}"
+                    >
+                      Beverages
+                    </a>
+                    <ul class="list-none pl-4 mt-1 space-y-1">
+                      <li>
+                        <a
+                          data-test-id="left-nav-link"
+                          class="block py-1.5 px-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50 rounded transition-colors"
+                          href="/collections/beverages?filter=new-brands"
+                        >
+                          New brands
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          data-test-id="left-nav-link"
+                          class="block py-1.5 px-2 text-sm text-gray-600 hover:text-black hover:bg-gray-50 rounded transition-colors"
+                          href="/collections/beverages?filter=soda-sparkling"
+                        >
+                          Soda & sparkling
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <hr class="my-4 border-t border-gray-200">
+    {% endif %}
+    
+    <div
+      data-test-id="filter-bar"
+      class="px-4 py-2"
+      style="height: calc(100vh - 126px); position: sticky; top: 126px; overflow-y: auto;"
+    >
+      <div class="mb-4">
+        <h2
+          role="heading"
+          aria-level="2"
+          data-test-id="filter-bar-title"
+          class="text-sm font-semibold text-gray-900 mb-2"
+        >
+          Filters
+        </h2>
+        <hr class="border-t border-gray-200">
+      </div>
+      
+      <div class="space-y-0">
+        {% comment %} Filter sections {% endcomment %}
+        {% assign filter_sections = 'Product types,Ships from,Brand values,Brands,Storage,Shelf life,Diet,Production,Trending,Made in,Ship window,Lead time,Global trade item number' | split: ',' %}
+        
+        {% for filter_title in filter_sections %}
+          <div
+            data-test-id="filter-section-impression-wrapper-{{ filter_title }}"
+            class="filter-section border-b border-gray-200 last:border-b-0"
+          >
+            <button
+              role="heading"
+              aria-level="3"
+              aria-label="{{ filter_title }}"
+              aria-expanded="false"
+              class="filter-section-toggle w-full flex items-center justify-between py-3 px-0 hover:opacity-70 transition-opacity"
+            >
+              <p class="text-sm font-medium text-[#333333] text-left">{{ filter_title }}</p>
+              <svg class="w-4 h-4 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="filter-section-content hidden pb-4">
+              {% comment %} Filter options would be dynamically generated here {% endcomment %}
+              <div class="space-y-1">
+                <label class="flex items-center py-2 cursor-pointer hover:bg-gray-50 rounded px-1 -mx-1 transition-colors group">
+                  <input type="checkbox" class="w-4 h-4 text-black border-gray-300 rounded focus:ring-black focus:ring-2 cursor-pointer">
+                  <span class="ml-3 text-sm text-gray-700 group-hover:text-black transition-colors">Option 1</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggles = document.querySelectorAll('.filter-section-toggle');
+    toggles.forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const section = this.closest('.filter-section');
+        const content = section.querySelector('.filter-section-content');
+        const icon = this.querySelector('svg');
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        
+        this.setAttribute('aria-expanded', !isExpanded);
+        content.classList.toggle('hidden');
+        icon.classList.toggle('rotate-180');
+      });
+    });
+  });
+</script>

@@ -1,0 +1,75 @@
+{% comment %}
+  Collection Header Section
+  Header for collection pages with breadcrumbs and filter buttons
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Collection Header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_filter_buttons",
+      "label": "Show filter buttons",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Header"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="border-b border-gray-200">
+  <div class="ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 pt-8 pb-4">
+    {% comment %} Breadcrumbs {% endcomment %}
+    {% if section.settings.show_breadcrumbs %}
+      <nav class="text-sm text-gray-500 mb-4">
+        <a href="/" class="hover:text-black">Home</a>
+        <span class="mx-2">/</span>
+        <a href="/collections/all" class="hover:text-black">Food & drink</a>
+        <span class="mx-2">/</span>
+        <span class="text-black">{{ collection.title }}</span>
+      </nav>
+    {% endif %}
+
+    <h1 class="text-3xl md:text-4xl font-bold text-black mb-6">
+      Dive into our vast selection of {{ collection.title | downcase }}
+    </h1>
+
+    {% comment %} Filter Buttons {% endcomment %}
+    {% if section.settings.show_filter_buttons %}
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          id="toggle-filters"
+          class="px-4 py-2 rounded-full text-sm font-medium border transition-colors whitespace-nowrap flex items-center bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+        >
+          <span class="mr-1">All filters</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+        </button>
+        <button class="px-4 py-2 rounded-full text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:border-gray-400 whitespace-nowrap">
+          American brands
+        </button>
+        <button class="px-4 py-2 rounded-full text-sm font-medium border transition-colors bg-white text-gray-700 border-gray-300 hover:border-gray-400">
+          Low minimum
+        </button>
+        <button class="px-4 py-2 rounded-full text-sm font-medium border transition-colors flex items-center bg-white text-gray-700 border-gray-300 hover:border-gray-400">
+          <span class="text-green-500 mr-1">★</span> Top Shop
+        </button>
+        <button class="px-4 py-2 rounded-full text-sm font-medium border transition-colors bg-white text-gray-700 border-gray-300 hover:border-gray-400">
+          New this month
+        </button>
+      </div>
+    {% endif %}
+  </div>
+</div>

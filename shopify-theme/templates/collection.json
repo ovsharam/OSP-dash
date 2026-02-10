@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "collection_header": {
+      "type": "collection-header",
+      "settings": {
+        "show_breadcrumbs": true,
+        "show_filter_buttons": true
+      }
+    },
+    "sidebar_filters": {
+      "type": "sidebar-filters",
+      "settings": {
+        "show_category_nav": true
+      }
+    },
+    "collection_products": {
+      "type": "collection-products",
+      "settings": {
+        "products_per_page": 24,
+        "grid_layout": "grid",
+        "show_vendor": true,
+        "show_quick_add": true,
+        "enable_filtering": true,
+        "enable_sorting": true
+      }
+    },
+    "collection_description": {
+      "type": "collection-description",
+      "settings": {
+        "show_description": true
+      }
+    }
+  },
+  "order": [
+    "collection_header",
+    "collection_description",
+    "sidebar_filters",
+    "collection_products"
+  ]
+}

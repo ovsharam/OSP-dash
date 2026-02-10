@@ -1,0 +1,38 @@
+{% comment %}
+  Product Badge Snippet
+  Displays badges like "New", "Bestseller", etc.
+{% endcomment %}
+
+{% assign badges = '' | split: ',' %}
+
+{% if product.tags contains 'new' or product.tags contains 'New' %}
+  {% assign badges = badges | concat: 'new' %}
+{% endif %}
+
+{% if product.tags contains 'bestseller' or product.tags contains 'Bestseller' %}
+  {% assign badges = badges | concat: 'bestseller' %}
+{% endif %}
+
+{% if product.compare_at_price > product.price %}
+  {% assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+  {% if discount > 0 %}
+    {% assign badges = badges | concat: 'sale' %}
+  {% endif %}
+{% endif %}
+
+{% for badge in badges %}
+  {% if badge == 'new' %}
+    <div class="absolute top-2 left-2 bg-pink-100 text-pink-800 px-2 py-1 text-xs font-semibold rounded z-10">
+      New
+    </div>
+  {% elsif badge == 'bestseller' %}
+    <div class="absolute top-2 left-2 bg-green-100 text-green-800 px-2 py-1 text-xs font-semibold rounded flex items-center z-10">
+      <span class="mr-1">★</span> Bestseller
+    </div>
+  {% elsif badge == 'sale' %}
+    {% assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price %}
+    <div class="absolute top-2 left-2 bg-red-100 text-red-800 px-2 py-1 text-xs font-semibold rounded z-10">
+      {{ discount }}% OFF
+    </div>
+  {% endif %}
+{% endfor %}

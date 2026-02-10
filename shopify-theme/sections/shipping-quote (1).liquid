@@ -1,0 +1,748 @@
+{%- comment -%}
+  sections/shipping-quote.liquid
+
+  - Customer only enters DESTINATION ZIP
+  - Product dimensions/weight are parsed from product descriptions in the cart
+  - Values are pushed into hidden fields for your Echo quote API
+{%- endcomment -%}
+
+{%- comment -%}
+  1) Expose cart item descriptions to JavaScript so we can parse dimensions.
+{%- endcomment -%}
+<script>
+  window.CART_SHIPPING_DESCRIPTIONS = [
+    {% for item in cart.items %}
+    {
+      handle: {{ item.product.handle | json }},
+      title: {{ item.product.title | json }},
+      quantity: {{ item.quantity | json }},
+      description: {{ item.product.description | strip_html | json }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+</script>
+
+<style>
+  /* Scoped styles for the shipping quote UI */
+  #shipping-quote-wrapper {
+    max-width: 880px;
+    margin: 32px auto 48px;
+    padding: 0 16px;
+  }
+
+  #shipping-quote {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    padding: 20px 22px 18px;
+  }
+
+  #shipping-quote-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  #shipping-quote-header h2 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 0.01em;
+  }
+
+  #shipping-quote-subtitle {
+    margin: 0;
+    color: #666;
+    font-size: 13px;
+  }
+
+  .sq-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f7f7f7;
+    font-size: 11px;
+    color: #777;
+    white-space: nowrap;
+  }
+
+  .sq-chip small {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+  }
+
+  .sq-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 6px 0 18px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sq-step {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fafafa;
+    font-size: 11px;
+    color: #666;
+  }
+
+  .sq-step span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .sq-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+    gap: 18px;
+  }
+
+  .sq-card {
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+    padding: 12px 14px;
+    background: #fcfcfc;
+  }
+
+  .sq-card h3 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sq-card h3 span.sq-label-pill {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #999;
+  }
+
+  .sq-field {
+    margin-bottom: 10px;
+  }
+
+  .sq-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #333;
+  }
+
+  .sq-field label .required {
+    color: #d9534f;
+  }
+
+  .sq-field input,
+  .sq-field select {
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+    font-size: 13px;
+  }
+
+  .sq-field input:focus,
+  .sq-field select:focus {
+    outline: none;
+    border-color: #111;
+    box-shadow: 0 0 0 1px #1111110d;
+  }
+
+  .sq-help {
+    display: block;
+    margin-top: 3px;
+    color: #777;
+    font-size: 11px;
+  }
+
+  .sq-meta-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 8px;
+    font-size: 12px;
+    color: #555;
+  }
+
+  .sq-meta-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sq-meta-row strong {
+    font-weight: 600;
+  }
+
+  .sq-meta-row span {
+    color: #333;
+  }
+
+  .sq-meta-footnote {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #888;
+  }
+
+  details.sq-accordion {
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+    background: #fcfcfc;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  details.sq-accordion summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  details.sq-accordion summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .sq-accordion-icon {
+    font-size: 14px;
+    opacity: 0.6;
+    transform: translateY(1px);
+  }
+
+  details[open].sq-accordion .sq-accordion-icon {
+    transform: rotate(180deg) translateY(-1px);
+  }
+
+  .sq-accordion-body {
+    padding: 8px 12px 10px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .sq-toggle-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  .sq-toggle-row small {
+    font-size: 11px;
+    color: #777;
+  }
+
+  .sq-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 18px;
+  }
+
+  .sq-btn-primary,
+  .sq-btn-secondary {
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 0;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .sq-btn-primary {
+    background: #111;
+    color: #fff;
+  }
+
+  .sq-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .sq-btn-secondary {
+    background: #f0f0f0;
+    color: #777;
+    cursor: not-allowed;
+  }
+
+  .sq-status-text {
+    font-size: 11px;
+    color: #777;
+  }
+
+  #quote-results {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #333;
+  }
+
+  @media (max-width: 720px) {
+    #shipping-quote {
+      padding: 16px 14px 14px;
+    }
+    #shipping-quote-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .sq-grid {
+      grid-template-columns: 1fr;
+    }
+    .sq-meta-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div id="shipping-quote-wrapper">
+  <section id="shipping-quote">
+    <header id="shipping-quote-header">
+      <div>
+        <h2>Freight Shipping (LTL)</h2>
+        <p id="shipping-quote-subtitle">
+          We'll use your cart and product details to calculate a live freight quote. You only need to tell us where it's going.
+        </p>
+      </div>
+      <div class="sq-chip">
+        <small>Cart</small>
+        <span id="sq-cart-count">
+          {{ cart.item_count }} item{% if cart.item_count != 1 %}s{% endif %}
+        </span>
+      </div>
+    </header>
+
+    <!-- Stepper -->
+    <ol class="sq-steps">
+      <li class="sq-step"><span>1</span> Enter delivery ZIP</li>
+      <li class="sq-step"><span>2</span> We auto-fill shipment details</li>
+      <li class="sq-step"><span>3</span> Pick a quote &amp; checkout</li>
+    </ol>
+
+    <div class="sq-grid">
+      <!-- LEFT: Location + auto shipment details -->
+      <div>
+        <div class="sq-card">
+          <h3>Delivery location <span class="sq-label-pill">Step 1</span></h3>
+          <div class="sq-field">
+            <label for="dest-zip">
+              Destination ZIP <span class="required">*</span>
+            </label>
+            <input
+              id="dest-zip"
+              placeholder="e.g., 90001"
+            >
+            <small class="sq-help">
+              Use the ZIP code where this machine will be delivered.
+            </small>
+          </div>
+        </div>
+
+        <div class="sq-card" style="margin-top:10px;">
+          <h3>Shipment details <span class="sq-label-pill">Auto-filled</span></h3>
+
+          <div class="sq-meta-row">
+            <div>
+              <strong>Ships from</strong>
+              <span id="origin-summary">
+                (Will be set automatically based on the product's ship-from location.)
+              </span>
+            </div>
+            <div>
+              <strong>Shipping weight</strong>
+              <span id="weight-summary">Calculating…</span>
+              <span id="weight-breakdown" class="sq-help"></span>
+            </div>
+          </div>
+
+          <div class="sq-meta-row" style="margin-top:6px;">
+            <div>
+              <strong>Approx. unit size</strong>
+              <span id="dims-summary">Calculating…</span>
+            </div>
+            <div>
+              <strong>Freight class</strong>
+              <span>Default: 70 (standard palletized goods)</span>
+            </div>
+          </div>
+
+          <p class="sq-meta-footnote">
+            These details are parsed from your product specifications and may vary based on what's in your cart.
+          </p>
+        </div>
+      </div>
+
+      <!-- RIGHT: Advanced delivery/accessorial options -->
+      <div>
+        <details class="sq-accordion" open>
+          <summary>
+            Delivery details &amp; accessorials
+            <span class="sq-accordion-icon">⌄</span>
+          </summary>
+          <div class="sq-accordion-body">
+            <div class="sq-field">
+              <label for="origin-type">Origin type</label>
+              <select id="origin-type">
+                <option value="BUSINESS" selected>Business / warehouse</option>
+                <option value="RESIDENTIAL">Residential</option>
+                <option value="CONSTRUCTIONSITE">Construction site</option>
+                <option value="TRADESHOW">Trade show / event</option>
+              </select>
+              <small class="sq-help">
+                This describes where the freight is picked up.
+              </small>
+            </div>
+
+            <div class="sq-field">
+              <label for="dest-type">Destination type</label>
+              <select id="dest-type">
+                <option value="BUSINESS">Business with dock/forklift</option>
+                <option value="RESIDENTIAL" selected>Residential</option>
+                <option value="CONSTRUCTIONSITE">Construction site</option>
+                <option value="TRADESHOW">Trade show / event</option>
+              </select>
+              <small class="sq-help">
+                Carriers use this to calculate any extra delivery fees.
+              </small>
+            </div>
+
+            <div class="sq-toggle-row">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+                <input id="liftgate" type="checkbox">
+                Liftgate needed at delivery
+              </label>
+              <small>
+                Select if there's no loading dock or forklift at the delivery location.
+              </small>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Hidden fields for JS/Echo payloads -->
+    <input id="origin-zip" type="hidden" value="">
+    <input id="weight-lbs" type="hidden" value="">
+    <input id="ship-length-in" type="hidden" value="">
+    <input id="ship-width-in" type="hidden" value="">
+    <input id="ship-height-in" type="hidden" value="">
+    <select id="freight-class" style="display:none;">
+      <option value="50">50</option>
+      <option value="55">55</option>
+      <option value="60">60</option>
+      <option value="65">65</option>
+      <option value="70" selected>70</option>
+      <option value="77.5">77.5</option>
+      <option value="85">85</option>
+      <option value="92.5">92.5</option>
+      <option value="100">100</option>
+      <option value="110">110</option>
+      <option value="125">125</option>
+      <option value="150">150</option>
+      <option value="175">175</option>
+      <option value="200">200</option>
+      <option value="250">250</option>
+      <option value="300">300</option>
+      <option value="400">400</option>
+      <option value="500">500</option>
+    </select>
+
+    <!-- ACTIONS -->
+    <div class="sq-actions">
+      <button
+        id="btn-get-quote"
+        type="button"
+        class="sq-btn-primary"
+      >
+        Get freight quote
+      </button>
+
+      <button
+        id="btn-continue"
+        type="button"
+        class="sq-btn-secondary"
+        disabled
+      >
+        Continue to checkout
+      </button>
+
+      <span id="quote-status" class="sq-status-text">
+        You'll be able to continue after selecting a quote.
+      </span>
+    </div>
+
+    <div id="quote-results"></div>
+  </section>
+</div>
+
+{%- comment -%}
+  2) JS: parse dimensions & shipping weight from the product description text.
+{%- endcomment -%}
+<script>
+  function parseShippingSpecsFromDescription(desc) {
+    if (!desc) return {};
+
+    function matchNumber(regex) {
+      var m = desc.match(regex);
+      return m ? parseFloat(m[1]) : null;
+    }
+
+    // Shopify squashes a lot of whitespace, so we DO NOT anchor with ^
+    var heightIn = matchNumber(/Height:\s*([\d.]+)/i);
+    var widthIn  = matchNumber(/Width:\s*([\d.]+)/i);
+    var depthIn  = matchNumber(/Depth:\s*([\d.]+)/i);
+
+    // Only match the "Shipping:" weight line (ignores "With Ice", etc.)
+    var shipLbs  = matchNumber(/Shipping:\s*([\d.]+)/i);
+
+    return {
+      height_in: heightIn,
+      width_in:  widthIn,
+      depth_in:  depthIn,
+      weight_lbs: shipLbs
+    };
+  }
+
+  function activateCheckoutButton() {
+    var btn = document.getElementById('btn-continue');
+    if (!btn) return;
+    btn.disabled = false;
+    btn.classList.remove('sq-btn-secondary');
+    btn.classList.add('sq-btn-primary');
+    btn.style.cursor = 'pointer';
+  }
+
+  /**
+   * Core function: given an array of {title, quantity, description, handle},
+   * recompute all shipping UI + hidden fields.
+   */
+  function updateShippingFromItems(cartItems) {
+    if (!Array.isArray(cartItems) || !cartItems.length) {
+      console.log('[shipping-quote] no cart items passed to updateShippingFromItems');
+      return;
+    }
+
+    console.log('[shipping-quote] updating from items:', cartItems);
+
+    var totalWeightLbs = 0;
+    var firstSpecs = null;
+    var firstItemForDims = null;
+    var itemBreakdown = [];
+
+    cartItems.forEach(function (item) {
+      var specs = parseShippingSpecsFromDescription(item.description || '');
+      var qty = item.quantity || 1;
+
+      if (specs.weight_lbs) {
+        totalWeightLbs += specs.weight_lbs * qty;
+      }
+
+      if (specs.weight_lbs) {
+        itemBreakdown.push(item.title + ' – ' + specs.weight_lbs + ' lb × ' + qty);
+      } else {
+        itemBreakdown.push(item.title + ' – weight not found in specs × ' + qty);
+      }
+
+      if (!firstSpecs && (specs.height_in || specs.width_in || specs.depth_in)) {
+        firstSpecs = specs;
+        firstItemForDims = item;
+      }
+    });
+
+    // Hidden fields for Echo API payload (total weight across all products)
+    var weightInput = document.getElementById('weight-lbs');
+    var lenInput    = document.getElementById('ship-length-in');
+    var widInput    = document.getElementById('ship-width-in');
+    var htInput     = document.getElementById('ship-height-in');
+
+    if (weightInput) {
+      if (totalWeightLbs > 0) {
+        weightInput.value = totalWeightLbs;
+      } else {
+        weightInput.value = '';
+      }
+    }
+
+    if (firstSpecs) {
+      if (htInput && firstSpecs.height_in) htInput.value = firstSpecs.height_in;
+      if (widInput && firstSpecs.width_in) widInput.value = firstSpecs.width_in;
+      if (lenInput && firstSpecs.depth_in) lenInput.value = firstSpecs.depth_in;
+    } else {
+      if (htInput) htInput.value = '';
+      if (widInput) widInput.value = '';
+      if (lenInput) lenInput.value = '';
+    }
+
+    // Human-readable summaries
+    var weightSummary   = document.getElementById('weight-summary');
+    var weightBreakdown = document.getElementById('weight-breakdown');
+    var dimsSummary     = document.getElementById('dims-summary');
+    var cartCountSpan   = document.getElementById('sq-cart-count');
+
+    var productCount = cartItems.length;
+    var totalQuantity = cartItems.reduce(function (acc, it) {
+      return acc + (it.quantity || 1);
+    }, 0);
+
+    if (weightSummary) {
+      if (totalWeightLbs > 0) {
+        if (productCount > 1) {
+          weightSummary.textContent =
+            totalWeightLbs + ' lb total (' + productCount + ' products, ' + totalQuantity + ' units)';
+        } else {
+          weightSummary.textContent = totalWeightLbs + ' lb';
+        }
+      } else {
+        weightSummary.textContent = productCount > 1
+          ? productCount + ' products (weight not found)'
+          : 'Weight not found in specs';
+      }
+    }
+
+    if (weightBreakdown) {
+      if (productCount > 1 && itemBreakdown.length) {
+        weightBreakdown.textContent = itemBreakdown.join(' · ');
+      } else {
+        weightBreakdown.textContent = '';
+      }
+    }
+
+    if (dimsSummary) {
+      if (firstSpecs && firstSpecs.height_in && firstSpecs.width_in && firstSpecs.depth_in) {
+        var labelPrefix = (productCount > 1 && firstItemForDims)
+          ? firstItemForDims.title + ' (example): '
+          : '';
+
+        dimsSummary.textContent =
+          labelPrefix +
+          firstSpecs.height_in + '" H × ' +
+          firstSpecs.width_in  + '" W × ' +
+          firstSpecs.depth_in  + '" D';
+      } else if (productCount > 1) {
+        dimsSummary.textContent = 'Multiple products – dimensions vary by item';
+      } else {
+        dimsSummary.textContent = 'Dimensions not found in specs';
+      }
+    }
+
+    if (cartCountSpan) {
+      cartCountSpan.textContent =
+        totalQuantity + ' item' + (totalQuantity !== 1 ? 's' : '');
+    }
+
+    // Origin ZIP – keep simple for now, can be made per-product later
+    var originZipInput = document.getElementById('origin-zip');
+    if (originZipInput) {
+      originZipInput.value = '78219';
+      var originSummary = document.getElementById('origin-summary');
+      if (originSummary) {
+        originSummary.textContent =
+          'Lancer Worldwide, San Antonio, TX 78219, United States';
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initial render from Liquid-injected cart data
+    if (Array.isArray(window.CART_SHIPPING_DESCRIPTIONS) && window.CART_SHIPPING_DESCRIPTIONS.length) {
+      updateShippingFromItems(window.CART_SHIPPING_DESCRIPTIONS);
+    }
+
+    // When a radio button inside #quote-results changes,
+    // activate the Continue to checkout button (turn it black + enabled)
+    var quoteResults = document.getElementById('quote-results');
+    if (quoteResults) {
+      quoteResults.addEventListener('change', function (e) {
+        if (e.target && e.target.matches('input[type="radio"]')) {
+          activateCheckoutButton();
+        }
+      });
+    }
+
+    /**
+     * GLOBAL HOOKS FOR LIVE CART UPDATES
+     *
+     * Option 1: Dispatch a custom event after your ajax cart updates:
+     *   window.dispatchEvent(new CustomEvent('osp:cart-updated', { detail: cartObject }));
+     *
+     * Option 2: Call the helper directly:
+     *   window.OSP_updateShippingQuoteFromCart(cartObject);
+     */
+
+    // Event-based hook
+    window.addEventListener('osp:cart-updated', function (event) {
+      var cart = event.detail;
+      if (!cart || !Array.isArray(cart.items)) return;
+
+      var items = cart.items.map(function (line) {
+        return {
+          handle: line.handle || '',
+          title: line.product_title || line.title || '',
+          quantity: line.quantity || 1,
+          description: (line.product_description || line.description || '').replace(/<[^>]+>/g, '')
+        };
+      });
+
+      updateShippingFromItems(items);
+    });
+
+    // Helper function you can call from ajax-cart code: OSP_updateShippingQuoteFromCart(cart)
+    window.OSP_updateShippingQuoteFromCart = function (cart) {
+      if (!cart || !Array.isArray(cart.items)) return;
+      var items = cart.items.map(function (line) {
+        return {
+          handle: line.handle || '',
+          title: line.product_title || line.title || '',
+          quantity: line.quantity || 1,
+          description: (line.product_description || line.description || '').replace(/<[^>]+>/g, '')
+        };
+      });
+      updateShippingFromItems(items);
+    };
+  });
+</script>
+
+<script>
+  window.ECHO_SHIP = {
+    MAP_URL: "{{ 'freight-map.json' | asset_url }}",
+    QUOTE_URL: "https://echo-ship.onrender.com/cart-echo-quote",
+    CHECKOUT_URL: "{{ shop.secure_url }}/checkout",
+    STEP_CENTS: 1000,     // $10 steps
+    MAX_CENTS: 60000,     // $600 top of your current ladder (adjust if you expand)
+    MIN_LBS: 150,
+    QUOTE_TIMEOUT_MS: 180000
+  };
+</script>
+
+<script src="{{ 'shipping.js' | asset_url }}?v={{ 'now' | date: '%s' }}" defer></script>
+
