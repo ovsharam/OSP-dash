@@ -6,6 +6,7 @@ import SidebarFilters from "@/components/SidebarFiltersNew";
 import ProductComparison from "@/components/ProductComparison";
 import ProductCarousel from "@/components/ProductCarousel";
 import AnimatedHero from "@/components/AnimatedHeroNew";
+import CategoryCircles from "@/components/CategoryCircles";
 import { useComparison } from "@/contexts/ComparisonContext";
 import { useAuth } from "@/contexts/AuthContextNew";
 import { mockProducts, getCategories, getVendors } from "@/lib/mockData";
@@ -257,8 +258,9 @@ export default function BrowseClient() {
     return (
         <div className="min-h-screen bg-white">
             <AnimatedHero />
+            <CategoryCircles />
 
-            <div className="mt-12 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 lg:flex lg:flex-col">
+            <div className="mt-8 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 lg:flex lg:flex-col">
                 <div className="items-start flex flex-col">
                     <h4 className="text-2xl font-serif text-[#333333] mb-6">
                         Featured brands
