@@ -1,638 +1,307 @@
 "use client";
 
-import { useState, useMemo, useEffect, Suspense } from "react";
-import ProductCard from "@/components/ProductCard";
-import SidebarFilters from "@/components/SidebarFilters";
-import ProductComparison from "@/components/ProductComparison";
-import ProductCarousel from "@/components/ProductCarousel";
+import { Suspense } from "react";
 import AnimatedHero from "@/components/AnimatedHero";
-import { useComparison } from "@/contexts/ComparisonContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { mockProducts, getCategories, getVendors } from "@/lib/mockData";
-import { Product } from "@/types";
-import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { FilterState } from "@/components/ProductFilters";
 import Link from "next/link";
-
-const categories = [
-  { id: "beverages", name: "Organic Soda Beverages", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200" },
-  { id: "equipment", name: "Soda Equipment", image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=200" },
-  { id: "straws", name: "Sustainable Straws", image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=200" },
-  { id: "plates", name: "Eco-Friendly Plates", image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=200" },
-  { id: "cups", name: "Sustainable Cups", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=200" },
-  { id: "cutlery", name: "Biodegradable Cutlery", image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=200" },
-  { id: "bowls", name: "Compostable Bowls", image: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=200" },
-];
-
-// Faire-style categories for authenticated buyers
-const faireCategories = [
-  { id: "kitchen-tabletop", name: "Kitchen & tabletop", image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop" },
-  { id: "snacks", name: "Snacks", image: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=400&h=400&fit=crop" },
-  { id: "home-accents", name: "Home accents", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop" },
-  { id: "womens-apparel", name: "Women's apparel", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=400&fit=crop" },
-  { id: "confections", name: "Confections", image: "https://images.unsplash.com/photo-1606312619070-d48b4e0016a4?w=400&h=400&fit=crop" },
-  { id: "beverages", name: "Beverages", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop" },
-  { id: "womens-accessories", name: "Women's accessories", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=400&h=400&fit=crop" },
-  { id: "coffee-tea", name: "Coffee & tea", image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400&h=400&fit=crop" },
-];
+import { Search, ChevronRight, Star, Lock, ShoppingBag, Heart } from "lucide-react";
 
 function BrowseContent() {
-  const { user, isAuthenticated } = useAuth();
-  const searchParams = useSearchParams();
-  const searchParam = searchParams?.get("search") || "";
-  const [searchQuery, setSearchQuery] = useState(searchParam);
-  const [activeFilters, setActiveFilters] = useState<string[]>([]);
-  const [showSidebarFilters, setShowSidebarFilters] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
-  const { items: comparisonItems, removeFromComparison } = useComparison();
-  const categoryParam = searchParams?.get("category") || "";
-  
-  // Check if user is a buyer (authenticated and not on vendor routes)
-  // For now, assume authenticated users on browse page are buyers
-  const isBuyer = isAuthenticated && user;
+  return (
+    <div className="min-h-screen bg-[#F5F0EB]">
+      <AnimatedHero />
 
-  const categoryList = getCategories();
-  const vendors = getVendors();
-
-  const [filterState, setFilterState] = useState<FilterState>({
-    category: "",
-    vendor: "",
-    minPrice: 0,
-    maxPrice: 10000,
-    inStock: null,
-    sampleAvailable: null,
-  });
-
-  useEffect(() => {
-    if (categoryParam) {
-      setActiveFilters([categoryParam]);
-    }
-    if (searchParam) {
-      setSearchQuery(searchParam);
-    }
-  }, [categoryParam, searchParam]);
-
-  // Get unique vendors for featured brands with proper images
-  const featuredBrands = useMemo(() => {
-    const vendorMap = new Map();
-    mockProducts.forEach((product) => {
-      if (!vendorMap.has(product.vendor.id)) {
-        // Use a representative product image for each vendor
-        const vendorProducts = mockProducts.filter(p => p.vendor.id === product.vendor.id);
-        const vendorImage = vendorProducts[0]?.images[0] || "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800";
-        vendorMap.set(product.vendor.id, {
-          id: product.vendor.id,
-          name: product.vendor.name,
-          location: product.vendor.location,
-          image: vendorImage,
-        });
-      }
-    });
-    return Array.from(vendorMap.values()).slice(0, 10); // Show more brands
-  }, []);
-
-  const filteredProducts = useMemo(() => {
-    let filtered: Product[] = [...mockProducts];
-
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (product) =>
-          product.name.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query) ||
-          product.vendor.name.toLowerCase().includes(query) ||
-          product.tags.some((tag) => tag.toLowerCase().includes(query))
-      );
-    }
-
-    // Category filter from URL, active filters, or filter state
-    const categoryFilter = categoryParam || activeFilters.find(f => categoryList.includes(f)) || filterState.category;
-    if (categoryFilter) {
-      filtered = filtered.filter((product) => product.category === categoryFilter);
-    }
-
-    // Vendor filter
-    if (filterState.vendor) {
-      filtered = filtered.filter((product) => product.vendor.name === filterState.vendor);
-    }
-
-    // Price filter
-    filtered = filtered.filter(
-      (product) =>
-        product.price >= (filterState.minPrice || 0) &&
-        product.price <= (filterState.maxPrice || 10000)
-    );
-
-    // Stock filter
-    if (filterState.inStock === true) {
-      filtered = filtered.filter((product) => product.inStock);
-    } else if (filterState.inStock === false) {
-      filtered = filtered.filter((product) => !product.inStock);
-    }
-
-    // Sample available filter
-    if (filterState.sampleAvailable === true) {
-      filtered = filtered.filter((product) => product.sampleAvailable);
-    }
-
-    // Filter by "New" tag
-    if (activeFilters.includes("new")) {
-      filtered = filtered.filter((product) => product.isNew);
-    }
-
-    // Filter by "Low minimum"
-    if (activeFilters.includes("low-minimum")) {
-      filtered = filtered.filter((product) => (product.minOrderQuantity || 0) <= 24);
-    }
-
-    // Filter by "Bestseller"
-    if (activeFilters.includes("bestseller")) {
-      filtered = filtered.filter((product) => product.isBestseller);
-    }
-
-    return filtered;
-  }, [searchQuery, activeFilters, categoryParam, categoryList, filterState]);
-
-  const toggleFilter = (filter: string) => {
-    setActiveFilters((prev) =>
-      prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
-    );
-  };
-
-  // Get selected category for "All [category]" link
-  const selectedCategory = categoryParam || activeFilters.find(f => categoryList.includes(f)) || categoryList[0];
-
-  // Get products for carousels
-  const popularProducts = useMemo(() => {
-    return mockProducts
-      .filter((p) => p.isBestseller || (p.vendor.rating ?? 0) >= 4.8)
-      .slice(0, 12)
-      .map((p) => ({ ...p, showWholesalePrice: true }));
-  }, []);
-
-  const homeAccentsProducts = useMemo(() => {
-    return mockProducts
-      .filter((p) => p.category === "Tableware" || p.tags.some((t) => t.toLowerCase().includes("home")))
-      .slice(0, 12)
-      .map((p) => ({ ...p, showWholesalePrice: true }));
-  }, []);
-
-  const beveragesProducts = useMemo(() => {
-    return mockProducts
-      .filter((p) => p.category === "Beverages")
-      .slice(0, 12)
-      .map((p) => ({ ...p, showWholesalePrice: true }));
-  }, []);
-
-  // Show Faire-style homepage for authenticated buyers
-  if (isBuyer) {
-    return (
-      <div className="min-h-screen bg-white">
-        {/* Top Promotional Banner */}
-        <div className="bg-amber-50 border-b border-amber-200 py-2">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center text-sm">
-              <span className="text-gray-800">Enjoy 50% off! Shop food, drinks, and more.</span>
-              <Link href="/browse" className="ml-2 text-gray-800 underline hover:text-black">
-                View details
-              </Link>
-            </div>
+      {/* Featured Brands Section */}
+      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-10 lg:px-12 w-full">
+          <h2 className="text-3xl font-serif text-[#1A1A1A] mb-6">Featured brands</h2>
+          <div className="flex flex-wrap gap-3 mb-10">
+            <Link href="/browse?category=Home%20decor" className="bg-[#1A1A1A] text-white px-5 py-2 rounded-full text-sm font-medium transition-colors">Home decor</Link>
+            <Link href="/browse?category=Food%20%26%20drink" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Food & drink</Link>
+            <Link href="/browse?category=Women" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Women</Link>
+            <Link href="/browse?category=Beauty%20%26%20wellness" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Beauty & wellness</Link>
+            <Link href="/browse?category=Jewelry" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Jewelry</Link>
+            <Link href="/browse?category=Paper%20%26%20novelty" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Paper & novelty</Link>
+            <Link href="/browse?category=Kids%20%26%20baby" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Kids & baby</Link>
+            <Link href="/browse?category=Pets" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Pets</Link>
+            <Link href="/browse?category=Men" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Men</Link>
           </div>
-        </div>
-
-        {/* Welcome Message */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-8">
-            Welcome to OSP, {user?.name || "Buyer"}
-          </h1>
-
-          {/* Category Grid - Filtered for specific categories */}
-          <div className="grid grid-cols-3 gap-4 md:gap-6 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 pb-4">
             {[
-              { id: "beverages", name: "Beverages", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop", category: "Beverages" },
-              { id: "equipment", name: "Equipment", image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=400&h=400&fit=crop", category: "Equipment" },
-              { id: "straws", name: "Straws", image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400&h=400&fit=crop", category: "Tableware", tag: "straw" },
-              { id: "plates", name: "Plates", image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop", category: "Tableware", tag: "plate" },
-              { id: "cups", name: "Cups", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=400&h=400&fit=crop", category: "Tableware", tag: "cup" },
-              { id: "silverware", name: "Silverware", image: "https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400&h=400&fit=crop", category: "Tableware", tag: "cutlery" },
-            ].map((category) => (
-              <Link
-                key={category.id}
-                href={`/browse?category=${encodeURIComponent(category.category)}${category.tag ? `&tag=${category.tag}` : ""}`}
-                className="group cursor-pointer"
-              >
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300">
-                  <div className="aspect-square relative bg-gray-100 overflow-hidden">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 768px) 50vw, 25vw"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-medium text-gray-900 text-center group-hover:text-black transition-colors">
-                      {category.name}
-                    </h3>
-                  </div>
+              { name: "Galvanina", location: "Rimini, Italy", image: "/images/IMG_0997_copy.jpg" },
+              { name: "Mother Kombucha", location: "Saint Petersburg, Florida", image: "/images/IMG_0998.jpeg" },
+              { name: "Gusto Cola", location: "Devon, United Kingdom", image: "/images/IMG_0999_copy.jpg" },
+              { name: "Top Note", location: "Milwaukee, Wisconsin", image: "/images/IMG_1001_copy.jpg" }
+            ].map((brand) => (
+              <Link key={brand.name} className="group flex flex-col items-center text-center w-full max-w-[240px]" href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
+                <div className="relative w-full pb-[100%] bg-gray-100 rounded-full overflow-hidden mb-3">
+                  <Image
+                    alt={brand.name}
+                    src={brand.image}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  />
+                </div>
+                <div className="flex flex-col items-center w-full">
+                  <div className="text-[#333333] font-semibold text-base leading-tight">{brand.name}</div>
+                  <div className="text-[#333333] text-sm">{brand.location}</div>
                 </div>
               </Link>
             ))}
           </div>
-
-          {/* Holiday Shop Banner */}
-          <div className="mb-12">
-            <Link href="/browse?category=Holiday" className="block relative">
-              <div className="relative w-full p-4 md:p-16 lg:p-10 rounded-lg md:rounded-xl overflow-hidden min-h-[200px] md:min-h-[240px] lg:min-h-[288px] flex items-center justify-center">
-                {/* Background Image */}
-                <picture className="absolute top-0 left-0 z-0 h-full w-full">
-                  <source
-                    media="(min-width: 1024px)"
-                    srcSet="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1184&h=288&fit=crop&q=80 1x, https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=2368&h=576&fit=crop&q=80 2x"
-                  />
-                  <source
-                    media="(min-width: 768px)"
-                    srcSet="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=768&h=240&fit=crop&q=80 1x, https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=1536&h=480&fit=crop&q=80 2x"
-                  />
-                  <img
-                    src="https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=600&h=200&fit=crop&q=80"
-                    alt="Holiday Shop"
-                    className="w-full h-full object-cover object-center"
-                    loading="eager"
-                  />
-                </picture>
-
-                {/* Brown Background Overlay */}
-                <div className="absolute inset-0 bg-[#8B4513] z-[1]"></div>
-
-                {/* Content - Left Side (1/2 width) */}
-                <div className="z-[2] items-start text-left w-full md:w-1/2 relative flex flex-col justify-center">
-                  <div className="w-full flex flex-col items-start justify-start">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-2 md:mb-4 text-white">
-                      The Holiday Shop
-                    </h2>
-                  </div>
-                  <div className="h-2 md:h-4"></div>
-                  <div className="w-full flex flex-col items-start justify-start">
-                    <p className="text-base md:text-lg lg:text-xl mb-4 md:mb-6 text-white leading-relaxed">
-                      Make this holiday season magical for your customers with everything they need from memorable family moments to gifts for everyone on their list.
-                    </p>
-                  </div>
-                  <div className="h-4 md:h-4"></div>
-                  <button className="bg-gray-800 text-white px-6 py-3 md:px-8 md:py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
-                    Shop all
-                  </button>
-                </div>
-              </div>
-            </Link>
-          </div>
-
-          {/* Product Carousels */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Popular with stores like yours */}
-            <ProductCarousel
-              title="Popular with stores like yours"
-              products={popularProducts}
-              shopAllLink="/browse?filter=bestseller"
-            />
-
-            {/* Mid-Page Promotional Banner */}
-            <div className="bg-gray-50 rounded-lg overflow-hidden mb-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 md:p-12">
-                <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
-                  <Image
-                    src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&h=600&fit=crop"
-                    alt="First order discount"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="p-4 md:p-8">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                    You've got 50% off your first order.
-                  </h2>
-                  <p className="text-base md:text-lg text-gray-700 mb-2">
-                    Welcome to OSP! You've got 7 days to use this welcome offer.
-                  </p>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Maximum discount is $100. Offer ends December 19, 2025, at 07:59 AM UTC and is automatically applied at checkout.
-                  </p>
-                  <Link
-                    href="/browse"
-                    className="inline-block bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-                  >
-                    Shop now
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Home accents */}
-            <ProductCarousel
-              title="Home accents"
-              products={homeAccentsProducts}
-              shopAllLink="/browse?category=Tableware"
-            />
-
-            {/* Beverages */}
-            <ProductCarousel
-              title="Beverages"
-              products={beveragesProducts}
-              shopAllLink="/beverages"
-            />
+          <div className="text-center md:text-left">
+            <Link className="inline-block bg-white border border-[#1A1A1A] text-[#1A1A1A] px-8 py-3 rounded-[4px] font-medium hover:bg-gray-50 transition-colors" href="/browse?category=Home%20decor">All home decor</Link>
           </div>
         </div>
-      </div>
-    );
-  }
+      </section>
 
-  return (
-    <div className="min-h-screen bg-white">
-      {/* Animated Hero Section */}
-      <AnimatedHero />
-
-      {/* Featured Brands Section */}
-      <div data-test-id="best-brands-banner-v2" className="mt-12 mb-0 ml-4 md:ml-8 lg:ml-12 2xl:ml-20 f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
-        <div className="items-start f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
-          <h4 className="f_t_base f_t_color f_t_displaySSerifRegular" style={{ "--f_t_color": "#333333", "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
-            Featured brands
-          </h4>
-          <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "24px", "--f_spacer_size_tablet": "16px", "--f_spacer_size_desktop": "24px", "--f_spacer_size_xlarge": "24px", "--f_spacer_size_xxlarge": "24px", width: "0px" } as React.CSSProperties}></div>
-          <div className="w-full f_flex_base f_flex_single_value_justify f_flex_single_value_direction" style={{ "--f_flex_justify_mobile": "space-between", "--f_flex_direction_mobile": "row" } as React.CSSProperties}>
-            <div className="overflow-auto">
-              <div className="f_c_carousel_wrapper_base f_c_carousel_wrapper_mobile w-full flex overflow-x-auto scrollbar-hide" style={{ "--f-c-item-gap-mobile": "8px", "--f-c-item-gap-tablet": "8px", "--f-c-item-gap-desktop": "8px", "--f-c-item-gap-xlarge": "8px", "--f-c-item-gap-xxlarge": "8px", gap: "8px" } as React.CSSProperties}>
-                <div className="f_c_inner_container f_flex_base" style={{ transform: "translate3d(0px, 0px, 0px)" } as React.CSSProperties}>
-                  {categoryList.map((category, index) => {
-                    const isActive = categoryParam === category || (categoryParam === "" && index === 0);
-                    return (
-                      <div key={category} className="f_c_slide_width_free_flow f_c_slide_gap flex-shrink-0" data-index={index}>
-                        <div>
-                          <p
-                            tabIndex={0}
-                            onClick={() => {
-                              window.location.href = `/browse?category=${encodeURIComponent(category)}`;
-                            }}
-                            className={`f_t_base f_t_color hover:border-fs-action-border-default focus-visible:border-fs-action-border-default flex h-10 cursor-pointer items-center justify-center rounded-[40px] border p-4! f_t_paragraphSansRegular ${
-                              isActive
-                                ? "border-fs-action-border-default bg-white"
-                                : "border-fs-border-muted"
-                            }`}
-                            style={{
-                              "--f_t_color": "#333333",
-                              "--f_t_decorationColor": "#757575"
-                            } as React.CSSProperties}
-                          >
-                            {category}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+      {/* We're OSP Section */}
+      <section className="bg-[#F5F0EB] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24">
+        <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-20 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+          <div className="w-full lg:w-1/2 flex flex-col gap-6 lg:gap-8 order-2 lg:order-1">
+            <div className="flex flex-col gap-2">
+              <h2 className="font-serif text-[#1A1A1A] text-4xl md:text-5xl lg:text-6xl leading-tight">We're OSP.</h2>
+              <h3 className="font-sans text-[#1A1A1A] text-2xl md:text-3xl lg:text-4xl font-light">The platform for soda shops.</h3>
             </div>
-            <a
-              className="xl:pr-12! 2xl:pr-20! fslegacy-component hidden xl:block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap flex-shrink-0"
-              aria-disabled={false}
-              href={`/browse?category=${encodeURIComponent(selectedCategory)}`}
-              style={{ marginRight: "3rem" } as React.CSSProperties}
-            >
-              All brands
-            </a>
+            <p className="font-sans text-[#1A1A1A] max-w-2xl text-lg leading-relaxed">We make it easy for you to discover premium organic sodas and professional equipment that make your shop stand out.</p>
           </div>
-          <div className="relative w-full overflow-hidden pr-4 md:pr-8 lg:pr-12 2xl:pr-20 pill-with-content-fade-in bottom-0 opacity-100">
-            <div className="items-start f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
-              <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "24px", "--f_spacer_size_tablet": "16px", "--f_spacer_size_desktop": "24px", "--f_spacer_size_xlarge": "24px", "--f_spacer_size_xxlarge": "24px", width: "0px" } as React.CSSProperties}></div>
-              <div className="w-full overflow-x-auto scrollbar-hide">
-                <div className="flex gap-4 md:gap-6" style={{ width: "max-content" } as React.CSSProperties}>
-                  {featuredBrands.map((vendor) => (
-                    <a
-                      key={vendor.id}
-                      href={`/browse?vendor=${encodeURIComponent(vendor.name)}`}
-                      className="group flex-shrink-0"
-                      style={{ width: "200px" } as React.CSSProperties}
-                    >
-                      <div className="w-full f_flex_base f_flex_single_value_direction" style={{ "--f_flex_direction_mobile": "column" } as React.CSSProperties}>
-                        <div className="rounded-fs-component-default overflow-hidden aspect-square w-full">
-                          <picture className="flex lg:origin-left lg:transition-transform lg:duration-[1200ms] lg:ease-[cubic-bezier(0.17,0.67,0.24,1)] lg:group-hover:scale-110 block w-full h-full">
-                            <source media="(min-width: 1728px)" srcSet={`${vendor.image}?w=280&h=280`} />
-                            <source media="(min-width: 1440px)" srcSet={`${vendor.image}?w=240&h=240`} />
-                            <img
-                              alt={vendor.name}
-                              width="100%"
-                              height="100%"
-                              src={vendor.image}
-                              style={{ objectFit: "cover", width: "100%", height: "100%", borderRadius: "var(--radius-fs-component-default)" } as React.CSSProperties}
-                              loading="lazy"
-                            />
-                          </picture>
-                        </div>
-                        <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "8px" } as React.CSSProperties}></div>
-                        <p className="f_t_base f_t_maxLines f_t_color lg:from-fs-text-primary lg:to-fs-text-primary w-fit group-focus-visible:[outline:2px_solid_var(--core-interactive-focus)_-2px] lg:bg-linear-to-r lg:bg-[length:0%_1px] lg:bg-left-bottom lg:bg-no-repeat lg:transition-all lg:duration-[1200ms] lg:ease-[cubic-bezier(0.17,0.67,0.24,1)] lg:group-hover:bg-[length:100%_1px] f_t_paragraphSansMedium" style={{ "--f_t_color": "#333333", "--f_t_maxLines": 1, "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
-                          {vendor.name}
-                        </p>
-                        <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "4px" } as React.CSSProperties}></div>
-                        <p className="f_t_base f_t_maxLines f_t_color f_t_paragraphSansRegular" style={{ "--f_t_color": "#333333", "--f_t_maxLines": 1, "--f_t_decorationColor": "#757575" } as React.CSSProperties}>
-                          {vendor.location}
-                        </p>
-                        <div className="f_spacer_base f_spacer_single_value_fb f_spacer_single_value_min_width f_spacer_single_value_min_height" style={{ "--f_spacer_size_mobile": "4px" } as React.CSSProperties}></div>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "32px", "--f_spacer_size_tablet": "32px", "--f_spacer_size_desktop": "48px", "--f_spacer_size_xlarge": "48px", "--f_spacer_size_xxlarge": "48px", width: "0px" } as React.CSSProperties}></div>
-              <div className="block xl:hidden">
-                <a
-                  className="hover:bg-fs-surface-primary-inverse! w-fit bg-transparent! fslegacy-component inline-block text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap px-4 py-2 rounded"
-                  aria-disabled={false}
-                  href={`/browse?category=${encodeURIComponent(selectedCategory)}`}
-                >
-                  All brands
-                </a>
-                <div className="f_spacer_base f_spacer_variable_fb f_spacer_variable_min_height" style={{ "--f_spacer_size_mobile": "32px", "--f_spacer_size_tablet": "32px", "--f_spacer_size_desktop": "64px", "--f_spacer_size_xlarge": "64px", "--f_spacer_size_xxlarge": "64px", width: "0px" } as React.CSSProperties}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content with Sidebar */}
-      <div className="mt-12 mb-0 flex">
-        {/* Left Sidebar Filters */}
-        {showSidebarFilters && (
-          <div className="w-64 lg:w-80 xl:w-96 flex-shrink-0 border-r border-gray-200 bg-white">
-            <div className="sticky top-24 max-h-[calc(100vh-96px)] overflow-y-auto">
-              <SidebarFilters onFilterChange={() => {}} vendors={vendors} />
-            </div>
-          </div>
-        )}
-
-        {/* Right Content Area */}
-        <div className={`flex-1 pt-8 pb-8 transition-all duration-300 ${showSidebarFilters ? 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20' : 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20'}`}>
-          {/* Headline */}
-          <h1 className="f_t_base f_t_color f_t_displaySSerifRegular mb-6" style={{ "--f_t_color": "#333333" } as React.CSSProperties}>
-            Find the best wholesale organic sodas, equipment & sustainable tableware
-          </h1>
-
-          {/* Filter Tags */}
-          <div className="flex flex-wrap items-center gap-3 mb-8 mt-[0.9rem]">
-            <button
-              onClick={() => setShowSidebarFilters(!showSidebarFilters)}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors whitespace-nowrap flex items-center ${
-                showSidebarFilters
-                  ? "bg-gray-800 text-white border-gray-800"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              {showSidebarFilters ? (
-                <>
-                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  Hide filters
-                </>
-              ) : (
-                <>
-                  All filters
-                  <svg className="inline-block w-4 h-4 ml-1 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                  </svg>
-                </>
-              )}
-            </button>
-            {comparisonItems.length > 0 && (
-              <button
-                onClick={() => setShowComparison(true)}
-                className="px-4 py-2 rounded-full text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:border-gray-400 whitespace-nowrap"
-              >
-                Compare ({comparisonItems.length})
-              </button>
-            )}
-            <button
-              onClick={() => toggleFilter("new")}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-                activeFilters.includes("new")
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              New this month
-            </button>
-            <button
-              onClick={() => toggleFilter("low-minimum")}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-                activeFilters.includes("low-minimum")
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              Low minimum
-            </button>
-            <button
-              onClick={() => toggleFilter("bestseller")}
-              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors flex items-center ${
-                activeFilters.includes("bestseller")
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              <span className="text-green-500 mr-1">★</span> Top Shop
-            </button>
-          </div>
-
-          {/* Products Grid */}
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No products found matching your criteria.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-12">
-              {filteredProducts.map((product, index) => (
-                <div key={product.id} className="w-full h-full">
-                  <ProductCard product={product} index={index} />
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Comparison Modal */}
-          {showComparison && (
-            <ProductComparison
-              products={comparisonItems}
-              onRemove={removeFromComparison}
-              onClose={() => setShowComparison(false)}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Mid-Page Promotional Banner */}
-      <div className="bg-gray-50 border-t border-gray-200 my-12">
-        <div className="ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="relative h-64 md:h-96 rounded-lg overflow-hidden">
+          <div className="w-full lg:w-1/2 relative order-1 lg:order-2">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
               <Image
-                src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800"
-                alt="Promotional"
+                alt="Soda shop owner"
+                src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
-            <div>
-              <h2 className="text-3xl font-bold text-black mb-4">
-                Sustainable solutions, waiting for you
-              </h2>
-              <p className="text-lg text-gray-600 mb-6">
-                Sign up to discover organic beverages and eco-friendly tableware for your business.
-              </p>
-              <button className="bg-black text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-gray-800 transition-colors">
-                Unlock wholesale pricing
-              </button>
+            <div className="mt-4 text-sm text-[#1A1A1A] font-sans flex flex-col gap-0.5">
+              <p className="font-semibold">Sarah Jenkins, Owner of The Soda Shoppe</p>
+              <p className="text-[#6B6B6B]">Austin, Texas</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Second Product Grid */}
-      <div className={`${showSidebarFilters ? 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20' : 'ml-4 md:ml-8 lg:ml-12 2xl:ml-20'} mr-4 md:mr-8 lg:mr-12 2xl:mr-20 pb-12`}>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {filteredProducts.slice(0, 6).map((product) => (
-            <div key={product.id} className="w-full h-full">
-              <ProductCard product={product} />
-            </div>
-          ))}
+      {/* Bestsellers Section */}
+      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+        <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12 relative group">
+          <h2 className="text-2xl font-serif text-[#1A1A1A] mb-8">Bestsellers you might like</h2>
+          <button className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-100 hover:bg-gray-50 transition-all opacity-0 group-hover:opacity-100" aria-label="Scroll right">
+            <ChevronRight className="w-5 h-5 text-[#1A1A1A]" aria-hidden="true" />
+          </button>
+          <div className="flex overflow-x-auto gap-4 scrollbar-hide pb-4 -mx-6 px-6 md:mx-0 md:px-0">
+            {[
+              { title: "Craft Soda Variety Pack - 12 Flavors", brand: "Pop & Fizz Co.", rating: "4.9 (1,240)", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80" },
+              { title: "Commercial Soda Fountain Dispenser - 6 Valve", brand: "BeverageTech Systems", rating: "4.8 (85)", image: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800&q=80" },
+              { title: "Organic Cola Syrup Concentrate (5 Gallon)", brand: "Nature's Pour", rating: "5.0 (320)", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80" },
+              { title: "Premium Glass Bottle Soda - Root Beer (Case/24)", brand: "Old Town Bottling", rating: "4.9 (2,100)", image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=800&q=80" },
+              { title: "Industrial Ice Maker - 500lb Capacity", brand: "FrostLine Commercial", rating: "4.7 (45)", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=800&q=80" },
+              { title: "CO2 Cylinder Refill System - Dual Gauge", brand: "DraftPure", rating: "4.8 (150)", image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=800&q=80" },
+              { title: "Vintage Style Soda Glasses (Set of 6)", brand: "RetroServe", rating: "4.9 (890)", image: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=800&q=80" },
+              { title: "Sparkling Water Maker - Home Edition", brand: "BubbleStream", rating: "4.6 (560)", image: "https://images.unsplash.com/photo-1627483297929-37f416fec7cd?auto=format&fit=crop&w=800&q=80" }
+            ].map((product, i) => (
+              <div key={i} className="min-w-[240px] w-[240px] flex-shrink-0 flex flex-col h-full">
+                <Link className="flex flex-col h-full group" href="#">
+                  <div className="relative aspect-square bg-[#F5F5F5] rounded-[4px] overflow-hidden mb-3 w-full">
+                    <Image
+                      alt={product.title}
+                      src={product.image}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                    <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-[10px] font-medium text-[#1A1A1A] uppercase tracking-wide border border-gray-100">Bestseller</div>
+                  </div>
+                  <div className="flex-1 flex flex-col">
+                    <h3 className="text-[#1A1A1A] text-[15px] font-medium leading-snug mb-1 line-clamp-2 min-h-[42px]">{product.title}</h3>
+                    <p className="text-[#6B6B6B] text-sm mb-2 line-clamp-1">{product.brand}</p>
+                    <div className="flex items-center gap-1 mb-2 mt-auto">
+                      <Star className="w-3 h-3 fill-current text-[#1A1A1A]" aria-hidden="true" />
+                      <span className="text-xs text-[#1A1A1A]">{product.rating}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[#1A1A1A]">
+                      <Lock className="w-3 h-3" aria-hidden="true" />
+                      <span className="text-sm underline decoration-[#757575] underline-offset-2">Unlock wholesale price</span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Bottom CTA */}
-      <div className="bg-gray-50 border-t border-gray-200 mt-16">
-        <div className="ml-4 md:ml-8 lg:ml-12 2xl:ml-20 mr-4 md:mr-8 lg:mr-12 2xl:mr-20 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="mb-4 md:mb-0 flex-1">
-              <h2 className="text-xl font-semibold text-black mb-2">
-                Sign up to unlock customized recommendations at wholesale prices
-              </h2>
+      {/* Retailer Section (Dark Green) */}
+      <section className="bg-[#1B4D3E] text-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 overflow-hidden">
+        <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 w-full">
+          <div className="hidden lg:block w-full lg:w-1/3 opacity-80">
+            {/* Visual placeholder for left image cluster */}
+            <div className="relative aspect-square w-full max-w-[500px] rounded overflow-hidden">
+              <Image src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=800" alt="Retailer example" fill className="object-cover" />
             </div>
-            <div className="flex items-center space-x-2 w-full md:w-auto">
-              <input
-                type="email"
-                placeholder="Business email address"
-                className="flex-1 md:flex-none px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black text-sm text-black min-w-[200px]"
-              />
-              <button className="bg-gray-800 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-gray-900 transition-colors whitespace-nowrap">
-                Sign up
-              </button>
+          </div>
+          <div className="w-full md:w-[240px] lg:w-[370px] 2xl:w-[500px] text-center flex flex-col items-center z-10 mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif mb-4 leading-tight !text-white">For any retailer,<br />no matter what you sell.</h2>
+            <p className="text-base md:text-lg !text-white/90 mb-6 leading-relaxed">Whether you buy for a clothing boutique or a grocery store, find all the products you need on OSP.</p>
+            <Link className="bg-white text-[#1A1A1A] px-10 py-3 rounded-[4px] font-medium text-base hover:bg-gray-100 transition-colors" href="/?signUp=1">Sign up to buy</Link>
+          </div>
+          <div className="hidden lg:block w-full lg:w-1/3 opacity-80">
+            {/* Visual placeholder for right image cluster */}
+            <div className="relative aspect-square w-full max-w-[500px] rounded overflow-hidden">
+              <Image src="https://images.unsplash.com/photo-1604719312566-b7cb33746479?w=800" alt="Retailer example" fill className="object-cover" />
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Explore Categories */}
+      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+        <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12 relative group/section">
+          <h2 className="text-2xl font-serif text-[#333333] mb-8">Explore categories</h2>
+          <button className="absolute right-4 top-[50%] -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-100 hover:bg-gray-50 transition-all opacity-0 group-hover/section:opacity-100" aria-label="Scroll right">
+            <ChevronRight className="w-5 h-5 text-[#333333]" aria-hidden="true" />
+          </button>
+          <div className="flex overflow-x-auto gap-6 scrollbar-hide pb-4 -mx-6 px-6 md:mx-0 md:px-0">
+            {[
+              { name: "Home decor", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=640" },
+              { name: "Food & Drink", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=640" },
+              { name: "Women", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=640" },
+              { name: "Beauty & Wellness", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=640" },
+              { name: "Jewelry", image: "https://images.unsplash.com/photo-1515562141207-7a88fb05220c?w=640" },
+              { name: "Kids & Baby", image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=640" },
+              { name: "Paper & Novelty", image: "https://images.unsplash.com/photo-1586075010923-2dd45eeed8bd?w=640" }
+            ].map((cat, i) => (
+              <div key={i} className="min-w-[280px] sm:min-w-[320px] md:min-w-[400px] flex-shrink-0">
+                <Link className="block group relative rounded-lg overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
+                  <div className="relative w-full" style={{ aspectRatio: "1.4 / 1" }}>
+                    <Image
+                      alt={cat.name}
+                      src={cat.image}
+                      fill
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 z-[1]" style={{ background: "linear-gradient(22.18deg, rgba(0, 0, 0, 0.5) 1.86%, rgba(0, 0, 0, 0) 31.23%)" }}></div>
+                  </div>
+                  <div className="absolute bottom-0 left-0 z-[2] p-6">
+                    <h4 className="text-xl md:text-2xl font-serif !text-white">{cat.name}</h4>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Shop by your values */}
+      <section className="bg-white min-h-[450px] flex flex-col py-16 md:py-24 border-b border-[#E0D9D0] overflow-hidden">
+        <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12">
+          <div className="flex flex-col mb-12">
+            <h2 className="text-3xl font-serif text-[#333333] mb-8">Shop by your values</h2>
+            <div className="w-full overflow-x-auto pb-4 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
+              <div className="flex gap-3 w-max">
+                {["Women owned", "Organic", "Eco-friendly", "Made in USA", "Small Batch", "Sugar Free", "Not on Amazon"].map((val, i) => (
+                  <button key={i} className={`flex h-10 cursor-pointer items-center justify-center rounded-[40px] border px-6 py-2 transition-all duration-200 whitespace-nowrap ${val === "Eco-friendly" ? "bg-[#1A1A1A] text-white border-[#1A1A1A]" : "bg-white text-[#333333] border-[#E0D9D0] hover:border-[#333333]"}`}>
+                    <span className="text-sm md:text-base font-medium font-sans">{val}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="w-full flex-col gap-6 pt-2 md:flex-row md:gap-8 lg:gap-14 flex items-center md:items-start">
+            <div className="relative w-full md:w-[440px] lg:w-[455px] xl:w-[640px] 2xl:w-[824px] aspect-[4/3] md:aspect-auto md:h-[413px] lg:h-[455px] xl:h-[500px] 2xl:h-[635px] rounded-sm overflow-hidden bg-gray-100">
+              <Image alt="GreenSip" src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" fill className="object-cover animate-in fade-in duration-700" />
+            </div>
+            <div className="relative pt-2 w-full md:flex-1 md:h-[413px] lg:h-[455px] xl:h-[500px] 2xl:h-[635px] flex flex-col justify-between">
+              <div>
+                <h5 className="text-[#333333] text-sm tracking-[0.15px] lg:text-lg lg:leading-[26px] xl:text-[22px] xl:leading-8 2xl:text-3xl 2xl:leading-[38px] font-medium font-sans mb-8">“Sustainable hydration is our mission. Our bottles are 100% plant-based and compostable, reducing single-use plastic waste one drink at a time.”</h5>
+                <div className="space-y-1 mb-8">
+                  <Link className="block text-sm lg:text-lg font-medium text-[#333333] underline hover:no-underline" href="/browse?brand=GreenSip">GreenSip</Link>
+                  <p className="text-[#757575] text-sm lg:text-base">Seattle, Washington</p>
+                </div>
+              </div>
+              <div className="mt-auto">
+                <Link className="inline-block text-[#333333] font-medium border-b border-black pb-0.5 hover:text-[#757575] hover:border-[#757575] transition-colors" href="/browse?values=eco-friendly">Shop Eco-friendly</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Benefits */}
+      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+        <div className="max-w-[1400px] w-full mx-auto px-6 md:px-10 lg:px-12">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
+            <div className="w-full lg:w-1/2 flex flex-col items-start pt-4">
+              <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#333333] mb-12 leading-tight">Try new flavor profiles in your shop, with confidence.</h3>
+              <div className="flex flex-col gap-10 w-full max-w-lg mb-12">
+                <div className="flex flex-col gap-1">
+                  <span className="text-lg font-medium text-[#333333]">Low order minimums</span>
+                  <h5 className="text-[#757575] text-lg font-normal leading-relaxed">Trial thousands of craft soda brands with low or no minimums.</h5>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-lg font-medium text-[#333333]">60 days to pay, interest free</span>
+                  <h5 className="text-[#757575] text-lg font-normal leading-relaxed">Stock your shelves now and pay invoices 60 days later with zero fees.</h5>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-lg font-medium text-[#333333]">Free and easy returns</span>
+                  <h5 className="text-[#757575] text-lg font-normal leading-relaxed">You get free returns on every first order with a new brand.</h5>
+                </div>
+              </div>
+              <Link className="inline-block bg-[#1A1A1A] text-white px-8 py-4 rounded-full text-base font-medium hover:bg-[#333333] transition-colors" href="/?signUp=1">Sign up to buy</Link>
+            </div>
+            <div className="w-full lg:w-1/2">
+              <div className="relative w-full aspect-[4/5] lg:aspect-[3/4] max-w-[500px] mx-auto lg:mx-0 lg:ml-auto">
+                <div className="relative w-full h-full rounded-sm overflow-hidden bg-gray-100">
+                  <Image alt="Sarah Jenkins stocking shelves" src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80" fill className="object-cover" />
+                </div>
+                <div className="mt-4 flex flex-col gap-1">
+                  <p className="font-medium text-[#333333] text-sm md:text-base">Sarah Jenkins, Owner of The Soda Shoppe</p>
+                  <p className="text-[#757575] text-sm">Austin, Texas</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA Section */}
+      <section className="bg-[#ffd0b6] min-h-[500px] flex flex-col justify-center py-12 md:py-0 overflow-hidden relative">
+        <div className="max-w-[1700px] mx-auto w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16 lg:gap-24 px-6 md:px-12">
+          <div className="w-full md:w-1/2 flex justify-center md:justify-end">
+            <div className="grid grid-cols-2 gap-4 w-full max-w-[500px]">
+              <div className="flex flex-col gap-4 translate-y-8">
+                <div className="relative aspect-[3/4] rounded-lg overflow-hidden w-full">
+                  <Image alt="" src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80" fill className="object-cover" />
+                </div>
+                <div className="relative aspect-[3/4] rounded-lg overflow-hidden w-full">
+                  <Image alt="" src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80" fill className="object-cover" />
+                </div>
+              </div>
+              <div className="flex flex-col gap-4 -translate-y-8">
+                <div className="relative aspect-[3/4] rounded-lg overflow-hidden w-full">
+                  <Image alt="" src="https://images.unsplash.com/photo-1543253687-c59975c7125e?auto=format&fit=crop&w=400&q=80" fill className="object-cover" />
+                </div>
+                <div className="relative aspect-[3/4] rounded-lg overflow-hidden w-full">
+                  <Image alt="" src="https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400&q=80" fill className="object-cover" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left z-10">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#333333] mb-8 leading-tight">The perfect<br /><span className="text-[#333333] underline decoration-[#757575] underline-offset-8 transition-all duration-300 block min-h-[1.2em]">syrup</span>for your store,<br />right this way.</h2>
+            <Link className="bg-[#1A1A1A] text-white px-8 py-3.5 rounded-full font-medium text-lg hover:bg-[#333333] transition-colors mb-12" href="/?signUp=1">Sign up for free</Link>
+          </div>
+        </div>
+        <div className="w-full border-t border-[#333333]/10 pt-6 mt-12 md:mt-0 md:absolute md:bottom-6 left-0 bg-[#ffd0b6]">
+          <div className="max-w-[1700px] mx-auto px-6 w-full flex items-center gap-6 overflow-hidden">
+            <span className="text-[#333333] font-medium whitespace-nowrap">More to explore</span>
+            <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 w-full">
+              {["Ginger Beer", "Cola", "Evaluate", "Root Beer", "Fruit Soda", "Sparkling Water", "Tonics", "Bitters", "Shrubs", "Glassware", "Syrups", "Garnishes", "Bar Tools", "Cocktail Mixers", "Probiotic Soda", "Kombucha"].map((tag) => (
+                <Link key={tag} className="flex-shrink-0 px-5 py-2 rounded-full border border-[#333333] text-[#333333] hover:bg-[#333333]/5 transition-colors whitespace-nowrap text-sm font-medium" href={`/browse?search=${encodeURIComponent(tag)}`}>{tag}</Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

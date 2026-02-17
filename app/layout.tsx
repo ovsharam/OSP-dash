@@ -9,6 +9,7 @@ import { SignupModalProvider } from "@/contexts/SignupModalContext";
 import Navbar from "@/components/Navbar";
 import ScrollToTop from "@/components/ScrollToTop";
 import SignupModal from "@/components/SignupModal";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "OSP Marketplace - B2B Wholesale Platform",
@@ -35,6 +36,7 @@ export default function RootLayout({
                   <ToastProvider />
                   <Navbar />
                   <main>{children}</main>
+                  <Footer />
                   <ScrollToTop />
                   <SignupModal />
                 </SignupModalProvider>

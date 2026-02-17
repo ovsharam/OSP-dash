@@ -170,7 +170,7 @@ export default function AnimatedHero() {
   }, [currentVideoIndex, videoLoaded]);
 
   return (
-    <div className="relative min-h-[600px] md:min-h-[700px] flex items-center overflow-hidden bg-gray-100">
+    <div className="relative min-h-[450px] md:min-h-[550px] flex items-center overflow-hidden bg-gray-100">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         {!videoError ? (
@@ -195,11 +195,10 @@ export default function AnimatedHero() {
                     setVideoLoaded(true);
                   }
                 }}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1200 ease-in-out ${
-                  currentVideoIndex === index 
-                    ? 'opacity-100 z-10' 
-                    : 'opacity-0 z-0 pointer-events-none'
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1200 ease-in-out ${currentVideoIndex === index
+                  ? 'opacity-100 z-10'
+                  : 'opacity-0 z-0 pointer-events-none'
+                  }`}
                 style={{
                   filter: "brightness(0.7) contrast(1.1)",
                   willChange: currentVideoIndex === index || isTransitioning ? 'opacity' : 'auto',
@@ -214,12 +213,12 @@ export default function AnimatedHero() {
           // Fallback gradient background if video fails
           <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400"></div>
         )}
-        
+
         {/* Loading state */}
         {!videoLoaded && !videoError && (
           <div className="absolute inset-0 bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 animate-pulse"></div>
         )}
-        
+
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-black/30"></div>
       </div>
@@ -260,9 +259,10 @@ export default function AnimatedHero() {
             <Link
               href="/vendor/login"
               className="text-white hover:text-gray-200 text-base md:text-lg font-normal transition-colors drop-shadow-md"
+              style={{ color: 'white' }}
             >
               Are you a brand?{" "}
-              <span className="underline text-white">Sell on OSP</span>
+              <span className="underline text-white" style={{ color: 'white' }}>Sell on OSP</span>
             </Link>
           </div>
         </div>
