@@ -12,19 +12,14 @@ function BrowseContent() {
       <AnimatedHero />
 
       {/* Featured Brands Section */}
-      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+      <section className="bg-[#BC826D] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
         <div className="max-w-[1280px] mx-auto px-6 md:px-10 lg:px-12 w-full">
-          <h2 className="text-3xl font-serif text-[#1A1A1A] mb-6">Featured brands</h2>
+          <h2 className="text-3xl font-serif text-white mb-6">Featured brands</h2>
           <div className="flex flex-wrap gap-3 mb-10">
-            <Link href="/browse?category=Home%20decor" className="bg-[#1A1A1A] text-white px-5 py-2 rounded-full text-sm font-medium transition-colors">Home decor</Link>
-            <Link href="/browse?category=Food%20%26%20drink" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Food & drink</Link>
-            <Link href="/browse?category=Women" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Women</Link>
-            <Link href="/browse?category=Beauty%20%26%20wellness" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Beauty & wellness</Link>
-            <Link href="/browse?category=Jewelry" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Jewelry</Link>
-            <Link href="/browse?category=Paper%20%26%20novelty" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Paper & novelty</Link>
-            <Link href="/browse?category=Kids%20%26%20baby" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Kids & baby</Link>
-            <Link href="/browse?category=Pets" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Pets</Link>
-            <Link href="/browse?category=Men" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Men</Link>
+            <Link href="/browse?category=Sodas" className="bg-white text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium transition-colors">Soda Pop</Link>
+            <Link href="/browse?category=Functional+Beverages" className="bg-white/20 border border-white/30 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-colors">Functional Beverages</Link>
+            <Link href="/browse?category=Sustainable+Packaging" className="bg-white/20 border border-white/30 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-colors">Sustainable Packaging</Link>
+            <Link href="/browse?category=Beverage+Equipment" className="bg-white/20 border border-white/30 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-colors">Beverage Equipment</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 pb-4">
             {[
@@ -130,8 +125,8 @@ function BrowseContent() {
         </div>
       </section>
 
-      {/* Retailer Section (Dark Green) */}
-      <section className="bg-[#1B4D3E] text-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 overflow-hidden">
+      {/* Retailer Section (Sage Green) */}
+      <section className="bg-[#556E5C] text-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 overflow-hidden">
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 w-full">
           <div className="hidden lg:block w-full lg:w-1/3 opacity-80">
             {/* Visual placeholder for left image cluster */}
