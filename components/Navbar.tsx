@@ -38,17 +38,22 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="hidden md:flex flex-1 max-w-2xl mx-8 lg:mx-12" ref={searchRef}>
-            <form className="w-full relative group" onSubmit={handleSearch}>
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400 group-focus-within:text-black" aria-hidden="true" />
+            <form className="w-full flex items-stretch group" onSubmit={handleSearch}>
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  className="block w-full px-4 py-2.5 bg-white border border-[#E6E6E6] rounded-l-sm text-[15px] leading-5 placeholder-gray-500 focus:outline-none focus:border-black transition duration-150 ease-in-out"
+                  placeholder="Search wholesale products or brands"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
-              <input
-                type="text"
-                className="block w-full pl-10 pr-3 py-2.5 bg-[#F5F5F5] border-transparent rounded-full text-sm leading-5 placeholder-gray-500 focus:outline-none focus:bg-white focus:ring-1 focus:ring-black focus:border-black transition duration-150 ease-in-out"
-                placeholder="Search wholesale products or brands"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <button
+                type="submit"
+                className="px-5 bg-[#F9F9F9] border border-l-0 border-[#E6E6E6] rounded-r-sm hover:bg-[#F0F0F0] transition-colors flex items-center justify-center"
+              >
+                <Search className="h-4.5 w-4.5 text-[#333333] stroke-[2.5]" aria-hidden="true" />
+              </button>
             </form>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
