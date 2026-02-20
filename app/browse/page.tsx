@@ -211,9 +211,9 @@ function BrowseContent() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {[
-              { name: "Home decor", image: "https://images.unsplash.com/photo-1513519245088-0e12902e15ca?w=800&q=80" },
-              { name: "Food & drink", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" },
-              { name: "Women", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" }
+              { name: "Artisan Sodas", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=80" },
+              { name: "Functional Tonics", image: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=800&q=80" },
+              { name: "Sustainable Goods", image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80" }
             ].map((cat, i) => (
               <div key={i} className="w-full">
                 <Link className="block group relative rounded-sm overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
