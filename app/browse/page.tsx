@@ -111,27 +111,45 @@ function BrowseContent() {
       </section>
 
       {/* We're OSP Section */}
-      <section className="bg-[#BC826D] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24">
-        <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-20 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
-          <div className="w-full lg:w-1/2 flex flex-col gap-6 lg:gap-8 order-2 lg:order-1">
-            <div className="flex flex-col gap-2">
-              <h2 className="font-serif text-white text-4xl md:text-5xl lg:text-6xl leading-tight">We're OSP.</h2>
-              <h3 className="font-sans text-white text-2xl md:text-3xl lg:text-4xl font-light">The platform for soda shops.</h3>
-            </div>
-            <p className="font-sans text-white max-w-2xl text-lg leading-relaxed">We make it easy for you to discover premium organic sodas and professional equipment that make your shop stand out.</p>
-          </div>
-          <div className="w-full lg:w-1/2 relative order-1 lg:order-2">
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
+      <section className="bg-[#5B6128] text-white min-h-[450px] md:min-h-[650px] flex items-center py-16 md:py-24 overflow-hidden relative">
+        <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 w-full relative z-10">
+          {/* Left Image */}
+          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[35%] opacity-90 transition-all duration-700">
+            <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl">
               <Image
-                alt="Soda shop owner"
-                src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"
+                alt="Boutique home decor"
                 fill
                 className="object-cover"
               />
             </div>
-            <div className="mt-4 text-sm text-white font-sans flex flex-col gap-0.5">
-              <p className="font-semibold text-white">Sarah Jenkins, Owner of The Soda Shoppe</p>
-              <p className="text-white/80">Austin, Texas</p>
+          </div>
+
+          {/* Center Text */}
+          <div className="w-full lg:w-[40%] xl:w-[30%] text-center flex flex-col items-center px-4">
+            <h2 className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-serif mb-6 leading-tight !text-white">
+              For any retailer,<br className="hidden md:block" /> no matter what you sell.
+            </h2>
+            <p className="text-lg md:text-xl !text-white/90 mb-10 leading-relaxed max-w-[400px]">
+              Whether you buy for a clothing boutique or a grocery store, find all the products you need on OSP.
+            </p>
+            <Link
+              className="bg-white text-[#1A1A1A] px-10 py-3.5 rounded-[4px] font-medium text-base hover:bg-gray-100 transition-all duration-200 active:scale-95 shadow-lg"
+              href="/?signUp=1"
+            >
+              Sign up to buy
+            </Link>
+          </div>
+
+          {/* Right Image */}
+          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[35%] opacity-90 transition-all duration-700">
+            <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl ml-auto">
+              <Image
+                src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=800"
+                alt="Artisan boutique shelf"
+                fill
+                className="object-cover"
+              />
             </div>
           </div>
         </div>
