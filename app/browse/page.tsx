@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState } from "react";
 import AnimatedHero from "@/components/AnimatedHero";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,10 +8,10 @@ import { Search, ChevronRight, Star, Lock, ShoppingBag, Heart } from "lucide-rea
 
 const categoryBrands = {
   "Soda Pop": [
-    { name: "Maine Root", location: "Austin, Texas", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800" },
-    { name: "Boylan Bottling Co.", location: "New York, New York", image: "https://images.unsplash.com/photo-1543253687-c59975c7125e?w=800" },
-    { name: "Jones Soda", location: "Seattle, Washington", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=800" },
-    { name: "Reed's", location: "Norwalk, Connecticut", image: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=800" }
+    { name: "Galvanina", location: "Rimini, Italy", image: "/images/IMG_0997_copy.jpg" },
+    { name: "Mother Kombucha", location: "Saint Petersburg, Florida", image: "/images/IMG_0998.jpeg" },
+    { name: "Gusto Cola", location: "Devon, United Kingdom", image: "/images/IMG_0999_copy.jpg" },
+    { name: "Top Note", location: "Milwaukee, Wisconsin", image: "/images/IMG_1001_copy.jpg" }
   ],
   "Functional Beverages": [
     { name: "Olipop", location: "Oakland, California", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800" },
@@ -75,7 +75,7 @@ function BrowseContent() {
           <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 pb-4 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {categoryBrands[activeCategory].map((brand) => (
               <Link key={brand.name} className="group flex flex-col items-center text-center w-full max-w-[240px]" href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
-                <div className="relative w-full pb-[100%] bg-gray-100 rounded-lg overflow-hidden mb-3">
+                <div className="relative w-full pb-[100%] bg-gray-100 rounded-full overflow-hidden mb-3">
                   <Image
                     alt={brand.name}
                     src={brand.image}
