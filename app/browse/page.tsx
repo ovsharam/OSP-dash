@@ -253,8 +253,8 @@ function BrowseContent() {
             </div>
           </div>
           <div className="w-full flex-col gap-6 pt-2 md:flex-row md:gap-8 lg:gap-14 flex items-center md:items-start">
-            <div className="relative w-full md:w-[440px] lg:w-[455px] xl:w-[640px] 2xl:w-[824px] aspect-[4/3] md:aspect-auto md:h-[413px] lg:h-[455px] xl:h-[500px] 2xl:h-[635px] rounded-sm overflow-hidden bg-gray-100">
-              <Image alt="GreenSip" src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" fill className="object-cover animate-in fade-in duration-700" />
+            <div className="relative w-full md:w-[440px] lg:w-[455px] xl:w-[640px] 2xl:w-[824px] aspect-square md:aspect-auto md:h-[413px] lg:h-[455px] xl:h-[500px] 2xl:h-[635px] rounded-sm overflow-hidden bg-gray-100">
+              <Image alt="Sustainable growth" src="/images/hands_plant.png" fill className="object-cover animate-in fade-in duration-700" />
             </div>
             <div className="relative pt-2 w-full md:flex-1 md:h-[413px] lg:h-[455px] xl:h-[500px] 2xl:h-[635px] flex flex-col justify-between">
               <div>
