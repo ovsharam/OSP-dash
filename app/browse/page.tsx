@@ -205,15 +205,15 @@ function BrowseContent() {
 
 
       {/* Explore Categories */}
-      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+      <section className="bg-[#F5F0EB] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
         <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12 relative">
           <h2 className="text-3xl font-serif text-[#333333] mb-8">Explore categories</h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {[
-              { name: "Home decor", image: "https://cdn.faire.com/fastly/3370be0e446c444a7edc2be7543741c14b9f5de052618d149133001dbad36763.png" },
-              { name: "Food & drink", image: "https://cdn.faire.com/fastly/ef838c32665b69c1a2e0030d16bbed76dac72e1720264c320864745596a6aa2b.png" },
-              { name: "Women", image: "https://cdn.faire.com/fastly/ca29c8196ca222197e486c61f43023ca87f57c306f22cd63ff6d7b31ad5c53d0.png" }
+              { name: "Home decor", image: "https://images.unsplash.com/photo-1513519245088-0e12902e15ca?w=800&q=80" },
+              { name: "Food & drink", image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" },
+              { name: "Women", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" }
             ].map((cat, i) => (
               <div key={i} className="w-full">
                 <Link className="block group relative rounded-sm overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
