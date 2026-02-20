@@ -37,7 +37,7 @@ export default function Navbar() {
               <span className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#333333]">OSP</span>
             </Link>
           </div>
-          <div className="hidden md:flex flex-1 max-w-2xl mx-8 lg:mx-12" ref={searchRef}>
+          <div className="hidden md:flex flex-1 mx-4 md:mx-6 lg:mx-8" ref={searchRef}>
             <form className="w-full flex items-stretch group" onSubmit={handleSearch}>
               <div className="relative flex-1">
                 <input
