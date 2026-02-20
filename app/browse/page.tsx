@@ -12,14 +12,14 @@ function BrowseContent() {
       <AnimatedHero />
 
       {/* Featured Brands Section */}
-      <section className="bg-[#BC826D] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+      <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
         <div className="max-w-[1280px] mx-auto px-6 md:px-10 lg:px-12 w-full">
-          <h2 className="text-3xl font-serif text-white mb-6">Featured brands</h2>
+          <h2 className="text-3xl font-serif text-[#1A1A1A] mb-6">Featured brands</h2>
           <div className="flex flex-wrap gap-3 mb-10">
-            <Link href="/browse?category=Sodas" className="bg-white text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium transition-colors">Soda Pop</Link>
-            <Link href="/browse?category=Functional+Beverages" className="bg-white/20 border border-white/30 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-colors">Functional Beverages</Link>
-            <Link href="/browse?category=Sustainable+Packaging" className="bg-white/20 border border-white/30 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-colors">Sustainable Packaging</Link>
-            <Link href="/browse?category=Beverage+Equipment" className="bg-white/20 border border-white/30 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-white/30 transition-colors">Beverage Equipment</Link>
+            <Link href="/browse?category=Sodas" className="bg-[#1A1A1A] text-white px-5 py-2 rounded-full text-sm font-medium transition-colors">Soda Pop</Link>
+            <Link href="/browse?category=Functional+Beverages" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Functional Beverages</Link>
+            <Link href="/browse?category=Sustainable+Packaging" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Sustainable Packaging</Link>
+            <Link href="/browse?category=Beverage+Equipment" className="bg-white border border-[#E0D9D0] text-[#1A1A1A] px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-50 transition-colors">Beverage Equipment</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 pb-4">
             {[
@@ -51,14 +51,14 @@ function BrowseContent() {
       </section>
 
       {/* We're OSP Section */}
-      <section className="bg-[#F5F0EB] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24">
+      <section className="bg-[#BC826D] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24">
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-20 w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
           <div className="w-full lg:w-1/2 flex flex-col gap-6 lg:gap-8 order-2 lg:order-1">
             <div className="flex flex-col gap-2">
-              <h2 className="font-serif text-[#1A1A1A] text-4xl md:text-5xl lg:text-6xl leading-tight">We're OSP.</h2>
-              <h3 className="font-sans text-[#1A1A1A] text-2xl md:text-3xl lg:text-4xl font-light">The platform for soda shops.</h3>
+              <h2 className="font-serif text-white text-4xl md:text-5xl lg:text-6xl leading-tight">We're OSP.</h2>
+              <h3 className="font-sans text-white text-2xl md:text-3xl lg:text-4xl font-light">The platform for soda shops.</h3>
             </div>
-            <p className="font-sans text-[#1A1A1A] max-w-2xl text-lg leading-relaxed">We make it easy for you to discover premium organic sodas and professional equipment that make your shop stand out.</p>
+            <p className="font-sans text-white max-w-2xl text-lg leading-relaxed">We make it easy for you to discover premium organic sodas and professional equipment that make your shop stand out.</p>
           </div>
           <div className="w-full lg:w-1/2 relative order-1 lg:order-2">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]">
@@ -69,9 +69,9 @@ function BrowseContent() {
                 className="object-cover"
               />
             </div>
-            <div className="mt-4 text-sm text-[#1A1A1A] font-sans flex flex-col gap-0.5">
+            <div className="mt-4 text-sm text-white font-sans flex flex-col gap-0.5">
               <p className="font-semibold">Sarah Jenkins, Owner of The Soda Shoppe</p>
-              <p className="text-[#6B6B6B]">Austin, Texas</p>
+              <p className="text-white/80">Austin, Texas</p>
             </div>
           </div>
         </div>
