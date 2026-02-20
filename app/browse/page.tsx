@@ -86,7 +86,7 @@ function BrowseContent() {
           <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 mb-12 pb-4 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {categoryBrands[activeCategory].map((brand) => (
               <Link key={brand.name} className="group flex flex-col items-center text-center w-full" href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
-                <div className="relative w-full aspect-square bg-gray-50 rounded-full overflow-hidden mb-3">
+                <div className="relative w-full pb-[100%] bg-gray-50 rounded-full overflow-hidden mb-3">
                   <Image
                     alt={brand.name}
                     src={brand.image}
