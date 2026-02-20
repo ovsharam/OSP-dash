@@ -11,25 +11,36 @@ const categoryBrands = {
     { name: "Galvanina", location: "Rimini, Italy", image: "/images/IMG_0997_copy.jpg" },
     { name: "Mother Kombucha", location: "Saint Petersburg, Florida", image: "/images/IMG_0998.jpeg" },
     { name: "Gusto Cola", location: "Devon, United Kingdom", image: "/images/IMG_0999_copy.jpg" },
-    { name: "Top Note", location: "Milwaukee, Wisconsin", image: "/images/IMG_1001_copy.jpg" }
+    { name: "Top Note", location: "Milwaukee, Wisconsin", image: "/images/IMG_1001_copy.jpg" },
+    { name: "Maine Root", location: "Portland, Maine", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800" }
   ],
   "Functional Beverages": [
     { name: "Olipop", location: "Oakland, California", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800" },
     { name: "Poppi", location: "Austin, Texas", image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=800" },
     { name: "Recess", location: "New York, New York", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=800" },
-    { name: "Kin Euphorics", location: "Austin, Texas", image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800" }
+    { name: "Kin Euphorics", location: "Austin, Texas", image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800" },
+    { name: "Hiyo", location: "Los Angeles, California", image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=800" }
+  ],
+  "Organic Snacks & Food Pairings": [
+    { name: "BjornQorn", location: "Hudson Valley, New York", image: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=800" },
+    { name: "Moon Juice", location: "Los Angeles, California", image: "https://images.unsplash.com/photo-1612232134966-a9b076b9fabe?w=800" },
+    { name: "Fat Gold", location: "Oakland, California", image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800" },
+    { name: "Rustic Bakery", location: "Petaluma, California", image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800" },
+    { name: "Hu Kitchen", location: "New York, New York", image: "https://images.unsplash.com/photo-1582138110521-18e0009581a7?w=800" }
   ],
   "Sustainable Packaging": [
     { name: "Boxed Water", location: "Grand Rapids, Michigan", image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800" },
     { name: "Just Water", location: "Glens Falls, New York", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800" },
     { name: "Pathwater", location: "Fremont, California", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800" },
-    { name: "Cove", location: "Los Angeles, California", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800" }
+    { name: "Cove", location: "Los Angeles, California", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800" },
+    { name: "FinalStraw", location: "Santa Barbara, California", image: "https://images.unsplash.com/photo-1591871937573-74dbba515c4c?w=800" }
   ],
   "Beverage Equipment": [
     { name: "Breville", location: "Sydney, Australia", image: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=800" },
     { name: "SodaStream", location: "Airport City, Israel", image: "https://images.unsplash.com/photo-1627483297929-37f416fec7cd?w=800" },
     { name: "Fellow", location: "San Francisco, California", image: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=800" },
-    { name: "Aarke", location: "Stockholm, Sweden", image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800" }
+    { name: "Aarke", location: "Stockholm, Sweden", image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?w=800" },
+    { name: "Mizu", location: "San Diego, California", image: "https://images.unsplash.com/photo-1621275013337-4bf6336339bc?w=800" }
   ]
 };
 
@@ -52,7 +63,7 @@ function BrowseContent() {
 
       {/* Featured Brands Section */}
       <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-10 lg:px-12 w-full">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 w-full">
           <h2 className="text-3xl font-serif text-[#1A1A1A] mb-6">Featured brands</h2>
           <div className="flex flex-wrap gap-3 mb-10">
             {(Object.keys(categoryBrands) as Array<keyof typeof categoryBrands>).map((cat) => (
@@ -72,15 +83,15 @@ function BrowseContent() {
               </button>
             ))}
           </div>
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 pb-4 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+          <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 mb-12 pb-4 transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
             {categoryBrands[activeCategory].map((brand) => (
-              <Link key={brand.name} className="group flex flex-col items-center text-center w-full max-w-[240px]" href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
-                <div className="relative w-full pb-[100%] bg-gray-100 rounded-full overflow-hidden mb-3">
+              <Link key={brand.name} className="group flex flex-col items-center text-center w-full" href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
+                <div className="relative w-full aspect-square bg-gray-50 rounded-full overflow-hidden mb-3">
                   <Image
                     alt={brand.name}
                     src={brand.image}
                     fill
-                    sizes="(max-width: 768px) 100vw, 240px"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                 </div>

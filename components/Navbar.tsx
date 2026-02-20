@@ -116,6 +116,16 @@ export default function Navbar() {
                 ]
               },
               {
+                title: "Organic Snacks",
+                items: [
+                  "Nut Mixes",
+                  "Dried Fruit",
+                  "Artisan Crackers",
+                  "Food Pairings",
+                  "Healthy Sweets"
+                ]
+              },
+              {
                 title: "Sustainable Packaging",
                 items: [
                   "Cups",
