@@ -206,33 +206,28 @@ function BrowseContent() {
 
       {/* Explore Categories */}
       <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
-        <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12 relative group/section">
-          <h2 className="text-2xl font-serif text-[#333333] mb-8">Explore categories</h2>
-          <button className="absolute right-4 top-[50%] -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-100 hover:bg-gray-50 transition-all opacity-0 group-hover/section:opacity-100" aria-label="Scroll right">
-            <ChevronRight className="w-5 h-5 text-[#333333]" aria-hidden="true" />
-          </button>
-          <div className="flex overflow-x-auto gap-6 scrollbar-hide pb-4 -mx-6 px-6 md:mx-0 md:px-0">
+        <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12 relative">
+          <h2 className="text-3xl font-serif text-[#333333] mb-8">Explore categories</h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {[
-              { name: "Home decor", image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=640" },
-              { name: "Food & Drink", image: "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=640" },
-              { name: "Women", image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=640" },
-              { name: "Beauty & Wellness", image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=640" },
-              { name: "Jewelry", image: "https://images.unsplash.com/photo-1515562141207-7a88fb05220c?w=640" },
-              { name: "Kids & Baby", image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=640" },
-              { name: "Paper & Novelty", image: "https://images.unsplash.com/photo-1586075010923-2dd45eeed8bd?w=640" }
+              { name: "Home decor", image: "https://cdn.faire.com/fastly/3370be0e446c444a7edc2be7543741c14b9f5de052618d149133001dbad36763.png" },
+              { name: "Food & drink", image: "https://cdn.faire.com/fastly/ef838c32665b69c1a2e0030d16bbed76dac72e1720264c320864745596a6aa2b.png" },
+              { name: "Women", image: "https://cdn.faire.com/fastly/ca29c8196ca222197e486c61f43023ca87f57c306f22cd63ff6d7b31ad5c53d0.png" }
             ].map((cat, i) => (
-              <div key={i} className="min-w-[280px] sm:min-w-[320px] md:min-w-[400px] flex-shrink-0">
-                <Link className="block group relative rounded-lg overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
-                  <div className="relative w-full" style={{ aspectRatio: "1.4 / 1" }}>
+              <div key={i} className="w-full">
+                <Link className="block group relative rounded-sm overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
+                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: "1.4 / 1" }}>
                     <Image
                       alt={cat.name}
                       src={cat.image}
                       fill
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.17,0.67,0.24,1)] group-hover:scale-110"
                     />
+                    {/* Gradient Overlay */}
                     <div className="absolute inset-0 z-[1]" style={{ background: "linear-gradient(22.18deg, rgba(0, 0, 0, 0.5) 1.86%, rgba(0, 0, 0, 0) 31.23%)" }}></div>
                   </div>
-                  <div className="absolute bottom-0 left-0 z-[2] p-6">
+                  <div className="absolute bottom-0 left-0 z-[2] p-4 md:p-6 lg:p-8">
                     <h4 className="text-xl md:text-2xl font-serif !text-white">{cat.name}</h4>
                   </div>
                 </Link>
