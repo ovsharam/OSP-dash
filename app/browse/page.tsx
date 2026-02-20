@@ -203,28 +203,6 @@ function BrowseContent() {
         </div>
       </section>
 
-      {/* Retailer Section (Sage Green) */}
-      <section className="bg-[#556E5C] text-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 overflow-hidden">
-        <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 w-full">
-          <div className="hidden lg:block w-full lg:w-1/3 opacity-80">
-            {/* Visual placeholder for left image cluster */}
-            <div className="relative aspect-square w-full max-w-[500px] rounded overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=800" alt="Retailer example" fill className="object-cover" />
-            </div>
-          </div>
-          <div className="w-full md:w-[240px] lg:w-[370px] 2xl:w-[500px] text-center flex flex-col items-center z-10 mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif mb-4 leading-tight !text-white">For any retailer,<br />no matter what you sell.</h2>
-            <p className="text-base md:text-lg !text-white/90 mb-6 leading-relaxed">Whether you buy for a clothing boutique or a grocery store, find all the products you need on OSP.</p>
-            <Link className="bg-white text-[#1A1A1A] px-10 py-3 rounded-[4px] font-medium text-base hover:bg-gray-100 transition-colors" href="/?signUp=1">Sign up to buy</Link>
-          </div>
-          <div className="hidden lg:block w-full lg:w-1/3 opacity-80">
-            {/* Visual placeholder for right image cluster */}
-            <div className="relative aspect-square w-full max-w-[500px] rounded overflow-hidden">
-              <Image src="https://images.unsplash.com/photo-1604719312566-b7cb33746479?w=800" alt="Retailer example" fill className="object-cover" />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Explore Categories */}
       <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
