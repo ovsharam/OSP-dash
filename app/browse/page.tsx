@@ -63,7 +63,7 @@ function BrowseContent() {
 
       {/* Featured Brands Section */}
       <section className="bg-white min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-12 w-full">
+        <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 w-full">
           <h2 className="text-3xl font-serif text-[#1A1A1A] mb-6">Featured brands</h2>
           <div className="flex flex-wrap gap-3 mb-10">
             {(Object.keys(categoryBrands) as Array<keyof typeof categoryBrands>).map((cat) => (
