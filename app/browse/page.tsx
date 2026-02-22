@@ -114,8 +114,8 @@ function BrowseContent() {
       <section className="bg-[#3A4632] text-white min-h-[600px] md:min-h-[800px] flex items-center py-16 md:py-24 overflow-hidden relative">
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 w-full relative z-10">
           {/* Left Image (Now SO Kombucha) */}
-          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] opacity-90 transition-all duration-700">
-            <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl">
+          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] transition-all duration-700">
+            <div className="relative aspect-square w-full overflow-hidden">
               <Image
                 src="/images/hero/so-kombucha.jpg"
                 alt="Enjoying SO Kombucha by the sea"
@@ -127,10 +127,10 @@ function BrowseContent() {
 
           {/* Center Text (Larger/Premium) */}
           <div className="w-full lg:w-[40%] xl:w-[45%] text-center flex flex-col items-center px-4">
-            <h2 className="text-lg md:text-xl font-serif mb-6 leading-[1.1] !text-white tracking-tight">
+            <h2 className="text-lg md:text-xl mb-6 leading-[1.1] !text-white">
               Organic Soda Pops
             </h2>
-            <p className="text-lg md:text-xl font-serif mb-8 leading-tight !text-white/90">
+            <p className="text-lg md:text-xl mb-8 leading-tight !text-white/90">
               The wholesale marketplace for organic, functional, and craft beverages.
             </p>
             <p className="text-lg md:text-xl !text-white/80 mb-12 leading-relaxed max-w-[700px]">
@@ -145,8 +145,8 @@ function BrowseContent() {
           </div>
 
           {/* Right Image (Now Indi) */}
-          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] opacity-90 transition-all duration-700">
-            <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl ml-auto">
+          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] transition-all duration-700">
+            <div className="relative aspect-square w-full overflow-hidden ml-auto">
               <Image
                 src="/images/hero/indi.jpg"
                 alt="Indi beverages at sunset"
