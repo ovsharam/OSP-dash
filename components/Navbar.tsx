@@ -38,9 +38,9 @@ export default function Navbar() {
               <Image
                 src="/images/logo.png"
                 alt="OSP Logo"
-                width={160}
-                height={60}
-                className="h-10 md:h-12 w-auto object-contain"
+                width={200}
+                height={80}
+                className="h-12 md:h-16 w-auto object-contain"
                 priority
               />
             </Link>
