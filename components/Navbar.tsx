@@ -34,7 +34,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between px-4 md:px-6 lg:px-8 h-[60px] md:h-[72px]">
           <div className="flex items-center gap-4 md:gap-6">
             <Link className="flex-shrink-0" href="/browse">
-              <span className="font-serif text-2xl md:text-3xl font-bold tracking-tight text-[#333333]">OSP</span>
+              <Image
+                src="/images/logo.png"
+                alt="OSP Logo"
+                width={160}
+                height={60}
+                className="h-10 md:h-12 w-auto object-contain"
+                priority
+              />
             </Link>
           </div>
           <div className="hidden md:flex flex-1 mx-4 md:mx-6 lg:mx-8" ref={searchRef}>

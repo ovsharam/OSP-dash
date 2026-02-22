@@ -12,7 +12,7 @@ const categoryBrands = {
     { name: "Mother Kombucha", location: "Saint Petersburg, Florida", image: "/images/IMG_0998.jpeg" },
     { name: "Gusto Cola", location: "Devon, United Kingdom", image: "/images/IMG_0999_copy.jpg" },
     { name: "Top Note", location: "Milwaukee, Wisconsin", image: "/images/IMG_1001_copy.jpg" },
-    { name: "Maine Root", location: "Portland, Maine", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800" }
+    { name: "Bionina", location: "Ternat, Belgium", image: "/images/brands/bionina.jpg" }
   ],
   "Functional Beverages": [
     { name: "Olipop", location: "Oakland, California", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800" },
@@ -114,11 +114,11 @@ function BrowseContent() {
       <section className="bg-[#3A4632] text-white min-h-[500px] md:min-h-[664px] flex items-center py-12 overflow-hidden relative">
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 w-full relative z-10">
           {/* Left Image */}
-          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[35%] opacity-90 transition-all duration-700">
+          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] opacity-90 transition-all duration-700">
             <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800"
-                alt="Boutique home decor"
+                src="/images/hero/indi.jpg"
+                alt="Indi beverages at sunset"
                 fill
                 className="object-cover"
               />
@@ -145,11 +145,11 @@ function BrowseContent() {
           </div>
 
           {/* Right Image */}
-          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[35%] opacity-90 transition-all duration-700">
+          <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] opacity-90 transition-all duration-700">
             <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl ml-auto">
               <Image
-                src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=800"
-                alt="Artisan boutique shelf"
+                src="/images/hero/so-kombucha.jpg"
+                alt="Enjoying SO Kombucha by the sea"
                 fill
                 className="object-cover"
               />
