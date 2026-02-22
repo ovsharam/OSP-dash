@@ -205,15 +205,15 @@ function BrowseContent() {
 
 
       {/* Explore Categories */}
-      <section className="bg-[#F5F0EB] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
+      <section className="bg-[#FAEAB9] min-h-[450px] md:min-h-[550px] flex items-center py-16 md:py-24 border-b border-[#E0D9D0]">
         <div className="max-w-[1700px] w-full mx-auto px-6 md:px-10 lg:px-12 relative">
           <h2 className="text-3xl font-serif text-[#333333] mb-8">Explore categories</h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {[
-              { name: "Artisan Sodas", image: "/images/explore/artisan-sodas.jpg" },
-              { name: "Functional Tonics", image: "/images/explore/functional-tonics.webp" },
-              { name: "Sustainable Goods", image: "/images/explore/sustainable-goods.jpg" }
+              { name: "Artisan sodas", image: "/images/explore/artisan-sodas.jpg" },
+              { name: "Protein shakes", image: "/images/explore/functional-tonics.webp" },
+              { name: "Energy drinks", image: "/images/explore/sustainable-goods.jpg" }
             ].map((cat, i) => (
               <div key={i} className="w-full">
                 <Link className="block group relative rounded-sm overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
