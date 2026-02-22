@@ -127,10 +127,10 @@ function BrowseContent() {
 
           {/* Center Text (Larger/Premium) */}
           <div className="w-full lg:w-[40%] xl:w-[45%] text-center flex flex-col items-center px-4">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif mb-6 leading-[1.1] !text-white tracking-tight">
+            <h2 className="text-lg md:text-xl font-serif mb-6 leading-[1.1] !text-white tracking-tight">
               Organic Soda Pops
             </h2>
-            <p className="text-2xl md:text-3xl lg:text-4xl font-serif mb-8 leading-tight !text-white/90">
+            <p className="text-lg md:text-xl font-serif mb-8 leading-tight !text-white/90">
               The wholesale marketplace for organic, functional, and craft beverages.
             </p>
             <p className="text-lg md:text-xl !text-white/80 mb-12 leading-relaxed max-w-[700px]">
