@@ -115,7 +115,7 @@ function BrowseContent() {
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 w-full relative z-10">
           {/* Left Image (Now SO Kombucha) */}
           <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] opacity-90 transition-all duration-700">
-            <div className="relative aspect-[4/5] w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl">
+            <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl">
               <Image
                 src="/images/hero/so-kombucha.jpg"
                 alt="Enjoying SO Kombucha by the sea"
@@ -127,13 +127,13 @@ function BrowseContent() {
 
           {/* Center Text (Larger/Premium) */}
           <div className="w-full lg:w-[40%] xl:w-[45%] text-center flex flex-col items-center px-4">
-            <h2 className="text-4xl md:text-6xl lg:text-5xl xl:text-7xl font-serif mb-6 leading-tight !text-white tracking-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif mb-6 leading-[1.1] !text-white tracking-tight">
               Organic Soda Pops
             </h2>
-            <p className="text-2xl md:text-3xl font-serif mb-8 leading-tight !text-white/90">
+            <p className="text-2xl md:text-3xl lg:text-4xl font-serif mb-8 leading-tight !text-white/90">
               The wholesale marketplace for organic, functional, and craft beverages.
             </p>
-            <p className="text-xl md:text-2xl !text-white/80 mb-12 leading-relaxed max-w-[700px]">
+            <p className="text-lg md:text-xl !text-white/80 mb-12 leading-relaxed max-w-[700px]">
               Discover emerging brands, stock better drinks, and order everything your beverage program needs — all in one place.
             </p>
             <Link
@@ -146,7 +146,7 @@ function BrowseContent() {
 
           {/* Right Image (Now Indi) */}
           <div className="hidden lg:block w-full lg:w-[30%] xl:w-[32%] opacity-90 transition-all duration-700">
-            <div className="relative aspect-[4/5] w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl ml-auto">
+            <div className="relative aspect-square w-full max-w-[550px] rounded-sm overflow-hidden shadow-2xl ml-auto">
               <Image
                 src="/images/hero/indi.jpg"
                 alt="Indi beverages at sunset"
