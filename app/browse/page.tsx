@@ -111,7 +111,7 @@ function BrowseContent() {
       </section>
 
       {/* We're OSP Section */}
-      <section className="bg-[#5B6128] text-white min-h-[500px] md:min-h-[664px] flex items-center py-12 overflow-hidden relative">
+      <section className="bg-[#3A4632] text-white min-h-[500px] md:min-h-[664px] flex items-center py-12 overflow-hidden relative">
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 w-full relative z-10">
           {/* Left Image */}
           <div className="hidden lg:block w-full lg:w-[30%] xl:w-[35%] opacity-90 transition-all duration-700">
@@ -126,12 +126,15 @@ function BrowseContent() {
           </div>
 
           {/* Center Text */}
-          <div className="w-full lg:w-[40%] xl:w-[30%] text-center flex flex-col items-center px-4">
-            <h2 className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-serif mb-6 leading-tight !text-white">
-              For any retailer,<br className="hidden md:block" /> no matter what you sell.
+          <div className="w-full lg:w-[40%] xl:w-[45%] text-center flex flex-col items-center px-4">
+            <h2 className="text-3xl md:text-5xl lg:text-4xl xl:text-5xl font-serif mb-4 leading-tight !text-white">
+              Organic Soda Pops
             </h2>
-            <p className="text-lg md:text-xl !text-white/90 mb-10 leading-relaxed max-w-[400px]">
-              Whether you buy for a clothing boutique or a grocery store, find all the products you need on OSP.
+            <p className="text-xl md:text-2xl font-serif mb-6 leading-tight !text-white/90">
+              The wholesale marketplace for organic, functional, and craft beverages.
+            </p>
+            <p className="text-lg md:text-xl !text-white/80 mb-10 leading-relaxed max-w-[600px]">
+              Discover emerging brands, stock better drinks, and order everything your beverage program needs — all in one place.
             </p>
             <Link
               className="bg-white text-[#1A1A1A] px-10 py-3.5 rounded-[4px] font-medium text-base hover:bg-gray-100 transition-all duration-200 active:scale-95 shadow-lg"
@@ -164,14 +167,12 @@ function BrowseContent() {
           </button>
           <div className="flex overflow-x-auto gap-4 scrollbar-hide pb-4 -mx-6 px-6 md:mx-0 md:px-0">
             {[
-              { title: "Craft Soda Variety Pack - 12 Flavors", brand: "Pop & Fizz Co.", rating: "4.9 (1,240)", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=800&q=80" },
-              { title: "Commercial Soda Fountain Dispenser - 6 Valve", brand: "BeverageTech Systems", rating: "4.8 (85)", image: "https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=800&q=80" },
-              { title: "Organic Cola Syrup Concentrate (5 Gallon)", brand: "Nature's Pour", rating: "5.0 (320)", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80" },
-              { title: "Premium Glass Bottle Soda - Root Beer (Case/24)", brand: "Old Town Bottling", rating: "4.9 (2,100)", image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=800&q=80" },
-              { title: "Industrial Ice Maker - 500lb Capacity", brand: "FrostLine Commercial", rating: "4.7 (45)", image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=800&q=80" },
-              { title: "CO2 Cylinder Refill System - Dual Gauge", brand: "DraftPure", rating: "4.8 (150)", image: "https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=800&q=80" },
-              { title: "Vintage Style Soda Glasses (Set of 6)", brand: "RetroServe", rating: "4.9 (890)", image: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=800&q=80" },
-              { title: "Sparkling Water Maker - Home Edition", brand: "BubbleStream", rating: "4.6 (560)", image: "https://images.unsplash.com/photo-1627483297929-37f416fec7cd?auto=format&fit=crop&w=800&q=80" }
+              { title: "Galvanina Blood Orange", brand: "Musco Food", rating: "4.9 (1,240)", image: "/images/bestsellers/galvanina.jpg" },
+              { title: "Custom Designed Soda Machine", brand: "Lancer Corp", rating: "4.8 (85)", image: "/images/bestsellers/soda-machine.webp" },
+              { title: "Organic Cola Syrup (24/12 oz bottles)", brand: "Portland Syrups", rating: "5.0 (320)", image: "/images/bestsellers/cola-syrup.webp" },
+              { title: "Ithaca All-Natural Root Beer (Case of 24)", brand: "Northeast Allie", rating: "4.9 (2,100)", image: "/images/bestsellers/root-beer.webp" },
+              { title: "Hoshizaki commercial ice machine", brand: "Hoshizaki America", rating: "4.7 (45)", image: "/images/bestsellers/ice-machine.webp" },
+              { title: "Compostable Drinking Straws", brand: "Sproutable", rating: "4.8 (150)", image: "/images/bestsellers/straws.webp" }
             ].map((product, i) => (
               <div key={i} className="min-w-[240px] w-[240px] flex-shrink-0 flex flex-col h-full">
                 <Link className="flex flex-col h-full group" href="#">
