@@ -211,9 +211,9 @@ function BrowseContent() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {[
-              { name: "Artisan Sodas", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&q=80" },
-              { name: "Functional Tonics", image: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=800&q=80" },
-              { name: "Sustainable Goods", image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80" }
+              { name: "Artisan Sodas", image: "/images/explore/artisan-sodas.jpg" },
+              { name: "Functional Tonics", image: "/images/explore/functional-tonics.webp" },
+              { name: "Sustainable Goods", image: "/images/explore/sustainable-goods.jpg" }
             ].map((cat, i) => (
               <div key={i} className="w-full">
                 <Link className="block group relative rounded-sm overflow-hidden" href={`/browse?category=${cat.name.replace(" & ", "+").replace(" ", "-")}`}>
