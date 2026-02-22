@@ -111,7 +111,7 @@ function BrowseContent() {
       </section>
 
       {/* We're OSP Section */}
-      <section className="bg-[#5B6128] text-white min-h-[450px] md:min-h-[650px] flex items-center py-16 md:py-24 overflow-hidden relative">
+      <section className="bg-[#5B6128] text-white min-h-[500px] md:min-h-[664px] flex items-center py-12 overflow-hidden relative">
         <div className="max-w-[1700px] mx-auto px-6 md:px-10 lg:px-12 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16 w-full relative z-10">
           {/* Left Image */}
           <div className="hidden lg:block w-full lg:w-[30%] xl:w-[35%] opacity-90 transition-all duration-700">
