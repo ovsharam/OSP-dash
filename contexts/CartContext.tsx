@@ -12,14 +12,17 @@ interface CartContextType {
   clearCart: () => void;
   getTotal: () => number;
   getItemCount: () => number;
+  isMounted: boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       try {
@@ -31,8 +34,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items));
-  }, [items]);
+    if (isMounted) {
+      localStorage.setItem("cart", JSON.stringify(items));
+    }
+  }, [items, isMounted]);
 
   const showAddToast = (product: Product, quantity: number, thresholdAmount: number) => {
     const lineTotal = product.price * quantity;
@@ -42,9 +47,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     toast.custom(
       (t) => (
         <div
-          className={`pointer-events-auto w-96 rounded-lg border border-gray-200 bg-white shadow-lg transition-all ${
-            t.visible ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"
-          }`}
+          className={`pointer-events-auto w-96 rounded-lg border border-gray-200 bg-white shadow-lg transition-all ${t.visible ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"
+            }`}
         >
           <div className="px-4 py-3 border-b border-gray-200 font-semibold text-gray-900">Added to cart</div>
           <div className="p-4 flex gap-3">
@@ -94,10 +98,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return prevItems.map((item) =>
           item.product.id === product.id
             ? {
-                ...item,
-                quantity: toastQuantity,
-                selectedShipping: shipping || item.selectedShipping,
-              }
+              ...item,
+              quantity: toastQuantity,
+              selectedShipping: shipping || item.selectedShipping,
+            }
             : item
         );
       }
@@ -152,6 +156,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         clearCart,
         getTotal,
         getItemCount,
+        isMounted,
       }}
     >
       {children}

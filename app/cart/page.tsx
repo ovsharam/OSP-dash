@@ -11,7 +11,7 @@ import { ChevronRight, Heart, Trash2, Truck } from "lucide-react";
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, updateQuantity, removeFromCart } = useCart();
+  const { items, updateQuantity, removeFromCart, isMounted } = useCart();
   const { addToWishlist } = useWishlist();
 
   const handleSaveForLater = (productId: string) => {
@@ -22,6 +22,10 @@ export default function CartPage() {
       toast.success("Saved for later");
     }
   };
+
+  if (!isMounted) {
+    return null; // Prevent hydration error by matching the initial server render
+  }
 
   if (items.length === 0) {
     return (
