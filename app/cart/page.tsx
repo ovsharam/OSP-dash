@@ -7,7 +7,7 @@ import { useWishlist } from "@/contexts/WishlistContext";
 import { EmptyCart } from "@/components/EmptyState";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { ChevronRight, Heart, Trash2, Truck } from "lucide-react";
+import { ChevronRight, Heart, Trash2, Truck, ShieldCheck } from "lucide-react";
 
 export default function CartPage() {
   const router = useRouter();
