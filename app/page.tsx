@@ -13,7 +13,7 @@ export default function Home() {
       {/* 1. Hero Section */}
       <section className="relative h-[65vh] min-h-[500px] w-full bg-[#333333] flex items-center justify-center">
         <Image
-          src="https://images.unsplash.com/photo-1548907040-4baa42d10919?auto=format&fit=crop&q=80&w=2000"
+          src="https://worldwidechocolate.com/wp-content/uploads/2021/05/Valrhona-Guanaja-70-Dark-Couverture-Chocolate-Feves.jpg"
           alt="Premium artisan chocolate"
           fill
           className="object-cover opacity-50"

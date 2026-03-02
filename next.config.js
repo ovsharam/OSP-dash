@@ -20,6 +20,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'worldwidechocolate.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'i.pravatar.cc',
       },
     ],
