@@ -11,37 +11,41 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#ece4d0] pb-24">
       {/* 1. Hero Section */}
-      <section className="relative h-[65vh] min-h-[500px] w-full bg-[#333333] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[65vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>
-        <div className="relative z-10 text-center px-4 max-w-4xl pt-12">
-          <h1 className="text-4xl md:text-6xl font-serif text-[#ece4d0] mb-6 leading-tight tracking-tight">
+
+        {/* Dark overlay to ensure text readability matching Faire */}
+        <div className="absolute inset-0 bg-black/40 z-10" />
+
+        <div className="relative z-20 text-center px-4 max-w-4xl pt-12">
+          <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 leading-tight tracking-tight drop-shadow-md">
             The wholesale marketplace for <br className="hidden md:block" />
             <span className="italic">fine chocolate makers</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#ece4d0]/90 mb-10 font-sans max-w-2xl mx-auto font-light">
+          <p className="text-lg md:text-xl text-white/95 mb-8 font-sans max-w-2xl mx-auto font-light drop-shadow">
             Discover and buy premium couverture, single-origin bars, and artisan truffles from the world's best independent brands.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link
               href="/browse"
-              className="bg-[#5c0f0f] text-[#ece4d0] px-8 py-3.5 rounded-full font-bold uppercase tracking-widest hover:bg-[#3d0a0a] transition-all shadow-lg w-full sm:w-auto"
+              className="bg-white text-[#5c0f0f] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-gray-100 transition-all shadow-xl"
             >
               Shop All Products
             </Link>
-            <Link
-              href="/browse?filter=new"
-              className="bg-transparent border border-[#ece4d0] text-[#ece4d0] px-8 py-3.5 rounded-full font-bold uppercase tracking-widest hover:bg-[#ece4d0] hover:text-[#5c0f0f] transition-all w-full sm:w-auto"
-            >
-              Explore New Arrivals
-            </Link>
+            <div className="flex items-center gap-2 text-white/90 text-sm sm:text-base font-sans mt-2 sm:mt-0 drop-shadow-sm">
+              <span>Are you a brand?</span>
+              <Link href="/seller" className="underline font-medium hover:text-white transition-colors">
+                Sell with us
+              </Link>
+            </div>
           </div>
         </div>
       </section>
