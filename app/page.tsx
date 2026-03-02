@@ -11,14 +11,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#ece4d0] pb-24">
       {/* 1. Hero Section */}
-      <section className="relative h-[65vh] min-h-[500px] w-full bg-[#333333] flex items-center justify-center">
-        <Image
-          src="https://worldwidechocolate.com/wp-content/uploads/2021/05/Valrhona-Guanaja-70-Dark-Couverture-Chocolate-Feves.jpg"
-          alt="Premium artisan chocolate"
-          fill
-          className="object-cover opacity-50"
-          priority
-        />
+      <section className="relative h-[65vh] min-h-[500px] w-full bg-[#333333] flex items-center justify-center overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
         <div className="relative z-10 text-center px-4 max-w-4xl pt-12">
           <h1 className="text-4xl md:text-6xl font-serif text-[#ece4d0] mb-6 leading-tight tracking-tight">
             The wholesale marketplace for <br className="hidden md:block" />
