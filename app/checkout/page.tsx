@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { useWishlist } from "@/contexts/WishlistContext";
 import { Address, PaymentMethod } from "@/types";
+import { ShieldCheck, Lock } from "lucide-react";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, getTotal, clearCart } = useCart();
-  const { user, isAuthenticated } = useAuth();
-  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { items, clearCart } = useCart();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -32,15 +32,6 @@ export default function CheckoutPage() {
     country: user?.address?.country || "United States",
   });
 
-  const [billingSameAsShipping, setBillingSameAsShipping] = useState(true);
-  const [billingAddress, setBillingAddress] = useState<Address>({
-    street: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "United States",
-  });
-
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>({
     type: "card",
     cardNumber: "",
@@ -49,289 +40,182 @@ export default function CheckoutPage() {
     nameOnCard: "",
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [animatedPct, setAnimatedPct] = useState(0);
-
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shipping = items.reduce(
     (sum, item) => sum + (item.selectedShipping?.price || 0),
     0
   );
-  const tax = (subtotal + shipping) * 0.08; // 8% tax
-  const total = subtotal + shipping + tax;
+  // Defaulting tax to 0 for wholesale (resale certificates)
+  const total = subtotal + shipping;
 
-  const firstItem = items[0];
-  const minOrderThreshold =
-    (firstItem?.product.minOrderQuantity || 0) * (firstItem?.product.price || 0) || 135;
-  const progressPct =
-    minOrderThreshold > 0 ? Math.min(100, Math.round((subtotal / minOrderThreshold) * 100)) : 0;
-
-  useEffect(() => {
-    // Animate bar on first render and whenever progress changes
-    setAnimatedPct(0);
-    const id = setTimeout(() => setAnimatedPct(progressPct), 50);
-    return () => clearTimeout(id);
-  }, [progressPct]);
-
-  if (!mounted) {
-    return null;
-  }
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!shippingAddress.street) newErrors.shippingStreet = "Street address is required";
-    if (!shippingAddress.city) newErrors.shippingCity = "City is required";
-    if (!shippingAddress.state) newErrors.shippingState = "State is required";
-    if (!shippingAddress.zipCode) newErrors.shippingZip = "ZIP code is required";
-
-    if (!billingSameAsShipping) {
-      if (!billingAddress.street) newErrors.billingStreet = "Street address is required";
-      if (!billingAddress.city) newErrors.billingCity = "City is required";
-      if (!billingAddress.state) newErrors.billingState = "State is required";
-      if (!billingAddress.zipCode) newErrors.billingZip = "ZIP code is required";
-    }
-
-    if (paymentMethod.type === "card") {
-      if (!paymentMethod.cardNumber) newErrors.cardNumber = "Card number is required";
-      if (!paymentMethod.expiryDate) newErrors.expiryDate = "Expiry date is required";
-      if (!paymentMethod.cvv) newErrors.cvv = "CVV is required";
-      if (!paymentMethod.nameOnCard) newErrors.nameOnCard = "Name on card is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  if (!mounted || items.length === 0) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      // In a real app, this would process the payment
-      alert("Order placed successfully! You will receive a confirmation email shortly.");
-      clearCart();
-      router.push("/order-confirmation");
-    }
+    clearCart();
+    router.push("/order-confirmation");
   };
 
-  // If cart is empty, route back to cart
-  if (items.length === 0) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="text-2xl font-semibold text-black">Your cart is empty</h1>
-          <button
-            onClick={() => router.push("/browse")}
-            className="inline-flex items-center px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
-          >
-            Continue shopping
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <h1 className="text-3xl font-bold text-black">Carts</h1>
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="flex-1 md:w-96">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search for products or brands"
-                  className="w-full border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                />
-                <svg
-                  className="w-5 h-5 text-gray-500 absolute right-3 top-2.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-                </svg>
-              </div>
-            </div>
-            <button className="px-4 py-2 border border-gray-200 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-              Select carts
-            </button>
+    <div className="min-h-screen bg-[#f9f9f9] text-[#333]">
+      {/* Simple Header for Checkout */}
+      <header className="bg-white border-b border-[#333]/10 py-6">
+        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center bg-white">
+          <div className="w-10 h-10 rounded-full bg-[#ece4d0] flex items-center justify-center flex-shrink-0">
+            <span className="text-[#5c0f0f] font-serif text-2xl font-bold">W</span>
+          </div>
+          <div className="flex items-center gap-2 text-[#5c0f0f]">
+            <Lock className="w-4 h-4" />
+            <span className="text-[11px] font-bold uppercase tracking-widest">Secure Checkout</span>
           </div>
         </div>
+      </header>
 
-        {/* Cart Card */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="flex-1 min-w-0 space-y-3">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span className="font-semibold text-black">{firstItem?.product.vendor.name || "Vendor"}</span>
-              <span className="text-gray-500">${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="space-y-2">
-              <div className="text-sm text-gray-700">Minimum reached</div>
-              <div className="h-2.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-green-600 rounded-full transition-all duration-700 ease-out"
-                  style={{ width: `${animatedPct}%` }}
-                />
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => router.push("/cart")}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-              >
-                View cart
-              </button>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="px-5 py-2 bg-black text-white rounded-md text-sm font-semibold hover:bg-gray-800 transition-colors"
-              >
-                Checkout
-              </button>
-            </div>
-          </div>
-          {firstItem && (
-            <div className="w-48 h-44 flex-shrink-0 flex items-center justify-center bg-white">
-              <img
-                src={firstItem.product.images?.[0] || "/placeholder-product.jpg"}
-                alt={firstItem.product.name}
-                className="max-h-full max-w-full object-contain rounded-md border border-gray-200"
-              />
-            </div>
-          )}
-        </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+        <div className="flex flex-col lg:flex-row gap-12">
 
-        {/* Recently viewed */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-black">Recently viewed</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {items.slice(0, 4).map((item, idx) => {
-              const inWishlist = isInWishlist(item.product.id);
-              const minOrderValue = item.product.minOrderQuantity
-                ? (item.product.minOrderQuantity * item.product.price).toFixed(0)
-                : null;
-              
-              return (
-                <div
-                  key={item.product.id + idx}
-                  className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 group"
-                >
-                  {/* Image Section */}
-                  <div className="relative aspect-square bg-gray-50 overflow-hidden">
-                    <img
-                      src={item.product.images?.[0] || "/placeholder-product.jpg"}
-                      alt={item.product.name}
-                      className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-200"
-                    />
-                    {/* Bestseller Badge Overlay */}
-                    {item.product.isBestseller && (
-                      <span className="absolute top-3 left-3 bg-gray-100 text-gray-900 text-xs font-semibold px-2.5 py-1 rounded-full">
-                        Bestseller
-                      </span>
-                    )}
-                    {/* Heart Icon */}
-                    <button
-                      type="button"
-                      onClick={() => toggleWishlist(item.product)}
-                      className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
-                        inWishlist
-                          ? "bg-red-50 border border-red-200"
-                          : "bg-white border border-gray-200 hover:border-gray-300"
-                      }`}
-                      aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
-                    >
-                      <svg
-                        className={`w-4 h-4 ${
-                          inWishlist ? "text-red-500 fill-red-500" : "text-gray-400"
-                        }`}
-                        fill={inWishlist ? "currentColor" : "none"}
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                        />
-                      </svg>
-                    </button>
+          {/* Main Checkout Form */}
+          <div className="w-full lg:w-[60%] space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
+
+              {/* Contact Info */}
+              <section className="bg-white p-6 md:p-8 rounded-lg border border-[#333]/10 shadow-sm">
+                <h2 className="text-xl font-serif text-[#333] mb-6">Contact Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-sans mb-4">
+                  <div>
+                    <label className="block text-[#333]/70 mb-1">First Name</label>
+                    <input required type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f] focus:ring-1 focus:ring-[#5c0f0f]" />
                   </div>
-                  
-                  {/* Product Details */}
-                  <div className="p-4 space-y-2.5">
-                    {/* Bestseller Tag (if applicable) */}
-                    {item.product.isBestseller && (
-                      <div className="mb-1">
-                        <span className="inline-block bg-gray-100 text-gray-700 text-xs font-semibold px-2.5 py-1 rounded-full">
-                          Bestseller
-                        </span>
-                      </div>
-                    )}
-                    
-                    {/* Product Name */}
-                    <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 min-h-[2.5rem]">
-                      {item.product.name}
-                    </h3>
-                    
-                    {/* Brand Name */}
-                    <p className="text-xs text-gray-600">{item.product.vendor.name}</p>
-                    
-                    {/* Price Section */}
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-base font-bold text-gray-900">
-                        ${item.product.price.toFixed(2)}
-                      </span>
-                      {item.product.compareAtPrice && (
-                        <span className="text-xs text-gray-500 line-through">
-                          MSRP ${item.product.compareAtPrice.toFixed(2)}
-                        </span>
-                      )}
+                  <div>
+                    <label className="block text-[#333]/70 mb-1">Last Name</label>
+                    <input required type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f] focus:ring-1 focus:ring-[#5c0f0f]" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-[#333]/70 mb-1">Email Address</label>
+                    <input required type="email" defaultValue={user?.email || ""} className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f] focus:ring-1 focus:ring-[#5c0f0f]" />
+                  </div>
+                </div>
+              </section>
+
+              {/* Shipping Address */}
+              <section className="bg-white p-6 md:p-8 rounded-lg border border-[#333]/10 shadow-sm">
+                <h2 className="text-xl font-serif text-[#333] mb-6">Shipping Address</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-sans">
+                  <div className="md:col-span-2">
+                    <label className="block text-[#333]/70 mb-1">Street Address</label>
+                    <input required value={shippingAddress.street} onChange={(e) => setShippingAddress({ ...shippingAddress, street: e.target.value })} type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
+                  </div>
+                  <div>
+                    <label className="block text-[#333]/70 mb-1">City</label>
+                    <input required value={shippingAddress.city} onChange={(e) => setShippingAddress({ ...shippingAddress, city: e.target.value })} type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[#333]/70 mb-1">State</label>
+                      <input required value={shippingAddress.state} onChange={(e) => setShippingAddress({ ...shippingAddress, state: e.target.value })} type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
                     </div>
-                    
-                    {/* Minimum Order */}
-                    {minOrderValue && (
-                      <p className="text-xs text-gray-600">
-                        ${minOrderValue} min
-                      </p>
-                    )}
-                    
-                    {/* Shipping Info */}
-                    <div className="flex items-center gap-1.5 text-xs text-gray-600 pt-1">
-                      <span className="text-base leading-none">∞</span>
-                      <span>Free shipping over $300</span>
+                    <div>
+                      <label className="block text-[#333]/70 mb-1">ZIP Code</label>
+                      <input required value={shippingAddress.zipCode} onChange={(e) => setShippingAddress({ ...shippingAddress, zipCode: e.target.value })} type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+              </section>
 
-      {/* Bottom bar */}
-      <div className="sticky bottom-0 w-full bg-white border-t border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="text-sm text-gray-700">
-            <div className="font-medium">{items.length} cart ready to checkout</div>
-            <div className="text-gray-600">
-              Item total: <span className="line-through text-gray-400">${(subtotal * 2).toFixed(2)}</span>{" "}
-              <span className="font-semibold text-black">${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="text-green-600 font-medium">Welcome 50% off</div>
+              {/* Payment Info */}
+              <section className="bg-white p-6 md:p-8 rounded-lg border border-[#333]/10 shadow-sm">
+                <h2 className="text-xl font-serif text-[#333] mb-6">Payment</h2>
+                <p className="text-[12px] text-[#333]/60 mb-4 bg-yellow-50 p-3 border border-yellow-200 rounded text-yellow-800">
+                  <span className="font-bold">Net 60 Terms apply:</span> No payment is due today. We just need a card on file in case of late payment.
+                </p>
+                <div className="grid grid-cols-1 gap-4 text-sm font-sans">
+                  <div>
+                    <label className="block text-[#333]/70 mb-1">Card Number</label>
+                    <input required value={paymentMethod.cardNumber} onChange={(e) => setPaymentMethod({ ...paymentMethod, cardNumber: e.target.value })} placeholder="0000 0000 0000 0000" type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[#333]/70 mb-1">Expiration Date (MM/YY)</label>
+                      <input required value={paymentMethod.expiryDate} onChange={(e) => setPaymentMethod({ ...paymentMethod, expiryDate: e.target.value })} placeholder="MM/YY" type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
+                    </div>
+                    <div>
+                      <label className="block text-[#333]/70 mb-1">Security Code</label>
+                      <input required value={paymentMethod.cvv} onChange={(e) => setPaymentMethod({ ...paymentMethod, cvv: e.target.value })} placeholder="CVV" type="text" className="w-full border border-[#333]/20 rounded-md p-2.5 focus:border-[#5c0f0f]" />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <button type="submit" className="w-full bg-[#5c0f0f] text-[#ece4d0] py-4 rounded-md font-bold uppercase tracking-widest hover:bg-[#3d0a0a] transition-colors shadow-md text-[14px]">
+                Submit Order
+              </button>
+
+              <div className="flex items-center justify-center gap-2 text-[12px] text-[#333]/50">
+                <ShieldCheck className="w-4 h-4" /> Secure SSL Encrypted Checkout
+              </div>
+            </form>
           </div>
-          <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto px-6 py-3 bg-black text-white rounded-md font-semibold hover:bg-gray-800 transition-colors"
-          >
-            Checkout all
-          </button>
+
+          {/* Order Summary Sidebar */}
+          <div className="w-full lg:w-[40%]">
+            <div className="bg-white border border-[#333]/10 rounded-lg p-6 lg:p-8 sticky top-6 shadow-sm">
+              <h2 className="text-xl font-serif text-[#333] mb-6">Order Summary</h2>
+
+              <div className="space-y-4 mb-6 border-b border-[#333]/10 pb-6 max-h-[40vh] overflow-y-auto scrollbar-hide pr-2">
+                {items.map((item) => (
+                  <div key={item.product.id} className="flex gap-4">
+                    <div className="relative w-16 h-16 bg-[#f9f9f9] rounded border border-[#333]/5 overflow-hidden flex-shrink-0">
+                      <Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover mix-blend-multiply" />
+                      <span className="absolute -top-2 -right-2 bg-[#333] text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold">
+                        {item.quantity}
+                      </span>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center">
+                      <h4 className="text-[13px] font-medium text-[#333] line-clamp-2 leading-snug">{item.product.name}</h4>
+                      <p className="text-[11px] text-[#333]/50 mt-1 uppercase tracking-widest">{item.product.vendor.name}</p>
+                    </div>
+                    <div className="font-bold text-[#333] text-sm flex items-center">
+                      ${(item.product.price * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-3 mb-6 font-sans text-[14px]">
+                <div className="flex justify-between text-[#333]/80">
+                  <span>Subtotal <span className="text-[11px] text-[#333]/50"></span></span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                {shipping === 0 ? (
+                  <div className="flex justify-between text-[#5c0f0f]">
+                    <span>Shipping</span>
+                    <span className="font-bold uppercase tracking-wider text-[11px] mt-0.5">Free</span>
+                  </div>
+                ) : (
+                  <div className="flex justify-between text-[#333]/80">
+                    <span>Shipping</span>
+                    <span>${shipping.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[#333]/80">
+                  <span>Taxes</span>
+                  <span className="text-[11px] text-[#333]/50">Calculated on invoice</span>
+                </div>
+
+                <div className="border-t border-[#333]/10 pt-4 mt-4">
+                  <div className="flex justify-between items-end font-bold text-[#333] text-xl">
+                    <span>Total</span>
+                    <span className="text-2xl">${total.toFixed(2)}</span>
+                  </div>
+                  <div className="text-right text-[11px] font-bold text-[#5c0f0f] uppercase tracking-widest mt-1">Due in 60 Days</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
-
