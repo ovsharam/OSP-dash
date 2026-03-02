@@ -12,8 +12,8 @@ import SignupModal from "@/components/SignupModal";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "OSP Marketplace - B2B Wholesale Platform",
-  description: "Discover wholesale products from verified vendors",
+  title: "WWC-Site | Premium Wholesale Chocolate",
+  description: "Discover and buy premium couverture, single-origin bars, and artisan truffles from the world's best independent brands.",
 };
 
 export default function RootLayout({

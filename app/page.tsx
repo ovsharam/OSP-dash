@@ -25,26 +25,28 @@ export default function Home() {
         {/* Dark overlay to ensure text readability matching Faire */}
         <div className="absolute inset-0 bg-black/40 z-10" />
 
-        <div className="relative z-20 text-center px-4 max-w-4xl pt-12">
-          <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 leading-tight tracking-tight drop-shadow-md">
-            The wholesale marketplace for <br className="hidden md:block" />
-            <span className="italic">fine chocolate makers</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/95 mb-8 font-sans max-w-2xl mx-auto font-light drop-shadow">
-            Discover and buy premium couverture, single-origin bars, and artisan truffles from the world's best independent brands.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link
-              href="/browse"
-              className="bg-white text-[#5c0f0f] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-gray-100 transition-all shadow-xl"
-            >
-              Shop All Products
-            </Link>
-            <div className="flex items-center gap-2 text-white/90 text-sm sm:text-base font-sans mt-2 sm:mt-0 drop-shadow-sm">
-              <span>Are you a brand?</span>
-              <Link href="/seller" className="underline font-medium hover:text-white transition-colors">
-                Sell with us
+        <div className="relative z-20 px-8 md:px-16 max-w-7xl mx-auto w-full pt-12 flex flex-col items-start justify-center h-full">
+          <div className="max-w-3xl">
+            <h1 className="text-4xl md:text-6xl font-serif text-white mb-6 leading-tight tracking-tight drop-shadow-md">
+              The wholesale marketplace for <br className="hidden md:block" />
+              <span className="italic">fine chocolate makers</span>
+            </h1>
+            <p className="text-lg md:text-xl text-white/95 mb-8 font-sans max-w-2xl font-light drop-shadow">
+              Discover and buy premium couverture, single-origin bars, and artisan truffles from the world's best independent brands.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+              <Link
+                href="/browse"
+                className="bg-white text-[#5c0f0f] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-gray-100 transition-all shadow-xl"
+              >
+                Shop All Products
               </Link>
+              <div className="flex items-center gap-2 text-white/90 text-sm sm:text-base font-sans mt-2 sm:mt-0 drop-shadow-sm h-full pt-4 sm:pt-0 sm:self-center">
+                <span>Are you a brand?</span>
+                <Link href="/seller" className="underline font-medium hover:text-white transition-colors">
+                  Sell with us
+                </Link>
+              </div>
             </div>
           </div>
         </div>
