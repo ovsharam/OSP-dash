@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Product } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWishlist } from "@/contexts/WishlistContext";
+import { useCart } from "@/contexts/CartContext";
 import toast from "react-hot-toast";
 
 interface ProductCardProps {
@@ -16,6 +17,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { isAuthenticated } = useAuth();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { addToCart } = useCart();
   const inWishlist = isInWishlist(product.id);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
@@ -23,6 +25,12 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     e.stopPropagation();
     toggleWishlist(product);
     toast.success(inWishlist ? "Removed from wishlist" : "Added to wishlist");
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, product.minOrderQuantity || 1);
   };
 
   return (
@@ -42,8 +50,8 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
           <button
             onClick={handleWishlistClick}
             className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-300 z-10 ${inWishlist
-                ? "bg-white text-red-500 opacity-100 shadow-md"
-                : "bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:bg-white hover:text-gray-900 shadow-sm"
+              ? "bg-white text-red-500 opacity-100 shadow-md"
+              : "bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:bg-white hover:text-gray-900 shadow-sm"
               }`}
             aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
@@ -70,6 +78,21 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
               </span>
             )}
           </div>
+
+          {/* Quick Add Button (Authenticated Only) */}
+          {isAuthenticated && product.showWholesalePrice !== false && product.inStock && (
+            <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out z-10">
+              <button
+                onClick={handleAddToCart}
+                className="w-full bg-white/95 backdrop-blur-sm text-[#333] py-2.5 rounded-sm text-[11px] font-bold uppercase tracking-widest shadow-lg hover:bg-[#5c0f0f] hover:text-white transition-colors flex items-center justify-center gap-1.5"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Quick Add
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Info Area */}

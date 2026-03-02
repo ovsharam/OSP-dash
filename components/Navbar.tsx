@@ -11,23 +11,28 @@ import { Search, Heart, ShoppingBag, ChevronDown, X } from "lucide-react";
 const navCategories = [
   {
     title: "Shop by Brand",
+    paramKey: "brand",
     items: ["Valrhona", "Callebaut", "KESSHŌ", "Amedei", "Michel Cluizel", "Dandelion Chocolate", "view all brands →"],
   },
   {
     title: "Shop by Origin",
+    paramKey: "origin",
     items: ["Madagascar", "Ecuador", "Peru", "Venezuela", "Ghana", "Colombia", "Hawaii", "view all origins →"],
   },
   {
     title: "Bar Chocolate",
-    items: ["Dark Chocolate", "Milk Chocolate", "White Chocolate", "Blended Origins", "Limited Edition"],
+    paramKey: "category",
+    items: ["Dark Chocolate Bars", "Milk Chocolate Bars", "White & Blonde"],
   },
   {
     title: "Couverture",
-    items: ["Dark Couverture", "Milk Couverture", "White Couverture", "Cocoa Powder", "Cocoa Butter"],
+    paramKey: "category",
+    items: ["Couverture & Baking"],
   },
   {
     title: "Gourmet & Gifts",
-    items: ["Gift Boxes", "Tasting Collections", "Corporate Orders", "Seasonal Specials", "Truffles & Bonbons"],
+    paramKey: "category",
+    items: ["Gift Collections", "Truffles & Bonbons"],
   },
 ];
 
@@ -167,7 +172,7 @@ export default function Navbar() {
                     {category.items.map((item) => (
                       <Link
                         key={item}
-                        href={`/browse?category=${encodeURIComponent(item)}`}
+                        href={item.includes("view all") ? "/browse" : `/browse?${category.paramKey}=${encodeURIComponent(item)}`}
                         className="block px-5 py-2 text-[14px] text-[#333333] hover:text-[#5c0f0f] hover:bg-[#d1b181]/20 transition-colors font-normal"
                       >
                         {item}
